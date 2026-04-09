@@ -1,0 +1,2377 @@
+body{
+    background-color: #f4f4f4;
+}
+.subheader{
+    background-color: #00483d;
+    height: 35px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.subcontainerheader{
+    position: relative;
+}
+.subcontainerheader ul{
+    list-style: none;
+    position: absolute;
+    right: 0;
+    margin: 0;
+    padding: 0 10px 0 0;
+}
+.subcontainerheader ul li{
+    float: left;
+    margin-left: 15px;
+}
+.subcontainerheader ul li a{
+    color: #fff;
+    font-size: 12px;
+    text-decoration: none;
+}
+.headertop{
+    padding-top: 15px;
+}
+.logoheader{
+    width: 100%;
+}
+.btnkiemtradh{
+    display: block;
+    background: #00483e;
+    border-radius: 10px;
+    padding: 6px 8px;
+    box-shadow: 0 4px 6px #ccc;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    position: relative;
+    text-decoration: none;
+    min-height: 40px;
+}
+.btnkiemtradh:hover{
+    color: #fff;
+    background-color: #008c76;
+}
+.btnkiemtradh i {
+    font-size: 30px;
+    position: absolute;
+    left: 8px;
+}
+.btnkiemtradh .text {
+    text-align: left;
+    display: block;
+    margin-left: 40px;
+}
+.imgcartheader{
+    width: 38px;
+}
+.shoppingcartheader{
+    position: relative;
+}
+.cart-total{
+    text-align: center;
+    background: #ff6801;
+    font-size: 12px;
+    border-radius: 4px;
+    width: 25px;
+    height: 25px;
+    padding: 6px;
+    color: #fff;
+}
+.shopingcontentcart{
+    position: absolute;
+    right: 0;
+}
+.searchheader{
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 5px 10px;
+    box-shadow: 0 4px 6px #ccc;
+    position: relative;
+}
+.inputsearchheader{
+    border: none;
+    width: 80%;
+}
+.inputsearchheader:focus{
+    outline: none;
+}
+.btnsearchheader{
+    position: absolute;
+    right: 10px;
+    top:-7px;
+    background: #00483d;
+    background-image: linear-gradient(#00917a,#00483d);
+    border: none;
+    border-radius: 17px;
+    width: 42px;
+    height: 42px;
+    outline: none;
+    font-size: 17px;
+    color: #fff;
+}
+.headercategory{
+    margin-top: 15px;
+    background-color: #00483d;
+    color:#fff;
+    padding: 5px 10px 5px 10px;
+    min-height: 40px;
+}
+.headercategory ul{
+    list-style: none;
+    padding-bottom: 5px;
+}
+.headercategory ul li{
+    float: left;
+}
+.headercategory ul li a{
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+
+
+
+.media-29101 a {
+    font-family: 'SVN-Gilroy';
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+            line-clamp: 1; 
+    -webkit-box-orient: vertical;
+}
+
+.owl-2-style .owl-nav {
+    display: none;
+}
+
+.owl-2-style .owl-dots {
+    text-align: center;
+    position: relative;
+    bottom: -30px;
+}
+
+.owl-2-style .owl-dots .owl-dot {
+    display: inline-block;
+}
+
+.owl-2-style .owl-dots .owl-dot span {
+    display: inline-block;
+    width: 15px;
+    height: 3px;
+    border-radius: 0px;
+    background: #cccccc;
+    -webkit-transition: 0.3s all cubic-bezier(0.32, 0.71, 0.53, 0.53);
+    -o-transition: 0.3s all cubic-bezier(0.32, 0.71, 0.53, 0.53);
+    transition: 0.3s all cubic-bezier(0.32, 0.71, 0.53, 0.53);
+    margin: 3px;
+}
+
+.owl-2-style .owl-dots .owl-dot.active span {
+    background: #007bff;
+}
+
+.owl-2-style .owl-dots .owl-dot:active,
+.owl-2-style .owl-dots .owl-dot:focus {
+    outline: none;
+}
+
+#listproductindex {
+    margin-top: 100px;
+}
+.listdmindex{
+    width: 70%;
+    float: left;
+}
+.listdanhmucphukien{
+    width: 30%;
+    float: left;
+}
+
+#footer{
+    margin-top: 100px;
+}
+#footer a{
+    text-decoration: none !important;
+}
+.p-4{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+.bannerindex{
+    margin-top: 20px;
+    border-radius: 8px;
+}
+.carousel-inner-index{
+    border-radius: 8px;
+}
+.headersection{
+    background: #009981;
+    margin-bottom: 20px;
+    display: inline-block;
+    height: 30px;
+    overflow: hidden;
+    margin-top: 30px;
+}
+.headersection h4{
+    padding: 5px 60px 6px 35px;
+    margin: 0 0 0 60px;
+    background: #00483d;
+    color: #fff;
+    font-size: 14px;
+    text-transform: uppercase;
+    height: 30px;
+}
+.headersection:after {
+    content: " ";
+    border-top: 30px solid #00483d;
+    border-left: 30px solid #009981;
+    margin-left: 40px;
+}
+.singleproduct{
+    margin-top: 15px;
+    background-color: #fff;
+    padding: 5px 10px 5px 10px;
+    width: calc(1 / 5* 100% -(1 - 1 / 5)* 10px);
+    background: #fff;
+    box-shadow: 0 4px 6px #00000029;
+    border-radius: 8px;
+    text-align: center;
+}
+.productimg{
+    width: 60%;
+    margin-left: 20%;
+    object-fit: cover;
+    display: block;
+    height: 180px;
+}
+.productname{
+    text-decoration: none;
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    display: block;
+    font-size: 0.9rem;
+    overflow: hidden;
+   display: -webkit-box;
+   -webkit-line-clamp: 2; /* number of lines to show */
+           line-clamp: 2; 
+   -webkit-box-orient: vertical;
+}
+.contentsinglepro{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.priceproduct{
+    text-align: center;
+}
+.newprice{
+    font-size: 16px;
+    color: #fd475a;
+    text-align: center;
+}
+.oldprice{
+    text-decoration: line-through;
+    font-size: 0.8rem;
+    color: #333;
+}
+.block{
+    display: block;
+}
+.addcartproduct{
+    text-align: center;
+    cursor: pointer;
+    color: #777;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.bannerhot1{
+    margin-top: 15px;
+}
+.bannerhot1 img{
+    width: 100%;
+    object-fit: cover;
+}
+.xemtatca{
+    position: relative;
+    height: 50px;
+    margin-top: 15px;
+}
+.xemtatcabtn{
+    position: absolute;
+    width: 150px;
+    left: 0;
+    right: 0;
+    margin-left: auto; 
+    margin-right: auto; 
+    border: 1px solid #ccc;
+    padding: 13px 15px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+.blogindex{
+    margin-top: 100px;
+}
+.topblogindex{
+    border-bottom: 1px solid #dedede;
+    display: flex;
+    position: relative;
+}
+.xemthemblog{
+    position: absolute;
+    right: 0;
+    color: #E03C31;
+    text-decoration: none;
+    font-size: 0.9rem;
+    top: 10px;
+}
+.listblogindex{
+    padding-top: 20px;
+}
+.listblogindex{
+    padding-top: 20px;
+}
+.blogpriimage{
+    width: 100%;
+    border-radius: 5px;
+}
+.titlepriindex{
+    color: #000;
+    text-decoration: none;
+    display: block;
+    margin-top: 15px;
+    font-size: 25px;
+    font-weight: bold;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
+.singleblogindex{
+    border-bottom: 1px solid #dedede;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+.singleblogindex a{
+    color: #000;
+    text-decoration: none;
+    font-family: "Roboto Regular",Roboto,Arial !important;
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: normal !important;
+    color: #2C2C2C;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-weight: 600;
+}
+.headerfilterpro{
+    margin-top: 50px;
+    background-color: #fff;
+    padding: 10px;
+}
+.detailproduct{
+    margin-top: 50px;
+}
+.imgprodetail{
+    width: 100%;
+}
+.listimgdetail {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.imgldetail {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    /* padding-left: 5px; */
+}
+
+.singdimg {
+    padding: 0px 5px 0px 10px;
+}
+
+.imgactive {
+    border: 2px solid #fcaf17;
+    border-radius: 3px;
+    padding: 2px;
+}
+.pronamedetail{
+    margin: 20px 0 10px 0;
+    flex-basis: auto;
+    flex-grow: 3;
+    display: flex;
+}
+.newpricestr{
+    font-size: 25px;
+    color: #fd475a;
+}
+.oldpricestr{
+    text-decoration: line-through;
+    margin-left: 10px;
+}
+.vats{
+    font-style: italic;
+}
+.divfreeship{
+    background-color: #00483d;
+    color: #fff;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+.freeshipimg{
+    width: 30px;
+}
+.colsize {
+    padding-right: 0px !important;
+}
+.listsize {
+    margin-top: 10px;
+}
+
+.radio-custom {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #fff;
+    min-width: 100%;
+    text-align: center;
+    padding: 5px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: 1px solid #bfbfbf;
+    border-radius: 5px;
+}
+
+
+/* Hide the browser's default radio button */
+
+.radio-custom input {
+    width: 0px;
+}
+
+.activesize {
+    background-color: #fcaf17;
+    color: #fff;
+}
+
+.colsize {
+    padding-right: 0px !important;
+}
+
+.imgactive {
+    border: 2px solid #fcaf17;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+.choosesize {
+    display: block;
+    margin-top: 10px;
+    cursor: pointer;
+    color: #2A2A86;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+}
+.storagedetail{
+    font-size: 10px;
+}
+.pricestorage{
+    color: #fd475a;
+    display: block;
+    font-size: 12px;
+}
+.storagedetaillable{
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    font-family: -apple-system,BlinkMacSystemFont,'Segoe UI';
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+.imgcolorpro{
+    width: 30%;
+}
+.btnmuahangngay{
+    margin-top: 15px;
+}
+.btnmuangay{
+    width: 60%;
+    float: left;
+    background: transparent linear-gradient(180deg,#fd475a 0%,#bf1e2d 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    border-radius: 3px;
+    color: #fff;
+    border: none;
+    padding-bottom: 10px;
+    height: 70px;
+}
+.lbgiaotannha{
+    display: block;
+    font-size: 0.8rem;
+}
+.btnthemgiohang{
+    width: 38%;
+    float: right;
+    background: transparent linear-gradient(180deg,#ff990e 0%,#ff6801 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    border: none;
+    color: #fff;
+    border-radius: 3px;
+    height: 70px;
+}
+.iconcartdt{
+    display: block;
+    font-size: 25px;
+}
+.cauhinhchitiet{
+    background: #fff;
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 14px;
+    flex: 0 0 380px;
+    padding: 15px;
+}
+.tieudesanpham{
+    font-size: 15px;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+.anhcauhinhsp{
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 5px;
+}
+.thongtincauhinhdv{
+    margin-top: 15px;
+}
+.congnghect{
+    font-weight: bold;
+    font-size: 13px;
+    text-align: -webkit-match-parent;
+    margin-bottom: 10px;
+    display: block;
+}
+.chitietcongnghe{
+    font-weight: normal;
+}
+.phukiendikem{
+    font-size: 0.9rem;
+    color: #4f4e4e;
+}
+.motasanphamdetail{
+    background: #fff;
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+.sanphamtuongtudetail{
+    background: #fff;
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+.singleproducts{
+    position: relative;
+}
+.addcartbtndt{
+    display: flex;
+    border-radius: 4px;
+    padding: 6px 10px;
+    background: transparent linear-gradient(180deg,#00917a 0%,#00483d 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    color: #fff;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    margin: 0 auto;
+    margin-top: 5px;
+}
+.newpricelq{
+    color: red;
+    font-size: 13px;
+}
+.phanhoisanpham{
+    background: #fff;
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+.singlectlct {
+    margin-top: 40px;
+}
+
+.nguoidangctl {
+    margin-bottom: 10px;
+}
+
+.avtuserdangctl {
+    width: 30px;
+}
+
+.usernamedangctl {
+    margin-left: 5px;
+    color: blue;
+}
+
+.ngaytraloi {
+    /* margin-left: auto; */
+    margin-left: 20px;
+    color: gray;
+}
+
+.slcautl {
+    color: blue;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.replaybinhluan {
+    margin-left: 5%;
+    margin-top: 15px;
+}
+
+.avtuserrepl {
+    width: 20px;
+    border-radius: 50%;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.usernamerepl {
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.ngaytraloispl {
+    margin-right: 10px;
+    font-size: 0.9rem;
+    color: gray;
+}
+
+.xoactlsp {
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: gray;
+    text-align: center;
+}
+
+.contentreplay {
+    word-break: break-word;
+    font-size: 14px;
+    color: #212b35;
+}
+
+.traloirpl {
+    cursor: pointer;
+    color: blue;
+    font-size: 0.9rem;
+    margin-right: 10px;
+}
+
+.singlereplay {
+    margin-top: 25px;
+}
+
+.singlectlct {
+    margin-top: 40px;
+}
+
+.traloivt {
+    text-decoration: none;
+}
+
+.listimgcontent {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.listimgcontent img {
+    width: 15%;
+}
+
+.contentctlct {
+    word-break: break-word;
+    font-size: 14px;
+    color: #212b35;
+}
+
+.userrep {
+    color: blue;
+}
+
+.starcmts {
+    margin-left: 15px;
+    padding-top: 5px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+.divchooseimg {
+    width: 100%;
+    border: 1px solid #ebebeb;
+    padding: 5px 0px 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.divchooseimg span {
+    color: #969b9f;
+    font-weight: 500;
+}
+#choosefilecmt {
+    width: 0px;
+}
+
+#errorquan {
+    color: red;
+    font-size: 0.9rem;
+    display: none;
+}
+.checkedstar {
+    color: orange;
+}
+.dangnhapform{
+    margin-top: 50px;
+    background: #fff;
+    width: 100%;
+    min-height: 100px;
+    display: flex;
+}
+.divimglogin{
+    background: #fbe9e7;
+    width: 25%;
+    float: left;
+}
+.divctlogin{
+    width: 75%;
+    float: left;
+    padding: 30px 150px;
+}
+.labeldangnhap{
+    font-weight: bold;
+    font-size: 22px;
+}
+.inputlogin{
+    margin-top: 5px;
+    display: block;
+    width: 100%;
+    background: #e5e5e5;
+    border-radius: 4px;
+    padding: 10px;
+    border: none;
+}
+.inputlogin:focus{
+    outline: none;
+}
+.lbform{
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+.btndangnhap{
+    background: transparent linear-gradient(180deg,#00917a 0%,#00483d 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    border-radius: 3px;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    margin-top: 30px;
+    width: 46%;
+    float: left;
+}
+.btndoimk{
+    background: transparent linear-gradient(180deg,#00917a 0%,#00483d 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    border-radius: 3px;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    margin-top: 30px;
+    width: 50%;
+}
+.btndangky{
+    background: #fff;
+    box-shadow: 0 4px 6px #00000029;
+    border-radius: 3px;
+    color: #000;
+    border: 2px solid black;
+    padding: 8px;
+    margin-top: 30px;
+    width: 46%;
+    float: left;
+    margin-left: 8%;
+}
+.lbquenmk{
+    float: right;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+.divbaiviet{
+    margin-top: 25px;
+    background-color: #fff;
+    padding: 20px;
+}
+.tintuctieude{
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.imgblogchinh{
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.baivietmoinhat{
+    position: relative;
+}
+.tieudebvchinh{
+    display: block;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+.divtieudebvchinh{
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    background: rgba(15, 15, 15, 0.5);
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+}
+.baivietmoinhat{
+    cursor: pointer;
+    border-radius: 5px;
+}
+.ngaydangbvchinh{
+    margin-left: 20px;
+    font-size: 0.9rem;
+}
+.nguoidangbvchinh{
+    font-size: 0.9rem;
+}
+.singlebv{
+    margin-top: 15px;
+}
+.anhdsbaiviet{
+    width: 100%;
+}
+.anhdsbaiviet{
+    height: 120px;
+    object-fit: cover;
+    border-radius: 7px;
+}
+.tieudebv{
+    font-weight: bold;
+    font-size: 18px;
+    display: block;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
+.motabaivietds{
+    color: #7d7d7d;
+    font-family: "Open Sans",Sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    display: block;
+    margin-top: 5px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+            line-clamp: 1; 
+    -webkit-box-orient: vertical;
+}
+.ctnoidungdsbv{
+    position: relative;
+    height: 120px;
+}
+.thongtinnguoidangbv{
+    position: absolute;
+    bottom: 0;
+}
+.nguoidangbv{
+    font-size: 0.8rem;
+    color: #7d7d7d;
+}
+.ngaydangbv{
+    font-size: 0.8rem;
+    color: #7d7d7d;
+    margin-left: 10px;
+}
+.anhspnoibat{
+    width: 100%;
+}
+.tenspnoibat{
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+.newpricenoibat{
+    color: red;
+}
+.oldpricenoibat{
+    color: #333;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+}
+.ndspnoibat{
+    position: relative;
+}
+.btngiohangnb{
+    /* position: absolute; */
+    bottom: 3px;
+    border-radius: 4px;
+    padding: 6px 10px;
+    background: transparent linear-gradient(180deg,#00917a 0%,#00483d 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    color: #fff;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    margin: 0 auto;
+    margin-top: 5px;
+}
+.singlespnoibat{
+    margin-top: 25px;
+}
+.btntracuu{
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    padding: 0 60px;
+    background: transparent linear-gradient(179deg,#009981 0%,#00483d 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0 4px 6px #00000029;
+    border-radius: 8px;
+    outline: none;
+    border: none;
+    margin-top: 20px;
+}
+.thead-default {
+    background-color: #f8f8f8;
+    border-top: 1px solid #e0e0d1 !important;
+    border-bottom: 1px solid #e0e0d1 !important;
+}
+
+.thead-default th {
+    font-family: 'SVN-Gilroy Bold';
+    /* border: none; */
+    text-align: left;
+    line-height: 16px;
+    vertical-align: middle;
+}
+
+.thead-default td {
+    font-size: 0.9rem;
+}
+.table-donhang{
+    margin-top: 30px;
+}
+.headerdetail {
+    font-size: 0.9rem !important;
+}
+
+.headerdetail .yls {
+    font-size: 0.9rem !important;
+}
+
+.shipinfor {
+    margin-top: 30px;
+}
+
+.tennguoinhan {
+    font-weight: bold;
+}
+
+.blockinfor {
+    min-height: 120px;
+    padding: 13px 25px 10px 20px;
+    border: 1px solid #DDE1EF;
+    background: none;
+    margin-top: 10px;
+}
+
+.blockinfor span {
+    color: #212B25;
+    font-size: 14px;
+    line-height: 16px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.ttshipinfor {
+    margin-top: 10px;
+}
+
+.imgdetailacc {
+    width: 100px;
+}
+
+.slmobile {
+    display: none;
+}
+
+.phoneacc {
+    display: block;
+    margin-top: 7px;
+}
+
+.contentdetailproduct {
+    padding-top: 30px;
+}
+
+.imgdetailpro {
+    width: 100%;
+}
+
+.detailnamepro {
+    font-family: 'SVN-Gilroy';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 32px;
+    text-transform: capitalize;
+    color: #17191C;
+}
+
+.blockdetailpro {
+    position: relative;
+}
+
+.codepro {
+    padding: 0px 10px 0px 0px;
+    border-right: 1px solid #D9D9D9;
+    color: #7A7A9D;
+    font-family: 'SVN-Gilroy';
+}
+
+.quansale {
+    padding: 0px 0px 0px 10px;
+    color: #17191C;
+    font-family: 'SVN-Gilroy';
+}
+
+.pricedetail {
+    margin-top: 5px;
+    color: rgb(23, 25, 28);
+    font-weight: 600;
+    font-size: 20px;
+    font-family: 'SVN-Gilroy Bold';
+    line-height: 22px;
+}
+
+.colordetail {
+    font-weight: 500;
+    /* font-size: 14px; */
+    line-height: 16px;
+    padding: 16px 0 12px;
+    margin: 0;
+    width: 100%;
+    color: #17191C;
+}
+
+.colorname {
+    font-weight: 600 !important;
+}
+
+.listimgdetail {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.imgldetail {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    /* padding-left: 5px; */
+}
+.yls {
+    color: #fcaf17;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.blockinfor {
+    min-height: 120px;
+    padding: 13px 25px 10px 20px;
+    border: 1px solid #DDE1EF;
+    background: none;
+    margin-top: 10px;
+    height: 150px;
+}
+
+.blockinfor span {
+    color: #212B25;
+    font-size: 14px;
+    line-height: 16px;
+    vertical-align: top;
+    text-align: left;
+}
+.soluonggiohang{
+    font-size: 14px;
+    font-weight: 600;
+    color: #6e6e6e;
+    margin-left: 10px;
+}
+.tablecart td,
+tfoot,
+th,
+thead,
+tr {
+    border-style: none !important;
+}
+.imgprocart {
+    width: 100px;
+    float: left;
+}
+
+.divnamecart {
+    padding-left: 10px;
+    position: relative;
+    height: 100px;
+    margin-left: 100px;
+}
+
+.sizecart {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+}
+
+.tdpricecart {
+    position: relative;
+    height: 100px;
+}
+.delcart {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 20px;
+    cursor: pointer;
+}
+.nameprocart {
+    font-size: 15px;
+    color: #000;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.nameprocart:hover {
+    color: #ffc107;
+}
+.boldcart {
+    font-family: 'SVN-Gilroy Bold';
+    color: #000000;
+    font-weight: bold;
+}
+.clusinp {
+    width: 120px;
+}
+
+.facartde {
+    color: #30656b;
+    font-weight: 200;
+}
+.cartbtn {
+    line-height: 24px;
+    padding: 0;
+    margin: 0;
+    width: 37px;
+    background-color: #fff;
+    height: 36px;
+    float: left;
+    border: 1px solid #D9D9D9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #62676D;
+    font-size: 20px;
+}
+
+.inputslcart {
+    line-height: 24px;
+    padding: 0;
+    margin: 0;
+    width: 37px;
+    background-color: #fff;
+    height: 36px;
+    float: left;
+    border: 1px solid #D9D9D9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #62676D;
+    font-size: 20px;
+}
+.tongdon {
+    width: 100%;
+    height: 60px;
+    position: relative;
+}
+
+.btnthanhtoan {
+    position: absolute;
+    right: 0;
+    height: 40px;
+    background-color: #fcaf17;
+    color: #fff;
+    font-size: 16px;
+    font-family: 'SVN-Gilroy Bold';
+    border: none;
+    border-radius: 5px;
+    width: 120px;
+}
+
+.tonggiatien {
+    color: #000;
+    font-size: 1.1rem;
+    font-family: 'SVN-Gilroy Bold';
+    font-weight: bold;
+}
+
+.tds {
+    font-family: 'SVN-Gilroy Bold';
+    font-weight: 500;
+}
+
+.freeship {
+    font-weight: 700 !important;
+    color: rgb(57, 172, 109) !important;
+    font-family: Insider-Montserrat, sans-serif !important;
+    font-style: normal !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    text-align: left !important;
+}
+
+.buypl {
+    font-weight: 700 !important;
+    color: rgb(57, 172, 109) !important;
+    font-family: Insider-Montserrat, sans-serif !important;
+}
+.checkoutdiv {
+    padding: 0px 50px 100px 50px;
+}
+
+.titlecheckout {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.inforship {
+    margin-top: 20px;
+}
+
+.infordoncheck {
+    background-color: #e7e8fc;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+.divimglogocheck {
+    height: 60px;
+}
+
+.divbefor {
+    display: none !important;
+}
+
+.formcou {
+    width: 100%;
+    padding-top: 10px;
+    padding-left: 15px;
+}
+
+.feevc {
+    border: 1px solid #cecdcd;
+    padding: 10px;
+    border-radius: 5px;
+    color: #545454;
+    margin-top: 10px;
+    position: relative;
+}
+
+.tows {
+    position: absolute;
+    right: 10px;
+}
+
+.feevc .checkvc:checked {
+    /* -webkit-box-shadow: 0 0 0 15px #fcaf17 inset; */
+    height: 1rem;
+    padding-left: 1.5em;
+}
+
+.radiocustom {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* Hide the browser's default radio button */
+
+.radiocustom input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+/* Create a custom radio button */
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.radiocustom:hover input~.checkmark {
+    background-color: #828282;
+}
+
+.radiocustom input~.checkmark {
+    background-color: #828282;
+}
+
+
+/* When the radio button is checked, add a blue background */
+
+.radiocustom input:checked~.checkmark {
+    background-color: #fcaf17;
+}
+
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the indicator (dot/circle) when checked */
+
+.radiocustom input:checked~.checkmark:after {
+    display: block;
+}
+
+
+/* Style the indicator (dot/circle) */
+
+.radiocustom .checkmark:after {
+    top: 6px;
+    left: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+.momopay {
+    width: 30px;
+}
+
+.tablepay {
+    border: 1px solid #e0e0d1;
+    /* border-collapse:separate; 
+    border-spacing: 0 1em; */
+}
+
+.tablepay td {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    cursor: pointer;
+}
+
+.paycode {
+    font-size: 28px;
+    color: #fcaf17;
+}
+
+.dhcheck {
+    margin-left: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.procheckout {
+    width: 100%;
+}
+
+#listproductcheck {
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.pricecheck {
+    position: relative;
+}
+
+.pricecheck span {
+    position: absolute;
+    bottom: 0;
+}
+.fomd {
+    margin-top: 20px;
+}
+.lbsatop{
+    font-weight: 600;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+.btndathangmobile {
+    background-color: #fcaf17;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+.dhcheck {
+    margin-left: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.procheckout {
+    width: 100%;
+}
+
+#listproductcheck {
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.pricecheck {
+    position: relative;
+}
+
+.pricecheck span {
+    position: absolute;
+    bottom: 0;
+}
+
+.colimgcheck {
+    position: relative;
+}
+
+.spsearchmobile {
+    display: block;
+}
+
+.slpro {
+    background-color: #fcaf17;
+    font-size: .78em;
+    white-space: nowrap;
+    padding: 0 0.62em;
+    border-radius: 2em;
+    color: #fff;
+    position: absolute;
+    box-sizing: border-box;
+    min-width: 1.75em;
+    height: 1.75em;
+    text-align: center;
+    line-height: 1.75em;
+    top: -1em;
+}
+
+.namecheck {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.colorcheck {
+    font-size: 13px;
+    color: #969696;
+}
+
+.magg {
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.btnmagg {
+    background-color: #fcaf17;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.colright {
+    text-align: right;
+}
+
+.ylsbold {
+    color: #fcaf17;
+    font-size: 1.5em;
+    font-weight: 500;
+}
+.successvou {
+    color: green;
+    margin-top: 10px;
+    display: block;
+}
+
+#blockmess {
+    display: none;
+}
+
+#messerr {
+    color: red;
+}
+
+#blockmessErr {
+    display: none;
+}
+.colright {
+    text-align: right;
+}
+.btndathang {
+    background-color: #fcaf17;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+}
+.navleft, .navright{
+    background: #fff;
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+.avaaccount {
+    padding: 20px;
+}
+.tabdv {
+    width: 100%;
+    height: 40px;
+    cursor: pointer;
+    padding-top: 5px;
+    padding-left: 20px;
+}
+
+.tabdv a {
+    color: #000;
+    text-decoration: none;
+    background: transparent;
+}
+
+.tabdv:hover {
+    background-color: #FEEEE7;
+}
+
+.activetabdv {
+    background-color: #FEEEE7;
+}
+.fontyel {
+    color: #fcaf17 !important;
+    font-family: 'SVN-Gilroy Bold';
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.textrf {
+    color: #7A7A9D;
+    font-family: 'SVN-Gilroy';
+    line-height: 60px;
+    margin-right: 10px;
+}
+.lbacc {
+    margin-bottom: 7px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 15px;
+}
+.btnsuathongtin {
+    height: 40px;
+    margin-top: 10px;
+    background: #fcaf17;
+    color: #FFF;
+    border-radius: 4px;
+    border: none;
+    margin-right: 10px;
+}
+.headeraccount {
+    padding: 15px 20px 10px 20px;
+    border-bottom: 2px solid #f5f5f0;
+    margin-bottom: 20px;
+    position: relative;
+    min-height: 60px;
+}
+
+.addressdef {
+    color: #27AE60;
+    font-size: 11px;
+    padding-left: 10px;
+}
+
+.headeraccount .right_flex {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.actionacc {
+    display: block;
+    cursor: pointer;
+}
+.checkbox-custom {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* Hide the browser's default checkbox */
+
+.checkbox-custom input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+
+/* Create a custom checkbox */
+
+.checkmark-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 22px;
+    width: 22px;
+    /* background-color: #eee; */
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.checkbox-custom:hover input~.checkmark-checkbox {
+    /* background-color: #ccc; */
+}
+
+
+/* When the checkbox is checked, add a blue background */
+
+.checkbox-custom input:checked~.checkmark-checkbox {
+    background-color: #ee4d2d;
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+
+.checkmark-checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the checkmark when checked */
+
+.checkbox-custom input:checked~.checkmark-checkbox:after {
+    display: block;
+}
+
+
+/* Style the checkmark/indicator */
+
+.checkbox-custom .checkmark-checkbox:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.tagas{
+    text-decoration: none;
+    color: #000;
+}
+.masanpham{
+    float: right;
+}
+#descriptiondetail{
+    height: 700px;
+    overflow: hidden;
+    padding-bottom: 50px;
+}
+.divmore{
+    width: 100%;
+    height: 40px;
+}
+#lbxemthem{
+    display: block;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.productimglq{
+    width: 80%;
+    margin-left: 10%;
+}
+.singprolq{
+    margin-top: 20px;
+}
+.storagedetailpro{
+    width: 12px;
+}
+.storagediv{
+    display: block;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #fff;
+    min-width: 100%;
+    text-align: center;
+    padding: 5px;
+    font-weight: 500;
+    border: 1px solid #bfbfbf;
+    border-radius: 5px ;
+}
+.colorcdiv{
+    display: block;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #fff;
+    min-width: 100%;
+    text-align: center;
+    padding: 5px;
+    font-weight: 500;
+    border: 1px solid #bfbfbf;
+    border-radius: 5px ;
+}
+.hetsp{
+    background-color: #d6d6d6;
+    cursor: auto;
+}
+.activecolor{
+    border: 2px solid red !important;
+}
+.trthead{
+    background-color: #e6e6e6;
+}
+@keyframes barWidth {
+    0% {
+        width: 0%;
+    }
+    25% {
+        width: 50%;
+    }
+    50% {
+        width: 100%;
+    }
+    75% {
+        width: 50%;
+    }
+    100% {
+        width: 0%;
+    }
+}
+
+@keyframes barWidth2 {
+    0% {
+        width: 0%;
+    }
+    50% {
+        width: 50%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+#loading {
+    margin-top: 20px;
+    height: 4px;
+    width: 100%;
+    display: none;
+}
+
+.bar {
+    position: relative;
+    width: 0%;
+    height: 100%;
+    margin: 0 auto;
+    animation: barWidth;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.bar1 {
+    animation-delay: 0s;
+    background: #02a09a;
+    top: 0;
+    z-index: 1;
+}
+#titlerep{
+    margin-top: 30px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.text-center{
+    text-align: center !important;
+    margin-top: 20px;
+}
+.parentlogingg{
+    width: 100%;
+    position: relative;
+    height: 80px;
+}
+.logindiv {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.chat-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.chat-box {
+    display: none;
+    width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    border: 1px solid #ccc;
+}
+
+.chat-header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.chat-body {
+    padding: 10px;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.chat-footer {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-footer input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.chat-footer button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#listchat {
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+}
+.mychat{
+    background-color: #0084ff;
+    color: #fff;
+    max-width: 70%;
+    padding: 3px 7px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-end;
+}
+.adminchat{
+    background-color: #f0f0f0;
+    max-width: 70%;
+    padding: 3px 7px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-start;
+}
+.soluongcon{
+    font-size: 10px !important;
+}
+/* =========================================================================
+   Giao diện Chatbot CSS - Đã cập nhật vị trí lề phải (right: 300px)
+   ========================================================================= */
+
+/* --- 1. Container Tổng thể (Nút bật/tắt & Chatbox) --- */
+.chat-bot-container {
+    position: fixed;
+    bottom: 20px;
+    /* THAY ĐỔI TẠI ĐÂY: Dịch vào 300px từ mép phải */
+    right: 300px;
+    z-index: 9999;
+}
+
+/* --- 2. Nút Bật/Tắt Chat --- */
+.chat-bot-chat-toggle {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.chat-bot-chat-toggle:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* --- 3. Chatbox (Hộp thoại chính) --- */
+.chat-bot-chatbox {
+    width: 300px;
+    height: 420px;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    margin-bottom: 10px;
+
+    /* Vị trí CHATBOX cũng phải khớp với nút toggle */
+    position: fixed;
+    bottom: 80px;
+    /* THAY ĐỔI TẠI ĐÂY: Dịch vào 300px từ mép phải */
+    right: 300px;
+    z-index: 999;
+}
+
+/* Ẩn mặc định */
+.chat-bot-hidden {
+    display: none !important;
+}
+
+/* --- 4. Header Chatbox --- */
+.chat-bot-chat-header {
+    background: #007bff;
+    color: white;
+    padding: 12px 10px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* --- 5. Khu vực Tin nhắn --- */
+.chat-bot-chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+    background: #f7f7f7;
+    line-height: 1.5;
+}
+
+.chat-bot-message {
+    margin-bottom: 10px;
+    max-width: 85%;
+    padding: 7px 10px;
+    border-radius: 15px;
+    word-wrap: break-word;
+}
+
+.chat-bot-message.user {
+    background-color: #e1ffc7;
+    margin-left: auto;
+    text-align: right;
+    border-bottom-right-radius: 3px;
+}
+
+.chat-bot-message.bot {
+    background-color: #ffffff;
+    margin-right: auto;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    border-bottom-left-radius: 3px;
+}
+
+.chat-bot-message-image-preview {
+    max-width: 100%;
+    height: auto;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* --- 6. Khu vực Gợi ý (Suggestions) --- */
+.chat-bot-chat-suggestions {
+    padding: 8px 10px;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+    flex-shrink: 0;
+}
+
+.chat-bot-toggle-suggestions-btn {
+    background: #ffc107;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+.chat-bot-toggle-suggestions-btn:hover {
+    background: #e0a800;
+}
+
+.chat-bot-suggestion-list {
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.chat-bot-suggestion-item {
+    padding: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+    line-height: 1.3;
+}
+
+.chat-bot-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.chat-bot-suggestion-item:hover {
+    background: #f2f2f2;
+}
+
+/* --- 7. Khu vực Input --- */
+.chat-bot-chat-input-wrapper {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.chat-bot-drop-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 123, 255, 0.8);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 10;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.chat-bot-image-preview-area {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background: #f0f0f0;
+    border-top: 1px solid #ccc;
+}
+
+.chat-bot-preview-image {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-bot-remove-image-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.chat-bot-chat-input {
+    display: flex;
+    padding: 8px 10px;
+    border-top: 1px solid #ccc;
+    align-items: center;
+}
+
+.chat-bot-input-text {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+}
+
+.chat-bot-input-action-btn {
+    background: none;
+    color: #6c757d;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.chat-bot-input-action-btn:hover {
+    color: #007bff;
+}
+
+.chat-bot-send-btn {
+    margin-left: 5px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+.chat-bot-send-btn:hover {
+    background: #0056b3;
+    color: white;
+}
+
+
+/* =========================================================================
+   Responsive Design (Mobile) - Giữ lại vị trí sát mép phải cho mobile
+   ========================================================================= */
+
+@media (max-width: 600px) {
+    /* Khi màn hình nhỏ, Chatbox sẽ chiếm gần hết màn hình */
+    .chat-bot-chatbox {
+        width: 90%;
+        max-width: 400px;
+        height: 75vh;
+        bottom: 70px;
+        right: 5%;
+        left: 5%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    /* Đảm bảo nút toggle nằm ở góc (cho mobile) */
+    .chat-bot-container {
+        right: 15px; /* Sát mép phải hơn cho mobile */
+        bottom: 15px;
+    }
+
+    .chat-bot-chat-toggle {
+        padding: 12px 18px;
+        font-size: 16px;
+    }
+}
+/* CSS tùy chọn để làm nổi bật dòng click được */
+.invoice-row {
+    cursor: pointer;
+    user-select: none; /* Ngăn người dùng chọn văn bản khi click */
+}
+.invoice-row:hover {
+    background-color: #f7f7f7; /* Màu nhẹ khi hover */
+}
+/* Loại bỏ border trên và dưới của dòng collapse để gọn hơn */
+.collapse-row td {
+    border-top: none !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+}
+/* Style cho nội dung chi tiết */
+.invoice-detail-content {
+    background-color: #fafafa;
+    border-left: 3px solid #ffc107; /* Màu vàng của yls/warning */
+}
+/* Custom CSS cho Card bảo hành */
+.guarantee-card {
+    border-left: 5px solid; /* Màu viền sẽ được đặt bằng JS dựa trên trạng thái */
+    transition: transform 0.2s;
+}
+
+.guarantee-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Badge trạng thái */
+.status-badge {
+    color: white !important;
+    font-size: 0.85em;
+    font-weight: 600;
+    /* Dùng 'white-space: nowrap;' để tránh bị xuống dòng */
+    white-space: nowrap;
+}
+
+/* Custom CSS cho Timeline Lịch sử */
+.history-timeline {
+    position: relative;
+    padding-left: 20px; /* Tạo không gian cho chấm tròn */
+}
+.history-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 7px;
+    height: 100%;
+    width: 2px;
+    background: #e9ecef; /* Màu đường kẻ */
+}
+.timeline-item {
+    position: relative;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+.timeline-dot {
+    position: absolute;
+    left: -13px; /* Đặt chấm tròn trên đường kẻ */
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: 1;
+    border: 2px solid #fff; /* Viền trắng để nổi bật trên đường kẻ */
+}
+.timeline-content {
+    padding-left: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+@media screen and (min-width: 992px) {
+    .col-lg-20p {
+        width: 20%;
+    }
+   
+}

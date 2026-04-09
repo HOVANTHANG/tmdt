@@ -1,0 +1,378 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<th:block th:fragment="chatMain">
+  <div class="chat-bot-container">
+    <div class="chat-bot-chatbox chat-bot-hidden" id="chatbox">
+      <div class="chat-bot-chat-header">🤖 Hỗ trợ AI </div>
+
+      <div class="chat-bot-chat-messages" id="chat-messages">
+      </div>
+
+      <div class="chat-bot-chat-suggestions">
+        <button id="toggle-suggestions-btn" class="chat-bot-toggle-suggestions-btn">
+          💡 Gợi ý câu hỏi
+        </button>
+        <div class="chat-bot-suggestion-list chat-bot-hidden" id="suggestion-list">
+        </div>
+      </div>
+
+      <div class="chat-bot-chat-input-wrapper" id="chat-input-container">
+        <div class="chat-bot-drop-zone chat-bot-hidden" id="drop-zone">
+          Thả ảnh vào đây để gửi
+        </div>
+
+        <div class="chat-bot-image-preview-area chat-bot-hidden" id="image-preview-area">
+          <img id="preview-image" src="" alt="Ảnh đã chọn" class="chat-bot-preview-image"/>
+          <button id="remove-image-btn" class="chat-bot-remove-image-btn">✖</button>
+        </div>
+        <div class="chat-bot-chat-input">
+          <input type="file" id="image-file-input" accept="image/*" class="chat-bot-hidden">
+
+          <button id="attach-btn" class="chat-bot-input-action-btn" title="Gửi ảnh">📎</button>
+
+          <input
+                  type="text"
+                  id="chat-input-text"
+                  placeholder="Nhập tin nhắn..."
+                  class="chat-bot-input-text"
+          />
+
+          <button id="send-message-btn" class="chat-bot-input-action-btn chat-bot-send-btn">Gửi</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <button class="chat-bot-chat-toggle" id="chat-toggle-btn">
+      💬 Hỗ trợ AI
+    </button>
+  </div>
+
+  <script>
+    // --- Khai báo State và Data ---
+    let isOpen = false;
+    let messages = [];
+    let showSuggestions = false;
+    let selectedFile = null; // Biến lưu trữ file ảnh đã chọn/kéo
+
+   const suggestions = [
+  "Tôi nên mua điện thoại nào trong tầm giá 8 triệu?",
+  "Điện thoại nào pin trâu, dùng được 2 ngày?",
+  "So sánh giúp tôi Samsung và iPhone cùng phân khúc.",
+  "Hiện tại shop có khuyến mãi gì cho iPhone không?",
+  "Điện thoại nào chụp ảnh đẹp để đăng mạng xã hội?",
+  "Mẫu nào phù hợp cho người lớn tuổi dễ sử dụng?",
+  "Tôi muốn mua điện thoại trả góp thì làm thế nào?",
+  "Sản phẩm này còn màu khác không?",
+];
+
+
+    // --- Tham chiếu DOM ---
+    const chatbox = document.getElementById('chatbox');
+    const chatToggleBtn = document.getElementById('chat-toggle-btn');
+    const messagesContainer = document.getElementById('chat-messages');
+    const inputText = document.getElementById('chat-input-text');
+    const sendBtn = document.getElementById('send-message-btn');
+    const toggleSuggestionsBtn = document.getElementById('toggle-suggestions-btn');
+    const suggestionList = document.getElementById('suggestion-list');
+    const attachBtn = document.getElementById('attach-btn');
+    const imageFileInput = document.getElementById('image-file-input');
+    const dropZone = document.getElementById('drop-zone');
+    const imagePreviewArea = document.getElementById('image-preview-area');
+    const previewImage = document.getElementById('preview-image');
+    const removeImageBtn = document.getElementById('remove-image-btn');
+
+    /**
+     * Gửi yêu cầu POST đa phần (Multipart/Form-data) để upload file.
+     * @param {File} file - File ảnh cần upload.
+     * @returns {Promise<string>} - URL của ảnh sau khi upload.
+     */
+    async function uploadImage(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch("/api/public/upload-file", {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) {
+        throw new Error(`Upload failed with status: ${res.status}`);
+      }
+
+      const url = await res.text(); // API trả về URL dưới dạng text
+      return url.trim();
+    }
+
+    /**
+     * Gửi yêu cầu chat (JSON) đến backend Spring Boot.
+     * @param {string} message - Nội dung tin nhắn (có thể bao gồm URL ảnh).
+     * @returns {Promise<Response>} - Phản hồi từ fetch.
+     */
+    async function postChatMessage(message) {
+      const payload = { message: message };
+      return fetch("/api/chat", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+    }
+
+
+    // Hàm hiển thị/xóa preview ảnh
+    function updateImagePreview() {
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          imagePreviewArea.classList.remove('chat-bot-hidden'); // CẬP NHẬT CLASS
+        };
+        reader.readAsDataURL(selectedFile);
+        inputText.focus();
+      } else {
+        imagePreviewArea.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+        previewImage.src = '';
+        inputText.placeholder = "Nhập tin nhắn...";
+      }
+    }
+
+    // Xử lý khi nhấn nút xóa ảnh
+    function removeImage() {
+      selectedFile = null;
+      imageFileInput.value = null;
+      updateImagePreview();
+    }
+
+    // Hàm render lại danh sách tin nhắn
+    function renderMessages() {
+      messagesContainer.innerHTML = '';
+      messages.forEach((m, i) => {
+        const messageDiv = document.createElement('div');
+        // CẬP NHẬT CLASS
+        messageDiv.className = `chat-bot-message ${m.role}`;
+
+        const contentSpan = document.createElement('span');
+        contentSpan.innerHTML = `<b>${m.role === "user" ? "Bạn" : "Bot"}:</b> ${m.text || (m.role === 'user' && m.file ? ' [Đã gửi ảnh]' : '')}`;
+        messageDiv.appendChild(contentSpan);
+
+        // Hiển thị ảnh nếu là tin nhắn user có file
+        if (m.role === 'user' && m.file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            // CẬP NHẬT CLASS
+            img.className = 'chat-bot-message-image-preview';
+            messageDiv.appendChild(img);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          };
+          reader.readAsDataURL(m.file);
+        }
+
+        messagesContainer.appendChild(messageDiv);
+      });
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Hàm render lại danh sách gợi ý
+    function renderSuggestions() {
+      suggestionList.innerHTML = '';
+      suggestions.forEach((s, idx) => {
+        const itemDiv = document.createElement('div');
+        // CẬP NHẬT CLASS
+        itemDiv.className = 'chat-bot-suggestion-item';
+        itemDiv.textContent = s;
+        itemDiv.onclick = () => handleSuggestionClick(s);
+        suggestionList.appendChild(itemDiv);
+      });
+    }
+
+    // Hàm gửi tin nhắn (ĐÃ CẢI TIẾN)
+    async function sendMessage() {
+      const message = inputText.value.trim();
+      const fileToSend = selectedFile; // Lấy file trước khi reset
+
+      if (!message && !fileToSend) return;
+
+      // 1. Cập nhật tin nhắn người dùng và reset input
+      const userMessage = {
+        role: "user",
+        text: message,
+        file: fileToSend // Ghi lại file để hiển thị preview
+      };
+      messages = [...messages, userMessage];
+
+      inputText.value = "";
+      removeImage(); // Xóa preview và reset selectedFile
+
+      showSuggestions = false;
+      suggestionList.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+      renderMessages();
+
+      // Thêm tin nhắn chờ phản hồi
+      const loadingMessage = { role: "bot", text: "..." };
+      messages.push(loadingMessage);
+      renderMessages();
+
+      let finalMessage = message; // Khởi tạo nội dung cuối cùng gửi đi
+      let uploadedImageUrl = null;
+
+      try {
+        // --- BƯỚC 2: UPLOAD ẢNH NẾU CÓ ---
+        if (fileToSend) {
+          // Cập nhật trạng thái chờ upload
+          loadingMessage.text = "Đang tải ảnh lên...";
+          messages[messages.length - 1] = loadingMessage;
+          renderMessages();
+
+          uploadedImageUrl = await uploadImage(fileToSend);
+
+          // Nối URL ảnh vào tin nhắn
+          finalMessage += ` [URL_IMAGE: ${uploadedImageUrl}]`;
+
+          // Gợi ý cho AI biết nó nên làm gì với ảnh
+          if (message.length === 0) {
+            finalMessage = "Hãy phân tích và xác định cây dược liệu trong ảnh sau: " + finalMessage;
+          }
+        }
+
+        // --- BƯỚC 3: GỌI CHAT API VỚI NỘI DUNG CUỐI CÙNG ---
+
+        // Cập nhật trạng thái chờ Gemini phản hồi
+        loadingMessage.text = "Đang chờ AI trả lời...";
+        messages[messages.length - 1] = loadingMessage;
+        renderMessages();
+
+        const res = await postChatMessage(finalMessage);
+
+        // Xóa tin nhắn chờ
+        messages.pop();
+
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data)
+          // 4. Cập nhật tin nhắn bot
+          messages = [...messages, { role: "bot", text: data.reply }];
+        } else {
+          messages = [...messages, { role: "bot", text: `❌ Lỗi API Chat (HTTP ${res.status})! Vui lòng kiểm tra endpoint /api/chat.` }];
+        }
+        renderMessages();
+      } catch (error) {
+        // Xử lý lỗi trong quá trình upload hoặc chat
+        messages.pop(); // Xóa tin nhắn chờ
+        messages = [...messages, { role: "bot", text: `❌ Lỗi hệ thống: ${error.message}` }];
+        renderMessages();
+      }
+    }
+
+    // Hàm xử lý khi click vào gợi ý
+    function handleSuggestionClick(suggestion) {
+      inputText.value = suggestion;
+      inputText.focus();
+    }
+
+    // Hàm bật/tắt chat và gợi ý
+    function toggleChat() {
+      isOpen = !isOpen;
+      if (isOpen) {
+        chatbox.classList.remove('chat-bot-hidden'); // CẬP NHẬT CLASS
+        chatToggleBtn.innerHTML = '✖';
+        showSuggestions = false;
+        suggestionList.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+        inputText.focus();
+      } else {
+        chatbox.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+        chatToggleBtn.innerHTML = '💬 Hỗ trợ AI';
+      }
+    }
+    function toggleSuggestions() {
+      showSuggestions = !showSuggestions;
+      suggestionList.classList.toggle('chat-bot-hidden', !showSuggestions); // CẬP NHẬT CLASS
+    }
+
+    // --- LOGIC XỬ LÝ FILE VÀ KÉO THẢ ---
+
+    // Xử lý khi có file ảnh được chọn/kéo
+    function handleFile(file) {
+      if (file.type.startsWith('image/')) {
+        selectedFile = file;
+        updateImagePreview();
+      } else {
+        alert("Chỉ hỗ trợ file ảnh.");
+        selectedFile = null;
+      }
+    }
+
+    // 1. Xử lý nút đính kèm
+    attachBtn.addEventListener('click', () => {
+      imageFileInput.click();
+    });
+
+    // 2. Xử lý khi chọn file bằng input
+    imageFileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+        // CẬP NHẬT CLASS
+        imageFileInput.classList.add('chat-bot-hidden');
+        e.target.value = null;
+      }
+    });
+
+    // 3. Xử lý nút xóa ảnh preview
+    removeImageBtn.addEventListener('click', removeImage);
+
+    // 4. Xử lý kéo và thả (Drag and Drop)
+    chatbox.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
+        dropZone.classList.remove('chat-bot-hidden'); // CẬP NHẬT CLASS
+      }
+    });
+    chatbox.addEventListener('dragleave', (e) => {
+      if (!chatbox.contains(e.relatedTarget)) {
+        dropZone.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+      }
+    });
+    chatbox.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('chat-bot-hidden'); // CẬP NHẬT CLASS
+    });
+    chatbox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+
+      if (e.dataTransfer.files.length > 0) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+
+    // --- Thiết lập Event Listeners khi DOM đã tải xong ---
+    document.addEventListener('DOMContentLoaded', () => {
+      chatbox.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+      suggestionList.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+      imagePreviewArea.classList.add('chat-bot-hidden'); // CẬP NHẬT CLASS
+      imageFileInput.classList.add('chat-bot-hidden'); // Đảm bảo input file bị ẩn
+      renderSuggestions();
+
+      chatToggleBtn.addEventListener('click', toggleChat);
+      sendBtn.addEventListener('click', sendMessage);
+      toggleSuggestionsBtn.addEventListener('click', toggleSuggestions);
+
+      inputText.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+          sendMessage();
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</th:block>
+</body>
+</html>

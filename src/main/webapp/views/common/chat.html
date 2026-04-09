@@ -1,0 +1,63 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div th:fragment="chatMain">
+  <div class="chat-container">
+    <!-- Nút chat chính -->
+    <button id="chatButton" class="btn btn-primary chat-btn">
+      💬
+    </button>
+
+    <div id="chatOptions" class="chat-options d-none">
+      <a href="https://zalo.me" target="_blank" class="btn btn-light mb-2 w-100">Zalo</a>
+      <a href="https://m.me" target="_blank" class="btn btn-light mb-2 w-100">Messenger</a>
+      <button onclick="openChatAi()" class="btn btn-light w-100">Chat AI</button>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" class="btn btn-danger scroll-top-btn">
+    <i class="fa fa-arrow-up"></i>
+  </button>
+
+  <script>
+    // Toggle menu chat
+    const chatBtn = document.getElementById('chatButton');
+    const chatOptions = document.getElementById('chatOptions');
+    chatBtn.addEventListener('click', () => {
+      chatOptions.classList.toggle('d-none');
+    });
+
+    // Nút lên đầu trang
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Hiện nút khi cuộn xuống
+    window.addEventListener('scroll', () => {
+      if (document.documentElement.scrollTop > 200) {
+        scrollTopBtn.style.display = 'block';
+      } else {
+        scrollTopBtn.style.display = 'none';
+      }
+    });
+  </script>
+
+  <script>
+    async function openChatAi(){
+      swal({
+                title: "Thông báo",
+                text: "Chức năng này đang trong quá trình phát triển",
+                type: "warning"
+              },
+              function() {
+              });
+    }
+  </script>
+</div>
+</body>
+</html>

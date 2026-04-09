@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
+    <script src="js/menu.js"></script>
+    <script src="js/product.js"></script>
+    <script>
+        window.onload = function() {
+            loadInit();
+            loadAllCategorySelect();
+            loadAllTradeMarkSelect();
+            loadAProduct();
+        }
+    </script>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav"></div>
+        <div id="layoutSidenav_content">
+            <main class="main row">
+                <div class="col-sm-12">
+                    <h4>Thông tin sản phẩm</h4><hr>
+                </div>
+                <div class="col-sm-3">
+                    <label class="lbadd">Hình ảnh hiển thị</label>
+                    <div class="divimgpreview">
+                        <img src="../image/product1.webp" class="imgpreview" id="imgpreview">
+                    </div>
+
+                    <button onclick="document.getElementById('anhdaidien').click()"  class="btn btn-primary btnthemhinhanh"><i class="fa fa-image"></i> Chọn hình ảnh</button>
+                    <input type="file" style="visibility: hidden;" id="anhdaidien">
+
+                    <div onclick="choosefile.click()" class="divchooseimg">
+                        <img src="../image/addimg.png">
+                        <span id="slfile">Chọn thêm nhiều ảnh</span>
+                        <input type="file" id="choosefile" class="inputmulfile" multiple>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label class="lbadd">Tên sản phẩm</label>
+                    <input id="tensp" class="inputcontrol">
+                    <label class="lbadd">Màn hình</label>
+                    <input id="manhinh" class="inputcontrol" placeholder="AMOLED 6.4 INCH">
+                    <label class="lbadd">Hệ điều hành</label>
+                    <select id="hedieuhanh" class="inputcontrol">
+                        <option value="IOS">IOS</option>
+                        <option value="Android">Android</option>
+                    </select>
+                    <label class="lbadd">Phụ kiện</label>
+                    <select id="listdpar" class="inputcontrol" multiple style="width: 100%;">
+                        <option value="hộp">Hộp</option>
+                        <option value="Củ sạc">Củ sạc</option>
+                        <option value="Cáp sạc">Cáp sạc</option>
+                        <option value="Sách hướng dẫn">Sách hướng dẫn</option>
+                        <option value="Tai nghe">Tai nghe</option>
+                        <option value="Ốp lưng">Ốp lưng</option>
+                        <option value="Dán màn hình">Dán màn hình</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                    <label class="lbadd">Số khe sim</label>
+                    <input id="khesim" class="inputcontrol">
+                    <label class="lbadd">Giá tiền hiện tại</label>
+                    <input id="price" class="inputcontrol">
+                </div>
+                <div class="col-sm-3">
+                    <label class="lbadd">Mã sản phẩm</label>
+                    <input id="masp" class="inputcontrol">
+                    <label class="lbadd">Camera trước</label>
+                    <input id="camtruoc" class="inputcontrol">
+                    <label class="lbadd">Cpu</label>
+                    <input id="cpu" class="inputcontrol">
+                    <label class="lbadd">Danh mục</label>
+                    <select class="inputcontrol" id="danhmucsp">
+
+                    </select>
+                    <label class="lbadd">Bảo mật</label>
+                    <input id="baomat" class="inputcontrol">
+                    <label class="lbadd">Giá tiền cũ</label>
+                    <input id="oldprice" class="inputcontrol">
+                </div>
+                <div class="col-sm-3">
+                    <label class="lbadd">Hãng sản xuất</label>
+                    <select id="hangsx" class="inputcontrol">
+                        <option value="IOS">Táo</option>
+                    </select>
+                    <label class="lbadd">Camera sau</label>
+                    <input id="camsau" class="inputcontrol">
+                    <label class="lbadd">Chất liệu</label>
+                    <input id="chatlieu" class="inputcontrol">
+                    <label class="lbadd">Tính năng đặc biệt</label>
+                    <input id="tinhnangdacbiet" class="inputcontrol" placeholder="kháng nước, kháng bụi">
+                    <label class="lbadd">Mạng di động</label>
+                    <input id="mangdd" class="inputcontrol">
+                </div>
+                <div class="col-sm-12">
+                    <div id="preview" class="row">
+
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <h4 class="lbtieude">Thông tin bộ nhớ</h4><hr>
+                    <div id="listbonho">
+                        <div id="listbonhodathem">
+
+                        </div>
+                        <div id="listbonhotam">
+                            <!-- <div class="singlebonho">
+                                ram: 6GB - Bộ nhớ trong: 128GB <i class="fa fa-trash iconxoabn"></i>
+                            </div> -->
+                        </div>
+                    </div>
+                    <button data-bs-toggle="modal" data-bs-target="#thembonhomodal" class="btn btn-success btnthemhinhanh"><i class="fa fa-plus"></i> Thêm bộ nhớ</button>
+                </div>
+                <div class="col-sm-12">
+                    <h4 class="lbtieude">Thông tin màu sắc</h4><hr>
+                    <div id="listmausacdathem">
+
+                    </div>
+                    <div id="listmausac">
+                        <!-- <div class="singlebonho">
+                            <img src="../image/product1.webp" class="imgaddpro"> Vàng, ram: 6GB - Bộ nhớ trong: 128GB <span class="iconxoabn"><i class="fa fa-trash"></i></span>
+                        </div> -->
+                    </div>
+                    <button data-bs-toggle="modal" data-bs-target="#themmausacmodal" class="btn btn-success btnthemhinhanh"><i class="fa fa-plus"></i> Thêm màu sắc</button>
+                </div>
+                <div class="col-sm-12">
+                    <h4 class="lbtieude">Thông tin mô tả sản phẩm</h4><hr>
+                    <textarea id="editor" name="content"></textarea>
+
+                    <br>
+                    <div class="loading" id="loading">
+                        <div class="bar1 bar"></div>
+                    </div><br>
+                    <br><br><button onclick="saveProduct()" class="btn btn-success form-control"><i class="fa fa-plus"></i> Thêm sản phẩm</button>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+
+
+<div class="modal fade" id="thembonhomodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm bộ nhớ</h5> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+            <div class="modal-body">
+                <label class="lb-form">Ram</label>
+                <input id="rammd" class="form-control">
+                <label class="lb-form">Bộ nhớ trong</label>
+                <input id="rommd" class="form-control">
+                <br><button onclick="addStorage()" class="form-control btn btn-primary btnaddmodal">Thêm bộ nhớ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="themmausacmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm bộ nhớ</h5> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+            <div class="modal-body">
+                <label class="lb-form">Tên màu sắc</label>
+                <input id="maumd" class="form-control">
+                <label class="lb-form">Số lượng</label>
+                <input id="soluong" class="form-control">
+                <label class="lb-form">Giá bán</label>
+                <input id="giaban" class="form-control">
+                <label class="lb-form">Bộ nhớ</label>
+                <select id="bonhomb" class="form-control">
+
+                </select>
+                <label class="lb-form">Ảnh màu</label>
+                <input type="file" id="chonanhmau" class="form-control">
+                <button onclick="addMauSac()" id="btnaddmausac" class="form-control btn btn-primary btnaddmodal">Thêm màu sắc</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="suabonhomodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật thông tin bộ nhớ</h5> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+            <div class="modal-body">
+                <label class="lb-form">Ram</label>
+                <input id="idbonhomd" style="visibility: hidden;" class="form-control">
+                <input id="rambnho" class="form-control">
+                <label class="lb-form">Bộ nhớ trong</label>
+                <input id="rombnho" class="form-control">
+                <br><button onclick="updateProductStorage()" class="form-control btn btn-primary btnaddmodal">Cập nhật thông tin bộ nhớ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="suamausacmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm bộ nhớ</h5> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+            <div class="modal-body">
+                <label class="lb-form">Tên màu sắc</label>
+                <input id="idmausac" style="visibility: hidden;" class="form-control">
+                <input id="tenmausac" class="form-control">
+                <label class="lb-form">Số lượng</label>
+                <input id="soluongupdate" class="form-control">
+                <label class="lb-form">Giá bán</label>
+                <input id="giabanupdate" class="form-control">
+                <label class="lb-form">Bộ nhớ</label>
+                <select id="bonhoupdate" class="form-control">
+
+                </select>
+                <label class="lb-form">Ảnh màu</label>
+                <input onchange="setImginput()" type="file" id="chonanhmauupdate" class="form-control">
+                <img id="imgpremausac" style="width: 100px; margin-top: 10px; margin-bottom: 10px;">
+                <input id="linkimgmausac" style="visibility: hidden;" class="form-control">
+                <button onclick="updateProductImage()" id="btnupdatemausac" class="form-control btn btn-primary btnaddmodal">Cập nhật màu sắc</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.tiny.cloud/1/f6s0gxhkpepxkws8jawvfwtj0l9lv0xjgq1swbv4lgcy3au3/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#editor',
+    });
+    anhdaidien.onchange = evt => {
+        const [file] = anhdaidien.files
+        if (file) {
+            imgpreview.src = URL.createObjectURL(file)
+        }
+    }
+    const ser = $("#listdpar");
+    ser.select2({
+        placeholder: "Chọn phụ kiện đi kèm",
+    });
+</script>
+</html>
