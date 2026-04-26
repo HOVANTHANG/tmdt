@@ -1,6 +1,5 @@
 package com.web.entity;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,8 +23,8 @@ public class InvoiceDetail {
     private String imei;
 
     @ManyToOne
-    @JoinColumn(name = "product_color_id")
-    private ProductColor productColor;
+    @JoinColumn(name = "product_variant_id")
+    private ProductVariant productVariant;
 
     @ManyToOne
     @JoinColumn(name = "invoice_id")

@@ -1,5 +1,6 @@
 package com.web.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.web.enums.UserType;
@@ -16,7 +17,7 @@ import java.util.*;
 @Table(name = "users")
 @Getter
 @Setter
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,11 +50,17 @@ public class User{
     @JoinColumn(name = "authority_name")
     private Authority authorities;
 
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    @JsonIgnore
+    private Shop shop;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof User))
+            return false;
         User user = (User) o;
         return getId().equals(user.getId());
     }
@@ -63,4 +70,3 @@ public class User{
         return Objects.hash(getId());
     }
 }
-

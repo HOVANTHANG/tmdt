@@ -1,7 +1,6 @@
 package com.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +26,7 @@ public class Product {
 
     private String name;
 
+    // Giữ tạm để ít vỡ code cũ
     private Double price;
 
     private Double oldPrice;
@@ -40,28 +40,6 @@ public class Product {
     private Time createdTime;
 
     private Integer quantitySold;
-
-    private String screen;
-
-    private String frontCamera;
-
-    private String backCamera;
-
-    private String operaSystem;
-
-    private String cpu;
-
-    private String material;
-
-    private String accessory;
-
-    private String specialFeature;
-
-    private String sim;
-
-    private String securityInfor;
-
-    private String mobileNetwork;
 
     private Boolean deleted = false;
 
@@ -79,10 +57,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     @JsonManagedReference
-    private List<ProductStorage> productStorages = new ArrayList<>();
+    private List<ProductVariant> productVariants = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
-
 }

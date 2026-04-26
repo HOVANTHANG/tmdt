@@ -9,4 +9,9 @@ import java.util.List;
 public interface InvoiceDetailService {
 
     public List<InvoiceDetailResponse> findByInvoice(Long idInvoice);
+
+    List<InvoiceDetailResponse> findByInvoiceForSeller(Long idInvoice);
+
+    void updateImeiForSeller(Long detailId, String imei);
+
 }

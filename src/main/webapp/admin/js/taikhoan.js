@@ -28,18 +28,19 @@ async function loadAllUser(page, param) {
         } else {
             var btn = `<td class="sticky-col"><button onclick="lockOrUnlock(${listUser[i].id},1)" class="btn btn-primary"><i class="fa fa-lock"></i> Khóa</button></td>`
         }
-        if (listUser[i].authorities.name == "ROLE_ADMIN") {
-            btn = '<td class="sticky-col"></td>'
+        if (listUser[i].role === "ROLE_ADMIN") {
+            btn = `<td class="sticky-col"></td>`;
         }
+
         main += `<tr>
-                    <td>${listUser[i].id}</td>
-                    <td>${listUser[i].email}</td>
-                    <td>${listUser[i].fullname}</td>
-                    <td>${listUser[i].phone}</td>
-                    <td>${listUser[i].createdDate}</td>
-                    <td>${listUser[i].authorities.name}</td>
-                    ${btn}
-                </tr>`
+    <td>${listUser[i].id}</td>
+    <td>${listUser[i].email}</td>
+    <td>${listUser[i].fullname}</td>
+    <td>${listUser[i].phone}</td>
+    <td>${listUser[i].createdDate}</td>
+    <td>${listUser[i].role}</td>
+    ${btn}
+    </tr>`;
     }
     document.getElementById("listuser").innerHTML = main
     var mainpage = ''
@@ -80,20 +81,20 @@ async function lockOrUnlock(id, type) {
             mess = 'Mở khóa thành công'
         }
         swal({
-                title: "Thông báo",
-                text: mess,
-                type: "success"
-            },
-            function() {
+            title: "Thông báo",
+            text: mess,
+            type: "success"
+        },
+            function () {
                 window.location.reload();
             });
     } else {
         swal({
-                title: "Thông báo",
-                text: "hành động thất bại",
-                type: "error"
-            },
-            function() {
+            title: "Thông báo",
+            text: "hành động thất bại",
+            type: "error"
+        },
+            function () {
                 window.location.reload();
             });
     }
@@ -117,7 +118,7 @@ async function addAdmin() {
         alert("Mật khẩu không trùng khớp")
         return;
     }
-    var url = 'http://localhost:8080/api/admin/addaccount?role='+quyen
+    var url = 'http://localhost:8080/api/admin/addaccount?role=' + quyen
     const res = await fetch(url, {
         method: 'POST',
         headers: new Headers({
@@ -129,11 +130,11 @@ async function addAdmin() {
     var result = await res.json();
     if (res.status < 300) {
         swal({
-                title: "Thông báo",
-                text: "Tạo tài khoản thành công!",
-                type: "success"
-            },
-            function() {
+            title: "Thông báo",
+            text: "Tạo tài khoản thành công!",
+            type: "success"
+        },
+            function () {
                 window.location.reload();
             });
     }

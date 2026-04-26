@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +35,10 @@ public class Shop {
 
     @ManyToOne
     @JoinColumn(name = "owner_user_id")
+    @JsonIgnore
     private User owner;
 
     @OneToMany(mappedBy = "shop")
+    @JsonIgnore
     private List<Product> products = new ArrayList<>();
 }

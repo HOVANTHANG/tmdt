@@ -32,7 +32,7 @@ document.getElementById("sellerForm").addEventListener("submit", async function 
 
     if (response.ok) {
         alert("Đăng ký thành công!");
-        window.location.href = "/seller/dashboard";
+        window.location.href = "/seller/index";
     } else {
         alert(text || "Đăng ký thất bại");
     }

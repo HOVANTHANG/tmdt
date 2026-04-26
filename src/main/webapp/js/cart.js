@@ -1,113 +1,253 @@
-var idColorCart = -1;
+var idVariantCart = -1;
+
+/**
+ * Format tiền VNĐ
+ */
+function formatmoney(money) {
+    return Number(money || 0).toLocaleString("vi-VN") + " ₫";
+}
+
+/**
+ * Lấy tên biến thể để hiển thị
+ * Ví dụ:
+ * - Đen / 128GB
+ * - XL
+ * - Thùng 24 lon
+ */
+function getVariantDisplayName(variant) {
+    if (!variant) return "Mặc định";
+
+    const tier1 = variant.tier1value || "";
+    const tier2 = variant.tier2value || "";
+
+    if (tier1 && tier2) {
+        return `${tier1} / ${tier2}`;
+    }
+    if (tier1) {
+        return tier1;
+    }
+    if (tier2) {
+        return tier2;
+    }
+
+    return "Mặc định";
+}
+
+/**
+ * Lấy ảnh hiển thị ưu tiên ảnh biến thể, nếu không có thì dùng ảnh banner sản phẩm
+ */
+function getCartItemImage(product, variant) {
+    if (variant && variant.image && variant.image.trim() !== "") {
+        return variant.image;
+    }
+    if (product && product.imageBanner && product.imageBanner.trim() !== "") {
+        return product.imageBanner;
+    }
+    return "image/product1.webp";
+}
+
+/**
+ * Thêm vào giỏ hàng từ trang chi tiết
+ * Yêu cầu biến global idVariantCart phải được gán khi chọn biến thể
+ */
 async function addCart(type) {
-    if(idColorCart < 1){
-        toastr.warning("Bạn chưa chọn màu sắc");
+    if (idVariantCart < 1) {
+        toastr.warning("Bạn chưa chọn biến thể");
         return;
     }
-    if(token == null){
-        toastr.warning("Hãy đăng nhập để thực hiện chức năng này")
+
+    if (token == null) {
+        toastr.warning("Hãy đăng nhập để thực hiện chức năng này");
         return;
     }
-    var url = 'http://localhost:8080/api/cart/user/create?idcolor='+idColorCart;
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + token,
-        })
-    });
-    if (response.status < 300) {
-        toastr.success("Thêm giỏ hàng thành công!");
-        countCart();
-    }
-    else {
-        toastr.erorr("Thêm giỏ hàng thất bại!");
-    }
-    if(type == "MUANGAY"){
-        window.location.href = 'giohang'
+
+    const url = "http://localhost:8080/api/cart/user/add-cart?productVariantId=" + idVariantCart;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: new Headers({
+                "Authorization": "Bearer " + token
+            })
+        });
+
+        if (response.status < 300) {
+            toastr.success("Thêm giỏ hàng thành công!");
+            if (typeof countCart === "function") {
+                countCart();
+            }
+
+            if (type === "MUANGAY") {
+                window.location.href = "giohang";
+            }
+        } else {
+            let message = "Thêm giỏ hàng thất bại!";
+            try {
+                const result = await response.json();
+                if (result && result.message) {
+                    message = result.message;
+                }
+            } catch (e) { }
+            toastr.error(message);
+        }
+    } catch (error) {
+        console.error("Lỗi addCart:", error);
+        toastr.error("Không thể kết nối tới server!");
     }
 }
 
+/**
+ * Load toàn bộ giỏ hàng
+ */
 async function loadAllCart() {
-    if(token == null){
-        window.location.href = 'dangnhap'
-    }
-    var url = 'http://localhost:8080/api/cart/user/my-cart' ;
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + token
-        })
-    });
-    var list = await response.json();
-    var main = '';
-    var totalAmount = 0;
-    var totalCart = 0;
-    for (i = 0; i < list.length; i++) {
-        totalAmount += list[i].productColor.price * list[i].quantity
-        totalCart += Number(list[i].quantity)
-        main += `<tr>
-        <td>
-            <a href=""><img class="imgprocart" src="${list[i].product.imageBanner}"></a>
-            <div class="divnamecart">
-                <a href="" class="nameprocart">${list[i].product.name}</a>
-                <p class="sizecart">${list[i].productColor.name} / ${list[i].productStorage.ram} - ${list[i].productStorage.rom}</p>
-            </div>
-        </td>
-        <td>
-            <p class="boldcart">${formatmoney(list[i].productColor.price)}</p>
-        </td>
-        <td>
-            <div class="clusinp"><button onclick="upDownQuantity(${list[i].id},'UP')" class="cartbtn"> + </button>
-                <input value="${list[i].quantity}" class="inputslcart">
-                <button onclick="upDownQuantity(${list[i].id},'DOWN')" class="cartbtn"> - </button></div>
-        </td>
-        <td>
-            <div class="tdpricecart">
-                <p class="boldcart">${formatmoney(list[i].productColor.price * list[i].quantity)}</p>
-                <p onclick="removeCart(${list[i].id})" class="delcart"><i class="fa fa-trash-o facartde"></i></p>
-            </div>
-        </td>
-    </tr>`
-    }
-    document.getElementById("listcartDes").innerHTML = main
-    document.getElementById("tonggiatien").innerHTML = formatmoney(totalAmount)
-    document.getElementById("soluonggiohang").innerHTML = totalCart
-    if(list.length == 0){
-          document.getElementById("listcartDes").innerHTML = `<tr><td colspan="4"><h3>Giỏ hàng trống</h3></td></tr>`
-    }
-}
-
-
-async function removeCart(id) {
-    var con = confirm("Bạn muốn xóa sản phẩm này khỏi giỏ hàng?")
-    if(con == false){
+    if (token == null) {
+        window.location.href = "dangnhap";
         return;
     }
-    var url = 'http://localhost:8080/api/cart/user/delete?id='+id ;
-    const response = await fetch(url, {
-        method: 'DELETE',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + token
-        })
-    });
-    if(response.status < 300){
-        loadAllCart();
+
+    const url = "http://localhost:8080/api/cart/user/my-cart";
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: new Headers({
+                "Authorization": "Bearer " + token
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Không tải được giỏ hàng");
+        }
+
+        const list = await response.json();
+        let main = "";
+        let totalAmount = 0;
+        let totalCart = 0;
+
+        for (let i = 0; i < list.length; i++) {
+            const item = list[i];
+            const product = item.product || {};
+            const variant = item.productVariant || {};
+
+            const quantity = Number(item.quantity || 0);
+            const price = Number(variant.price || product.price || 0);
+            const itemTotal = price * quantity;
+            const image = getCartItemImage(product, variant);
+            const variantName = getVariantDisplayName(variant);
+
+            totalAmount += itemTotal;
+            totalCart += quantity;
+
+            main += `
+                <tr>
+                    <td>
+                        <a href="detail?id=${product.id || ""}">
+                            <img class="imgprocart" src="${image}" onerror="this.src='image/product1.webp'">
+                        </a>
+                        <div class="divnamecart">
+                            <a href="detail?id=${product.id || ""}" class="nameprocart">${product.name || ""}</a>
+                            <p class="sizecart">${variantName}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="boldcart">${formatmoney(price)}</p>
+                    </td>
+                    <td>
+                        <div class="clusinp">
+                            <button onclick="upDownQuantity(${item.id}, 'UP')" class="cartbtn"> + </button>
+                            <input value="${quantity}" class="inputslcart" readonly>
+                            <button onclick="upDownQuantity(${item.id}, 'DOWN')" class="cartbtn"> - </button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tdpricecart">
+                            <p class="boldcart">${formatmoney(itemTotal)}</p>
+                            <p onclick="removeCart(${item.id})" class="delcart">
+                                <i class="fa fa-trash-o facartde"></i>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        if (list.length === 0) {
+            main = `<tr><td colspan="4"><h3>Giỏ hàng trống</h3></td></tr>`;
+        }
+
+        document.getElementById("listcartDes").innerHTML = main;
+        document.getElementById("tonggiatien").innerHTML = formatmoney(totalAmount);
+        document.getElementById("soluonggiohang").innerHTML = totalCart;
+
+    } catch (error) {
+        console.error("Lỗi loadAllCart:", error);
+        toastr.error("Không tải được giỏ hàng");
+        document.getElementById("listcartDes").innerHTML =
+            `<tr><td colspan="4"><h3>Không tải được giỏ hàng</h3></td></tr>`;
     }
 }
 
+/**
+ * Xóa 1 dòng giỏ hàng
+ */
+async function removeCart(id) {
+    const con = confirm("Bạn muốn xóa sản phẩm này khỏi giỏ hàng?");
+    if (con === false) {
+        return;
+    }
+
+    const url = "http://localhost:8080/api/cart/user/delete?id=" + id;
+
+    try {
+        const response = await fetch(url, {
+            method: "DELETE",
+            headers: new Headers({
+                "Authorization": "Bearer " + token
+            })
+        });
+
+        if (response.status < 300) {
+            toastr.success("Đã xóa sản phẩm khỏi giỏ hàng");
+            loadAllCart();
+            if (typeof countCart === "function") {
+                countCart();
+            }
+        } else {
+            toastr.error("Xóa sản phẩm thất bại");
+        }
+    } catch (error) {
+        console.error("Lỗi removeCart:", error);
+        toastr.error("Không thể kết nối tới server");
+    }
+}
+
+/**
+ * Tăng / giảm số lượng sản phẩm trong giỏ
+ */
 async function upDownQuantity(id, type) {
-    var url = 'http://localhost:8080/api/cart/user/down-cart?id='+id ;
-    if(type == "UP"){
-        url = 'http://localhost:8080/api/cart/user/up-cart?id='+id ;
+    let url = "http://localhost:8080/api/cart/user/down-cart?id=" + id;
+    if (type === "UP") {
+        url = "http://localhost:8080/api/cart/user/up-cart?id=" + id;
     }
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + token
-        })
-    });
-    if(response.status < 300){
-        loadAllCart();
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: new Headers({
+                "Authorization": "Bearer " + token
+            })
+        });
+
+        if (response.status < 300) {
+            loadAllCart();
+            if (typeof countCart === "function") {
+                countCart();
+            }
+        } else {
+            toastr.error("Không thể cập nhật số lượng");
+        }
+    } catch (error) {
+        console.error("Lỗi upDownQuantity:", error);
+        toastr.error("Không thể kết nối tới server");
     }
 }
-

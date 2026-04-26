@@ -22,24 +22,23 @@ public interface ProductService {
 
     public Page<Product> findAll(Pageable pageable);
 
-
     public Page<Product> search(String param, Pageable pageable);
 
     public Page<Product> searchByAdmin(String param, Long categoryId, Long trademarkId, Pageable pageable);
-
 
     public Product findByIdForAdmin(Long id);
 
     public Page<Product> newProduct(Pageable pageable);
 
-
-    public Page<Product> phuKien(Pageable pageable);
-
     public Page<Product> bestsaler(Pageable pageable);
 
-    public Page<Product> sanPhamLienQuan(Pageable pageable, Long idTrademark, Long idCategory, Long idproduct);
+    Product findById(Long id);
 
-    public Page<Product> locSanPham(Double smallPrice, Double largePrice, Long idCategory, String trademark, String search, Pageable pageable);
+    Page<Product> sanPhamLienQuan(Pageable pageable, Long idTrademark, Long idCategory, Long idproduct);
+
+    public Page<Product> locSanPham(Double smallPrice, Double largePrice, Long idCategory, String trademark,
+            String search, Pageable pageable);
+
+    Page<Product> findByMyShop(String search, Long categoryId, Long trademarkId, Pageable pageable);
 
 }
-

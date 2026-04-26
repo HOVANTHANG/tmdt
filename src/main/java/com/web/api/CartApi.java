@@ -21,46 +21,44 @@ public class CartApi {
     private CartService cartService;
 
     @GetMapping("/user/my-cart")
-    public ResponseEntity<?> myCart(){
+    public ResponseEntity<?> myCart() {
         List<CartResponse> result = cartService.findByUser();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
-    @PostMapping("/user/create")
-    public ResponseEntity<?> add(@RequestParam("idcolor") Long idcolor){
-        cartService.addCart(idcolor);
-        return new ResponseEntity<>("Success", HttpStatus.CREATED);
+    @PostMapping("/user/add-cart")
+    public ResponseEntity<?> addCart(@RequestParam("productVariantId") Long productVariantId) {
+        cartService.addCart(productVariantId);
+        return new ResponseEntity<>("Thêm giỏ hàng thành công", HttpStatus.OK);
     }
 
     @DeleteMapping("/user/delete")
-    public ResponseEntity<?> deleteById(@RequestParam("id") Long id){
+    public ResponseEntity<?> deleteById(@RequestParam("id") Long id) {
         cartService.remove(id);
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
-
     @DeleteMapping("/user/delete-all")
-    public ResponseEntity<?> delete(){
+    public ResponseEntity<?> delete() {
         cartService.removeCart();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/user/up-cart")
-    public ResponseEntity<?> upCart(@RequestParam("id") Long id){
+    public ResponseEntity<?> upCart(@RequestParam("id") Long id) {
         cartService.upQuantity(id);
-        return new ResponseEntity<>("Success",HttpStatus.OK);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/user/down-cart")
-    public ResponseEntity<?> downCart(@RequestParam("id") Long id){
+    public ResponseEntity<?> downCart(@RequestParam("id") Long id) {
         cartService.downQuantity(id);
-        return new ResponseEntity<>("Success",HttpStatus.OK);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/user/count-cart")
-    public ResponseEntity<?> countCart(){
+    public ResponseEntity<?> countCart() {
         Long count = cartService.countCart();
-        return new ResponseEntity<>(count,HttpStatus.OK);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }

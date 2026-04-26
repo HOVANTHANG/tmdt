@@ -1,8 +1,9 @@
 package com.web.dto.response;
 
 import com.web.entity.Product;
-import com.web.entity.ProductColor;
-import com.web.entity.ProductStorage;
+
+import com.web.entity.ProductVariant;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +15,7 @@ public class CartResponse {
 
     private Integer quantity;
 
-    private ProductColor productColor;
-
-    private ProductStorage productStorage;
-
     private Product product;
+
+    private ProductVariant productVariant;
 }

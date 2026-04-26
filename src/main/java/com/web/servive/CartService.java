@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface CartService {
 
-    public void addCart(Long productColorId);
+    public void addCart(Long productVariantId);
 
     public void remove(Long id);
 

@@ -2,6 +2,7 @@ package com.web.servive;
 
 import com.web.dto.request.InvoiceRequest;
 import com.web.dto.response.InvoiceResponse;
+import com.web.entity.Invoice;
 import com.web.enums.PayType;
 import com.web.enums.StatusInvoice;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 public interface InvoiceService {
-    
+
     public InvoiceResponse create(InvoiceRequest invoiceRequest);
 
     public InvoiceResponse updateStatus(Long invoiceId, StatusInvoice statusInvoice);
@@ -30,9 +31,20 @@ public interface InvoiceService {
 
     public InvoiceResponse timKiemDonHang(Long id, String phone);
 
-    public Page<InvoiceResponse> findAllFull(Date from, Date to, PayType payType, StatusInvoice statusInvoice, Pageable pageable);
+    public Page<InvoiceResponse> findAllFull(Date from, Date to, PayType payType, StatusInvoice statusInvoice,
+            Pageable pageable);
+
     public Page<InvoiceResponse> searchInvoice(String q, Pageable pageable);
 
     void updateImei(Long detailId, String imei);
+
+    Page<Invoice> findInvoiceBySellerShop(String from, String to, PayType payType, StatusInvoice status,
+            Pageable pageable, String sort);
+
+    Invoice findByIdForSeller(Long idInvoice);
+
+    void updateStatusForSeller(Long idInvoice, StatusInvoice status);
+
+    Page<Invoice> searchInvoiceForSeller(String q, Pageable pageable);
 
 }

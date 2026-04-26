@@ -37,49 +37,59 @@ async function sendLoginRequestToBackend(accessToken) {
 
 
 async function login() {
-    var url = 'http://localhost:8080/api/login'
-    var username = document.getElementById("username").value
-    var password = document.getElementById("password").value
-    var user = {
-        "username": username,
-        "password": password,
-    }
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(user)
-    });
-    var result = await response.json();
-    if (response.status < 300) {
-        localStorage.setItem("user", JSON.stringify(result.user));
-        localStorage.setItem("token", result.token);
-        if (result.user.authorities.name === "ROLE_ADMIN") {
-            window.location.href = 'admin/index';
-        }
-        if (result.user.authorities.name === "ROLE_USER") {
-            window.location.href = 'index';
-        }
-        if (result.user.authorities.name === "ROLE_EMPLOYEE") {
-            window.location.href = '/employee/invoice';
-        }
-    }
-    if (response.status == exceptionCode) {
-        if (result.errorCode == 300) {
-            swal({
-                title: "Thông báo",
-                text: "Tài khoản chưa được kích hoạt, đi tới kích hoạt tài khoản!",
-                type: "warning"
-            }, function () {
-                window.location.href = 'xacnhan?email=' + username
-            });
+    const url = 'http://localhost:8080/api/login';
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const user = {
+        username: username,
+        password: password
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        });
+
+        const result = await response.json();
+
+        if (response.status < 300) {
+            localStorage.setItem("user", JSON.stringify(result.user));
+            localStorage.setItem("token", result.token);
+
+            const role = result.user.role;
+
+            if (role === "ROLE_ADMIN") {
+                window.location.href = 'admin/index';
+                return;
+            }
+
+            if (role === "ROLE_USER") {
+                window.location.href = 'index';
+                return;
+            }
+
+            if (role === "ROLE_EMPLOYEE") {
+                window.location.href = '/employee/invoice';
+                return;
+            }
+
+            if (role === "ROLE_SELLER") {
+                window.location.href = '/seller/index';
+                return;
+            }
         } else {
-            toastr.warning(result.defaultMessage);
+            alert(result.message || "Đăng nhập thất bại");
         }
+    } catch (error) {
+        console.error(error);
+        alert("Không thể kết nối đến server");
     }
 }
-
 async function regis() {
     var url = 'http://localhost:8080/api/regis'
     var email = document.getElementById("email").value

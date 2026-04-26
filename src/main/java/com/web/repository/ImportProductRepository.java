@@ -10,11 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 
-public interface ImportProductRepository extends JpaRepository<ImportProduct,Long> {
+public interface ImportProductRepository extends JpaRepository<ImportProduct, Long> {
 
     @Query("select i from ImportProduct i where i.importDate >= ?1 and i.importDate <= ?2")
     public Page<ImportProduct> findByDate(Date from, Date to, Pageable pageable);
 
-    @Query("select i from ImportProduct i where i.importDate >= ?1 and i.importDate <= ?2 and i.productColor.productStorage.product.id = ?3")
+    @Query("select i from ImportProduct i where i.importDate >= ?1 and i.importDate <= ?2 and i.productVariant.product.id = ?3")
     public Page<ImportProduct> findByDateAndProduct(Date from, Date to, Long idProduct, Pageable pageable);
+
 }

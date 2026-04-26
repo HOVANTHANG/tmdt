@@ -11,50 +11,17 @@ import java.util.List;
 public class ProductRequest {
 
     private Long id;
-
     private String code;
-
     private String name;
-
     private Double price;
-
     private Double oldPrice;
-
     private String imageBanner;
-
     private String description;
 
-    private String screen;
-
-    private String frontCamera;
-
-    private String backCamera;
-
-    private String operaSystem;
-
-    private String cpu;
-
-    private String material;
-
-    private String accessory;
-
-    private String specialFeature;
-
-    private String sim;
-
-    private String securityInfor;
-
-    private String mobileNetwork;
-
     private Long tradeMarkId;
-
     private Long categoryId;
-
-    private String imei1;
-
-    private String imei2;
+    private Long shopId;
 
     private List<String> linkLinkImages = new ArrayList<>();
-
-    private List<StorageRequest> storage = new ArrayList<>();
+    private List<VariantRequest> variants = new ArrayList<>();
 }

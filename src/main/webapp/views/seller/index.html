@@ -1,183 +1,244 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="image/logo.ico">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
-        integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-        integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
-        integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <script src="/webjars/jquery/dist/jquery.min.js"></script>
-    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/js/main.js"></script>
-    <script src="/js/banner.js"></script>
-    <script src="/js/product.js"></script>
-    <script src="/js/blog.js"></script>
+
+    <script src="/seller/js/menu1.js"></script>
+    <script src="/seller/js/dashboard-shop.js"></script>
+
+    <style>
+        .dashboard-wrap {
+            padding: 24px;
+            background: #f5f7fb;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h2 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-time {
+            color: #6b7280;
+            font-size: 15px;
+        }
+
+        .dashboard-card {
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            min-height: 118px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .dashboard-label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            opacity: 0.95;
+        }
+
+        .dashboard-value {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .card-1 {
+            background: linear-gradient(135deg, #4e73df, #224abe);
+        }
+
+        .card-2 {
+            background: linear-gradient(135deg, #1cc88a, #128c61);
+        }
+
+        .card-3 {
+            background: linear-gradient(135deg, #36b9cc, #258391);
+        }
+
+        .card-4 {
+            background: linear-gradient(135deg, #f6c23e, #dda20a);
+        }
+
+        .card-5 {
+            background: linear-gradient(135deg, #e74a3b, #b92d20);
+        }
+
+        .card-6 {
+            background: linear-gradient(135deg, #6f42c1, #4f2d8f);
+        }
+
+        .box-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid #edf2f7;
+        }
+
+        .box-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .table img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .shop-badge {
+            display: inline-block;
+            background: #eef4ff;
+            color: #1d4ed8;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+    </style>
+
     <script>
         window.onload = function () {
-            loadMenu();
-            loadBanner();
-            loadSanPhamMoiNhat(0);
-            loadPhuKien(0);
-            loadSanPhamBanChay(0);
-            loadBlogIndex();
-        }
-        function goSellerRegister() {
-            window.location.href = "/seller/sellerregister";
+            loadSellerDashboard();
         }
     </script>
 </head>
 
-<body>
-    <div id="headerweb"></div>
+<body class="sb-nav-fixed">
+    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
 
-    <div class="contentweb">
-        <div class="container" id="courseindex">
-            <div id="carouselExampleControls" class="carousel slide bannerindex" data-bs-ride="carousel">
-                <div id="carouselindex">
-                    <div class="carousel-inner carousel-inner-index">
-                        <div class="carousel-item active">
-                            <a href=""><img src="/image/banner1.jpg" class="d-block w-100" alt="..."></a>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav"></div>
+
+        <div id="layoutSidenav_content">
+            <main class="dashboard-wrap">
+                <div class="dashboard-header">
+                    <h2>DASHBOARD SHOP</h2>
+                    <div class="dashboard-time">
+                        <span id="today-name"></span> -
+                        <span id="digital-clock"></span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="shop-badge">Shop: <span id="shopName">Đang tải...</span></span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card card-1">
+                            <div class="dashboard-label">Doanh thu tháng này</div>
+                            <div class="dashboard-value" id="doanhThuThang">0 đ</div>
                         </div>
-                        <div class="carousel-item">
-                            <a href=""><img src="/image/banner2.jpg" class="d-block w-100" alt="..."></a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card card-2">
+                            <div class="dashboard-label">Doanh thu hôm nay</div>
+                            <div class="dashboard-value" id="doanhThuNgay">0 đ</div>
                         </div>
-                        <div class="carousel-item">
-                            <a href=""><img src="/image/banner3.png" class="d-block w-100" alt="..."></a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card card-3">
+                            <div class="dashboard-label">Đơn hoàn thành hôm nay</div>
+                            <div class="dashboard-value" id="donHoanThanh">0</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card card-4">
+                            <div class="dashboard-label">Số lượng sản phẩm</div>
+                            <div class="dashboard-value" id="tongSanPham">0</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card card-5">
+                            <div class="dashboard-label">Tổng đơn hàng</div>
+                            <div class="dashboard-value" id="tongDonHang">0</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="dashboard-card card-6">
+                            <div class="dashboard-label">Tổng đơn hoàn thành</div>
+                            <div class="dashboard-value" id="tongDonHoanThanh">0</div>
                         </div>
                     </div>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                </button>
-            </div>
-        </div>
 
-        <div class="container sectionproduct">
-            <div class="headersection">
-                <h4>Sản phẩm bán chạy</h4>
-            </div>
-            <div id="sanphambanchay" class="listproduct row">
-
-            </div>
-            <div class="xemtatca">
-                <button id="btnsanphambanchay" class="xemtatcabtn">Xem thêm <i class="fa fa-chevron-down"></i></button>
-            </div>
-        </div>
-
-        <div class="bannerhot1 container">
-            <a href=""><img src="/image/hot1.png" alt=""></a>
-        </div>
-
-        <div class="container sectionproduct">
-            <div class="headersection">
-                <h4>Sản phẩm mới</h4>
-            </div>
-            <div id="sanphammoinhat" class="listproduct row">
-
-            </div>
-            <div class="xemtatca">
-                <button id="btnsanphammoi" class="xemtatcabtn">Xem thêm <i class="fa fa-chevron-down"></i></button>
-            </div>
-        </div>
-
-        <div class="bannerhot1 container">
-            <a href=""><img src="/image/hot2.png" alt=""></a>
-        </div>
-
-        <div class="container sectionproduct">
-            <div class="headersection">
-                <h4>Phụ kiện</h4>
-            </div>
-            <div id="listphukien" class="listproduct row">
-
-            </div>
-            <div class="xemtatca">
-                <button id="btnphukien" class="xemtatcabtn">Xem thêm <i class="fa fa-chevron-down"></i></button>
-            </div>
-        </div>
-
-
-        <div class="container sectionproduct">
-            <div class="headersection">
-                <h4>Tin tức công nghệ</h4>
-            </div>
-            <div class="blogindex col-sm-8">
-                <div class="topblogindex">
-                    <h3>Tin nổi bật</h3>
-                    <a class="xemthemblog" href="baiviet">Xem thêm <i class="fa fa-arrow-right"></i> </a>
-                </div>
-                <div class="row listblogindex">
-                    <div class="col-sm-6" id="blogpridiv">
-                        <a href="" id="hrefimgpri"><img src="/image/blog.webp" id="blogpriimage"
-                                class="blogpriimage"></a>
-                        <a href="" class="titlepriindex" id="titlepriindex">Điện thoại năm 2024 cần những gì?</a>
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="box-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="box-title mb-0">Biểu đồ doanh thu theo tháng</div>
+                                <div style="width: 180px">
+                                    <select id="yearFilter" class="form-select"
+                                        onchange="reloadRevenueChart()"></select>
+                                </div>
+                            </div>
+                            <canvas id="shopRevenueChart" height="110"></canvas>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div id="listblogindex" class="dsblogindex">
-                            <div class="singleblogindex">
-                                <a href="">Mẫu điện thoại hot nhất 2024</a>
+
+                    <div class="col-lg-4">
+                        <div class="box-card">
+                            <div class="box-title">Thông tin nhanh</div>
+                            <p><strong>Shop hiện tại:</strong> <span id="shopNameSide">Đang tải...</span></p>
+                            <p><strong>Vai trò:</strong> Seller</p>
+                            <p class="mb-0 text-muted">
+                                Dữ liệu thống kê được tự động khóa theo shop của tài khoản đang đăng nhập.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="box-card">
+                            <div class="box-title">Sản phẩm bán chạy của shop</div>
+                            <div class="table-responsive">
+                                <table class="table table-striped align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Ảnh</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Đã bán</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topProductTable">
+                                        <tr>
+                                            <td colspan="5" class="text-center">Đang tải...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
-
-    <div class="container" id="footer"></div>
-
-    <div class="chat-container">
-        <button class="chat-button" id="btnopenchat" onclick="toggleChatSocket()"><i class="fa fa-comment"></i> Chat với
-            chúng tôi</button>
-
-        <div id="chat-box" class="chat-box">
-            <div class="chat-header">
-                <h3>Xin chào bạn!</h3>
-                <button class="close-btn" onclick="toggleChatSocket()">X</button>
-            </div>
-            <div class="chat-body" id="scroll-to-bottom">
-                <div id="listchat">
-
-                </div>
-            </div>
-            <div class="chat-footer">
-                <input type="text" id="contentmess" placeholder="Nhập tin nhắn..." />
-                <button id="sendmess">Gửi</button>
-            </div>
-        </div>
-    </div>
-
-    <th:block th:replace="user/chat :: chatMain">
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
-    integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="/js/carousel.js"></script>
 
 </html>

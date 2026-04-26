@@ -39,7 +39,7 @@ public class GuaranteeService {
     private InvoiceDetailRepository invoiceDetailRepository;
 
     @Transactional
-    public Guarantee create(GuaranteeRequest request){
+    public Guarantee create(GuaranteeRequest request) {
         InvoiceDetail invoiceDetail = invoiceDetailRepository.findById(request.getInvoiceDetailId())
                 .orElseThrow(() -> new MessageException("Không tìm thấy chi tiết hóa đơn."));
 
@@ -48,13 +48,11 @@ public class GuaranteeService {
                 GuaranteeStatus.ACCEPT,
                 GuaranteeStatus.RECEIVED,
                 GuaranteeStatus.IN_PROGRESS,
-                GuaranteeStatus.PENDING_PARTS
-        );
+                GuaranteeStatus.PENDING_PARTS);
 
         List<Guarantee> existingGuarantees = guaranteeRepository.findExistingInProgressGuarantee(
                 request.getInvoiceDetailId(),
-                inProgressStatuses
-        );
+                inProgressStatuses);
 
         if (!existingGuarantees.isEmpty()) {
             throw new MessageException("Chi tiết hóa đơn này đã có yêu cầu bảo hành đang được xử lý.");
@@ -73,10 +71,13 @@ public class GuaranteeService {
         guarantee.setCustomerName(request.getCustomerName());
         guarantee.setUser(userUtils.getUserWithAuthority());
         guarantee.setCustomerPhone(request.getCustomerPhone());
-        guarantee.setProductId(invoiceDetail.getProductColor().getProductStorage().getProduct().getId());
-        guarantee.setProductName(invoiceDetail.getProductColor().getProductStorage().getProduct().getName());
-        guarantee.setProductStorage(invoiceDetail.getProductColor().getProductStorage().getRam() + " - "+ invoiceDetail.getProductColor().getProductStorage().getRom());
-        guarantee.setProductColor(invoiceDetail.getProductColor().getName());
+        if (invoiceDetail.getProductVariant() == null) {
+            throw new MessageException("Không tìm thấy biến thể sản phẩm");
+        }
+        guarantee.setProductId(invoiceDetail.getProductVariant().getProduct().getId());
+        guarantee.setProductName(invoiceDetail.getProductVariant().getProduct().getName());
+        guarantee.setProductVariantTier1(invoiceDetail.getProductVariant().getTier1value());
+        guarantee.setProductVariantTier2(invoiceDetail.getProductVariant().getTier2value());
         guarantee.setImei(invoiceDetail.getImei());
         guaranteeRepository.save(guarantee);
 
@@ -93,15 +94,15 @@ public class GuaranteeService {
         return null;
     }
 
-    public List<Guarantee> findByUser(){
+    public List<Guarantee> findByUser() {
         User user = userUtils.getUserWithAuthority();
         List<Guarantee> guarantees = guaranteeRepository.findByUser(user.getId());
         return guarantees;
     }
 
-    public void cancel(Long id){
+    public void cancel(Long id) {
         Guarantee guarantee = guaranteeRepository.findById(id).get();
-        if(!guarantee.getGuaranteeStatus().equals(GuaranteeStatus.ACCEPT)){
+        if (!guarantee.getGuaranteeStatus().equals(GuaranteeStatus.ACCEPT)) {
             guarantee.setGuaranteeStatus(GuaranteeStatus.CANCELED);
             guaranteeRepository.save(guarantee);
 
@@ -109,8 +110,7 @@ public class GuaranteeService {
             guaranteeHistory.setGuaranteeStatus(GuaranteeStatus.CANCELED);
             guaranteeHistory.setGuarantee(guarantee);
             guaranteeHistoryRepository.save(guaranteeHistory);
-        }
-        else{
+        } else {
             throw new MessageException("Không thể hủy yêu cầu");
         }
     }

@@ -4,6 +4,8 @@ import com.web.entity.Invoice;
 import com.web.entity.Product;
 import com.web.entity.ProductColor;
 import com.web.entity.ProductStorage;
+import com.web.entity.ProductVariant;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,9 +22,7 @@ public class InvoiceDetailResponse {
 
     private Double price;
 
-    private ProductStorage productStorage;
-
-    private ProductColor productColor;
+    private ProductVariant productVariant;
 
     private Product product;
 

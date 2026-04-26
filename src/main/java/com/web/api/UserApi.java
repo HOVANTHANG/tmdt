@@ -51,8 +51,8 @@ public class UserApi {
     @Autowired
     private GoogleOAuth2Service googleOAuth2Service;
 
-
-    public UserApi(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, UserUtils userUtils, MailService mailService) {
+    public UserApi(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, UserUtils userUtils,
+            MailService mailService) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userUtils = userUtils;
@@ -62,14 +62,14 @@ public class UserApi {
     @PostMapping("/login/google")
     public ResponseEntity<?> loginWithGoogle(@RequestBody String credential) throws Exception {
         GoogleIdToken.Payload payload = googleOAuth2Service.verifyToken(credential);
-        if(payload == null){
+        if (payload == null) {
             throw new MessageException("Đăng nhập thất bại");
         }
         TokenDto tokenDto = userService.loginWithGoogle(payload);
         return new ResponseEntity(tokenDto, HttpStatus.OK);
     }
 
-    /*token device get from firebase*/
+    /* token device get from firebase */
     @PostMapping("/login")
     public TokenDto authenticate(@RequestBody LoginDto loginDto) throws Exception {
         TokenDto tokenDto = userService.login(loginDto.getUsername(), loginDto.getPassword(), loginDto.getTokenFcm());
@@ -79,71 +79,77 @@ public class UserApi {
     @PostMapping("/regis")
     public ResponseEntity<?> regisUser(@RequestBody UserRequest userRequest) throws URISyntaxException {
         User user = userMapper.userRequestToUser(userRequest);
-        UserDto result= userMapper.userToUserDto(userService.regisUser(user));
+        UserDto result = userMapper.userToUserDto(userService.regisUser(user));
         return ResponseEntity
                 .created(new URI("/api/register-user/" + user.getUsername()))
                 .body(result);
     }
 
     @PostMapping("/active-account")
-    public ResponseEntity<?> activeAccount(@RequestParam String email, @RequestParam String key) throws URISyntaxException {
+    public ResponseEntity<?> activeAccount(@RequestParam String email, @RequestParam String key)
+            throws URISyntaxException {
         userService.activeAccount(key, email);
         return new ResponseEntity<>("kích hoạt thành công", HttpStatus.OK);
     }
 
     @PostMapping("/user/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordDto passwordDto){
+    public ResponseEntity<?> changePassword(@RequestBody PasswordDto passwordDto) {
         userService.changePass(passwordDto.getOldPass(), passwordDto.getNewPass());
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> changePassword(@RequestParam String email){
+    public ResponseEntity<?> changePassword(@RequestParam String email) {
         userService.forgotPassword(email);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/admin/get-user-by-role")
     public ResponseEntity<?> getUserByRole(@RequestParam(value = "role", required = false) String role,
-                                           @RequestParam(value = "q", required = false) String search,
-                                           Pageable pageable){
-        Page<UserDto> userDtos = userService.getUserByRole("%"+search+"%",role,pageable);
+            @RequestParam(value = "q", required = false) String search,
+            Pageable pageable) {
+        Page<UserDto> userDtos = userService.getUserByRole("%" + search + "%", role, pageable);
         return new ResponseEntity<>(userDtos, HttpStatus.OK);
     }
 
     @GetMapping("/admin/check-role-admin")
-    public void checkRoleAdmin(){
+    public void checkRoleAdmin() {
         System.out.println("admin");
     }
 
     @GetMapping("/user/check-role-user")
-    public void checkRoleUser(){
+    public void checkRoleUser() {
         System.out.println("user");
     }
 
     @GetMapping("/employee/check-role-employee")
-    public void checkRoleEmployee(){
+    public void checkRoleEmployee() {
         System.out.println("employee");
     }
 
+    @GetMapping("/seller/check-role-seller")
+    public void checkRoleSeller() {
+        System.out.println("seller");
+    }
+
     @PostMapping("/admin/lockOrUnlockUser")
-    public void activeOrUnactiveUser(@RequestParam("id") Long id){
+    public void activeOrUnactiveUser(@RequestParam("id") Long id) {
         User user = userRepository.findById(id).get();
-        if(user.getActived() == true){
+        if (user.getActived() == true) {
             user.setActived(false);
             userRepository.save(user);
             return;
-        }
-        else{
+        } else {
             user.setActived(true);
             userRepository.save(user);
         }
     }
 
     @PostMapping("/admin/addaccount")
-    public ResponseEntity<?> addaccount(@RequestBody UserRequest userRequest, @RequestParam String role) throws URISyntaxException {
+    public ResponseEntity<?> addaccount(@RequestBody UserRequest userRequest, @RequestParam String role)
+            throws URISyntaxException {
         User user = userMapper.userRequestToUser(userRequest);
-        UserDto result= userMapper.userToUserDto(userService.addAccount(user, role));
+        UserDto result = userMapper.userToUserDto(userService.addAccount(user, role));
         return ResponseEntity
                 .created(new URI("/api/register-user/" + user.getUsername()))
                 .body(result);
@@ -157,10 +163,11 @@ public class UserApi {
 
     @PostMapping("/public/dat-lai-mat-khau")
     public ResponseEntity<?> datLaiMatKhau(@RequestParam String email, @RequestParam String key,
-                                           @RequestParam String password) throws URISyntaxException {
+            @RequestParam String password) throws URISyntaxException {
         userService.xacNhanDatLaiMatKhau(email, password, key);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @GetMapping("/user/info")
     public ResponseEntity<?> getCurrentUser() {
         User user = userUtils.getUserWithAuthority();

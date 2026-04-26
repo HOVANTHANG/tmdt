@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface CartRepository extends JpaRepository<Cart,Long> {
+public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @Modifying
     @Transactional
@@ -20,8 +20,8 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
     @Query("select c from Cart c where c.user.id = ?1")
     List<Cart> findByUser(Long userId);
 
-    @Query("select c from Cart c where c.user.id = ?1 and c.productColor.id = ?2")
-    Optional<Cart> findByColorAndUser(Long userId, Long idColor);
+    @Query("select c from Cart c where c.user.id = ?1 and c.productVariant.id = ?2")
+    Optional<Cart> findByVariantAndUser(Long userId, Long productVariantId);
 
     @Query("select count(c.id) from Cart c where c.user.id = ?1")
     Long countCart(Long userId);

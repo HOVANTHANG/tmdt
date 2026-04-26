@@ -7,5 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CategoryType {
 
-    DIEN_THOAI, PHU_KIEN
+    DIEN_TU,
+    DO_UONG,
+    THOI_TRANG,
+    MY_PHAM,
+    THUC_PHAM,
+    KHAC
 }

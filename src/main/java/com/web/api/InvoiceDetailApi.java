@@ -29,15 +29,28 @@ public class InvoiceDetailApi {
     private UserUtils userUtils;
 
     @GetMapping("/user/find-by-invoice")
-    public ResponseEntity<?> findByInvoice(@RequestParam("idInvoice") Long idInvoice){
+    public ResponseEntity<?> findByInvoice(@RequestParam("idInvoice") Long idInvoice) {
         List<InvoiceDetailResponse> response = invoiceDetailService.findByInvoice(idInvoice);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/admin/find-by-invoice")
-    public ResponseEntity<?> findByInvoiceAdmin(@RequestParam("idInvoice") Long idInvoice){
+    public ResponseEntity<?> findByInvoiceAdmin(@RequestParam("idInvoice") Long idInvoice) {
         List<InvoiceDetailResponse> response = invoiceDetailService.findByInvoice(idInvoice);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/seller/find-by-invoice")
+    public ResponseEntity<?> findDetailByInvoiceForSeller(@RequestParam("idInvoice") Long idInvoice) {
+        return new ResponseEntity<>(invoiceDetailService.findByInvoiceForSeller(idInvoice), HttpStatus.OK);
+    }
+
+    @PostMapping("/seller/update-imei")
+    public ResponseEntity<?> updateImeiForSeller(
+            @RequestParam("detailId") Long detailId,
+            @RequestParam("imei") String imei) {
+        invoiceDetailService.updateImeiForSeller(detailId, imei);
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
 }

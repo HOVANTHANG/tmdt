@@ -29,17 +29,16 @@ public class ImportProduct {
     private Double importPrice;
 
     private String description;
-
-    @Transient
-    private String storageName;
-
     @Transient
     private String productName;
+
+    @Transient
+    private String variantName;
 
     @ManyToOne
     private Provider provider;
 
     @ManyToOne
-    @JoinColumn(name = "product_color_id")
-    private ProductColor productColor;
+    @JoinColumn(name = "product_variant_id")
+    private ProductVariant productVariant;
 }

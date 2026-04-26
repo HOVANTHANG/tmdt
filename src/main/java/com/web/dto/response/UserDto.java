@@ -32,6 +32,9 @@ public class UserDto {
 
     private String tokenFcm;
 
-    private Authority authorities;
-}
+    private String role;
 
+    private Long shopId;
+
+    private String shopName;
+}

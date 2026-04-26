@@ -34,10 +34,9 @@ public class Guarantee {
 
     private String productName;
 
-    private String productColor;
+    private String productVariantTier1;
 
-    private String productStorage;
-
+    private String productVariantTier2;
     private Long productId;
 
     private String imei;
@@ -65,11 +64,11 @@ public class Guarantee {
     @JsonManagedReference
     private List<GuaranteeHistory> guaranteeHistories = new ArrayList<>();
 
-    public String getLabel(){
+    public String getLabel() {
         return guaranteeStatus.getLabel();
     }
 
-    public String getColor(){
+    public String getColor() {
         return guaranteeStatus.getColor();
     }
 }

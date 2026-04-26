@@ -16,21 +16,32 @@ public class UserMapper {
     @Autowired
     private ModelMapper mapper;
 
-    public UserDto userToUserDto(User user){
+    public UserDto userToUserDto(User user) {
         UserDto dto = mapper.map(user, UserDto.class);
+
+        // map role
+        if (user.getAuthorities() != null) {
+            dto.setRole(user.getAuthorities().getName());
+        }
+
+        // map shop
+        if (user.getShop() != null) {
+            dto.setShopId(user.getShop().getId());
+            dto.setShopName(user.getShop().getShopName());
+        }
+
         return dto;
     }
 
-    public User userRequestToUser(UserRequest request){
+    public User userRequestToUser(UserRequest request) {
         User user = mapper.map(request, User.class);
         user.setUsername(request.getEmail());
         return user;
     }
 
-    public List<UserDto> listUserToListUserDto(List<User> list){
-        List<UserDto> dto = list.stream().map(post -> mapper.map(post, UserDto.class))
+    public List<UserDto> listUserToListUserDto(List<User> list) {
+        return list.stream()
+                .map(this::userToUserDto)
                 .collect(Collectors.toList());
-        return dto;
     }
-
 }

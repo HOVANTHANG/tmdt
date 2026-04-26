@@ -4,8 +4,15 @@ import com.web.enums.StatusInvoice;
 import com.web.repository.InvoiceRepository;
 import com.web.repository.ProductRepository;
 import com.web.repository.UserRepository;
+import com.web.servive.StatisticService;
 import com.web.utils.Contains;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.web.servive.StatisticService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -27,8 +34,11 @@ public class StatiticsApi {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private StatisticService statisticService;
+
     @GetMapping("/admin/revenue-this-month")
-    public Double doanhThuThangNay(){
+    public Double doanhThuThangNay() {
         Date date = new Date(System.currentTimeMillis());
         String[] str = date.toString().split("-");
         Integer year = Integer.valueOf(str[0]);
@@ -38,40 +48,56 @@ public class StatiticsApi {
     }
 
     @GetMapping("/admin/revenue-today")
-    public Double revenueByDate(){
+    public Double revenueByDate() {
         Date date = new Date(System.currentTimeMillis());
         int index = Arrays.asList(StatusInvoice.values()).indexOf(StatusInvoice.DA_NHAN);
-        return invoiceRepository.revenueByDate(date,index);
+        return invoiceRepository.revenueByDate(date, index);
     }
 
     @GetMapping("/admin/number-invoice-today-finish")
-    public Double numInvoiceToDay(){
+    public Double numInvoiceToDay() {
         Date date = new Date(System.currentTimeMillis());
         int index = Arrays.asList(StatusInvoice.values()).indexOf(StatusInvoice.DA_NHAN);
         return invoiceRepository.numInvoiceToDay(date, index);
     }
 
     @GetMapping("/admin/number-admin")
-    public Double numberAdmin(){
+    public Double numberAdmin() {
         return userRepository.countAdmin(Contains.ROLE_ADMIN);
     }
 
     @GetMapping("/admin/number-product")
-    public Long numberProduct(){
+    public Long numberProduct() {
         return productRepository.count();
     }
 
     @GetMapping("/admin/revenue-year")
-    public List<Double> doanhThu(@RequestParam("year") Integer year){
+    public List<Double> doanhThu(@RequestParam("year") Integer year) {
         List<Double> list = new ArrayList<>();
         int index = Arrays.asList(StatusInvoice.values()).indexOf(StatusInvoice.DA_NHAN);
-        for(int i=1; i< 13; i++){
+        for (int i = 1; i < 13; i++) {
             Double sum = invoiceRepository.calDt(i, year, index);
-            if(sum == null){
+            if (sum == null) {
                 sum = 0D;
             }
             list.add(sum);
         }
         return list;
     }
+
+    @GetMapping("/seller/dashboard-summary")
+    public ResponseEntity<?> dashboardSummaryForSeller() {
+        return new ResponseEntity<>(statisticService.dashboardSummaryForSeller(), HttpStatus.OK);
+    }
+
+    @GetMapping("/seller/revenue-chart")
+    public ResponseEntity<?> revenueChartForSeller(@RequestParam("year") Integer year) {
+        return new ResponseEntity<>(statisticService.revenueChartForSeller(year), HttpStatus.OK);
+    }
+
+    @GetMapping("/seller/top-products")
+    public ResponseEntity<?> topProductsForSeller() {
+        return new ResponseEntity<>(statisticService.topProductsForSeller(), HttpStatus.OK);
+    }
+
 }
