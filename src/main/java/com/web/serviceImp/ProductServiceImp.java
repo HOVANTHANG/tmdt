@@ -390,9 +390,39 @@ public class ProductServiceImp implements ProductService {
 
                 shop.setId(p.getShop().getId());
                 shop.setShopName(p.getShop().getShopName());
-                // shop.setAvatar(p.getShop().getAvatar()); // nếu có
+                shop.setAvatar(p.getShop().getAvatar()); // nếu có
                 shop.setTotalProduct(totalProduct);
 
+                dto.setShop(shop);
+            }
+
+            return dto;
+        });
+    }
+
+    @Override
+    public Page<ProductShopResponse> findByCategory(Long categoryId, Pageable pageable) {
+        if (categoryId == null) {
+            throw new MessageException("categoryId không được để trống");
+        }
+
+        Page<Product> page = productRepository.findByCategoryIdAndDeletedFalse(categoryId, pageable);
+
+        return page.map(p -> {
+            ProductShopResponse dto = new ProductShopResponse();
+
+            dto.setId(p.getId());
+            dto.setCode(p.getCode());
+            dto.setName(p.getName());
+            dto.setImageBanner(p.getImageBanner());
+            dto.setPrice(p.getPrice());
+            dto.setOldPrice(p.getOldPrice());
+
+            if (p.getShop() != null) {
+                ShopResponse shop = new ShopResponse();
+                shop.setId(p.getShop().getId());
+                shop.setShopName(p.getShop().getShopName());
+                shop.setAvatar(p.getShop().getAvatar());
                 dto.setShop(shop);
             }
 

@@ -43,4 +43,7 @@ public interface ProductService {
     Page<Product> findByMyShop(String search, Long categoryId, Long trademarkId, Pageable pageable);
 
     Page<ProductShopResponse> findByShop(Long shopId, Pageable pageable);
+
+    Page<ProductShopResponse> findByCategory(Long categoryId, Pageable pageable);
+
 }

@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-//            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+                // .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .and()
                 .headers()
@@ -63,7 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/*/user/**").hasAuthority(Contains.ROLE_USER)
                 .antMatchers("/api/admin/check-role-admin").hasAuthority(Contains.ROLE_ADMIN)
                 .antMatchers("/api/*/employee/**").hasAuthority(Contains.ROLE_EMPLOYEE)
-                .antMatchers("/api/*/admin/**").hasAnyAuthority(Contains.ROLE_ADMIN, Contains.ROLE_EMPLOYEE)
+                .antMatchers("/api/*/admin/**").hasAnyAuthority(Contains.ROLE_ADMIN, Contains.ROLE_SELLER)
+                .antMatchers("/api/*/seller/**").hasAnyAuthority(Contains.ROLE_ADMIN, Contains.ROLE_SELLER)
                 .antMatchers("/api/admin/check-role-admin").hasAuthority(Contains.ROLE_ADMIN)
                 .antMatchers("/api/*/public/**").permitAll()
                 .and()
@@ -74,9 +75,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
 
     }
+
     private JWTConfigurer securityConfigurerAdapter() {
         return new JWTConfigurer(tokenProvider, userRepository);
     }
 
 }
-

@@ -12,4 +12,5 @@ public class SellerRegisterRequest {
     private String phone;
     private String email;
     private String description;
+    private String avatar;
 }

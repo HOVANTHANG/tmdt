@@ -46,17 +46,21 @@ public class SellerService {
         Authority sellerRole = authorityRepository.findById("ROLE_SELLER")
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy ROLE_SELLER"));
 
-        user.setAuthorities(sellerRole);
-        userRepository.save(user);
-
         Shop shop = new Shop();
         shop.setShopName(request.getShopName());
         shop.setShopSlug(request.getShopSlug());
         shop.setPhone(request.getPhone());
         shop.setEmail(request.getEmail());
         shop.setDescription(request.getDescription());
+        shop.setAvatar(request.getAvatar());
         shop.setOwner(user);
 
-        return shopRepository.save(shop);
+        Shop savedShop = shopRepository.save(shop);
+
+        user.setAuthorities(sellerRole);
+        user.setShop(savedShop);
+        userRepository.save(user);
+
+        return savedShop;
     }
 }

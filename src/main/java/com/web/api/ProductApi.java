@@ -177,4 +177,13 @@ public class ProductApi {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/public/find-by-category")
+    public ResponseEntity<?> findByCategory(
+            @RequestParam Long categoryId,
+            Pageable pageable) {
+
+        Page<ProductShopResponse> response = productService.findByCategory(categoryId, pageable);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

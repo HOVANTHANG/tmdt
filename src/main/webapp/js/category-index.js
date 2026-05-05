@@ -37,7 +37,7 @@ async function loadCategoryIndex() {
             const item = categories[i];
 
             html += `
-                <a class="category-item" href="sanpham?category=${item.id}">
+                <a class="category-item" href="category-detail?id=${item.id}">
                     <div class="category-img">
                         <img src="${getCategoryImage(item)}" 
                              alt="${safeText(item.name)}"

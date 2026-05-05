@@ -100,4 +100,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         Pageable pageable);
 
         Page<Product> findByShopIdAndDeletedFalse(Long shopId, Pageable pageable);
+
+        Page<Product> findByCategoryIdAndDeletedFalse(Long categoryId, Pageable pageable);
+
 }

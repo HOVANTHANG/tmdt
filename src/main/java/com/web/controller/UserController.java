@@ -103,4 +103,9 @@ public class UserController {
         return "user/shop-detail";
     }
 
+    @RequestMapping(value = { "/category-detail" }, method = RequestMethod.GET)
+    public String categoryDetail() {
+        return "user/category-detail";
+    }
+
 }

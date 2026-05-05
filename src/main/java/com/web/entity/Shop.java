@@ -32,7 +32,8 @@ public class Shop {
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
+    @Column(name = "avatar")
+    private String avatar;
     @ManyToOne
     @JoinColumn(name = "owner_user_id")
     @JsonIgnore

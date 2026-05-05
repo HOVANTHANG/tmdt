@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản phẩm theo danh mục</title>
+
+    <link rel="shortcut icon" href="image/logo.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
+    <script src="js/main.js"></script>
+
+    <style>
+        body {
+            background: #f5f5f5;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .cd-page {
+            padding: 20px 0 40px;
+        }
+
+        .cd-header {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cd-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .cd-subtitle {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .cd-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            overflow: hidden;
+            height: 100%;
+            transition: .2s ease;
+        }
+
+        .cd-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+        }
+
+        .cd-img {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            padding: 10px;
+            background: #fff;
+        }
+
+        .cd-body {
+            padding: 12px;
+        }
+
+        .cd-name {
+            color: #222;
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.45;
+            height: 42px;
+            overflow: hidden;
+            display: block;
+        }
+
+        .cd-name:hover {
+            color: #ee4d2d;
+        }
+
+        .cd-price {
+            color: #ee4d2d;
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .cd-oldprice {
+            color: #aaa;
+            text-decoration: line-through;
+            font-size: 13px;
+            margin-left: 6px;
+        }
+
+        .cd-shop {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .cd-shop i {
+            color: #005c4b;
+            margin-right: 4px;
+        }
+
+        .cd-empty,
+        .cd-loading {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 45px;
+            text-align: center;
+            color: #777;
+            border-radius: 6px;
+        }
+
+        .cd-pagination {
+            margin-top: 26px;
+            justify-content: center;
+        }
+
+        .cd-pagination .page-link {
+            color: #ee4d2d;
+            border-color: #eee;
+        }
+
+        .cd-pagination .page-item.active .page-link {
+            background: #ee4d2d;
+            border-color: #ee4d2d;
+            color: #fff;
+        }
+
+        @media (max-width: 576px) {
+            .cd-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .cd-img {
+                height: 170px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="headerweb"></div>
+
+    <div class="contentweb cd-page">
+        <div class="container">
+
+            <div class="cd-header">
+                <h3 class="cd-title" id="categoryTitle">Sản phẩm theo danh mục</h3>
+                <span class="cd-subtitle" id="totalProductText">0 sản phẩm</span>
+            </div>
+
+            <div class="row g-3" id="categoryProductList"></div>
+
+            <ul class="pagination cd-pagination" id="categoryPagination"></ul>
+
+        </div>
+    </div>
+
+    <div class="container" id="footer"></div>
+
+    <script>
+        const BASE_URL = "http://localhost:8080";
+
+        const PRODUCT_BY_CATEGORY_API = BASE_URL + "/api/product/public/find-by-category";
+        const CATEGORY_API = BASE_URL + "/api/category/public/findAll";
+
+        let currentCategoryId = null;
+        let currentPage = 0;
+        let size = 12;
+        let totalPage = 0;
+
+        window.onload = function () {
+            if (typeof loadMenu === "function") {
+                loadMenu();
+            }
+
+            loadCategoryDetail(0);
+        };
+
+        function getCategoryIdFromUrl() {
+            const url = new URL(window.location.href);
+            return url.searchParams.get("id") || url.searchParams.get("category");
+        }
+
+        function formatmoney(amount) {
+            return Number(amount || 0).toLocaleString("vi-VN") + " ₫";
+        }
+
+        async function loadCategoryName(categoryId) {
+            try {
+                const response = await fetch(CATEGORY_API);
+                if (!response.ok) return;
+
+                const categories = await response.json();
+                const category = categories.find(item => Number(item.id) === Number(categoryId));
+
+                if (category) {
+                    document.getElementById("categoryTitle").innerText =
+                        "Danh mục: " + (category.name || "");
+                }
+            } catch (e) {
+                console.error("Không tải được tên danh mục", e);
+            }
+        }
+
+        async function loadCategoryDetail(page = 0) {
+            currentCategoryId = getCategoryIdFromUrl();
+            currentPage = page;
+
+            if (!currentCategoryId) {
+                toastr.warning("Không tìm thấy danh mục");
+                return;
+            }
+
+            loadCategoryName(currentCategoryId);
+
+            const box = document.getElementById("categoryProductList");
+            box.innerHTML = `
+                <div class="col-12">
+                    <div class="cd-loading">Đang tải sản phẩm...</div>
+                </div>
+            `;
+
+            const url = `${PRODUCT_BY_CATEGORY_API}?categoryId=${currentCategoryId}&page=${page}&size=${size}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("Không tải được sản phẩm theo danh mục");
+                }
+
+                const result = await response.json();
+
+                const products = result.content || [];
+                totalPage = result.totalPages || 0;
+
+                document.getElementById("totalProductText").innerText =
+                    (result.totalElements || 0) + " sản phẩm";
+
+                renderCategoryProducts(products);
+                renderCategoryPagination();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            } catch (error) {
+                console.error(error);
+                toastr.error("Không tải được sản phẩm");
+
+                box.innerHTML = `
+                    <div class="col-12">
+                        <div class="cd-empty">Không tải được sản phẩm trong danh mục này</div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCategoryProducts(products) {
+            const box = document.getElementById("categoryProductList");
+
+            if (!products || products.length === 0) {
+                box.innerHTML = `
+                    <div class="col-12">
+                        <div class="cd-empty">Danh mục này chưa có sản phẩm nào</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = "";
+
+            products.forEach(item => {
+                const shopName = item.shop
+                    ? (item.shop.shopName || item.shop.name || "")
+                    : "";
+
+                html += `
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                        <div class="cd-card">
+                            <a href="detail?id=${item.id}">
+                                <img class="cd-img"
+                                     src="${item.imageBanner || 'image/product1.webp'}"
+                                     onerror="this.src='image/product1.webp'">
+                            </a>
+
+                            <div class="cd-body">
+                                <a class="cd-name" href="detail?id=${item.id}">
+                                    ${item.name || ""}
+                                </a>
+
+                                <div>
+                                    <span class="cd-price">${formatmoney(item.price || 0)}</span>
+                                    ${item.oldPrice
+                        ? `<span class="cd-oldprice">${formatmoney(item.oldPrice)}</span>`
+                        : ""
+                    }
+                                </div>
+
+                                ${shopName
+                        ? `<div class="cd-shop"><i class="fa fa-home"></i>${shopName}</div>`
+                        : ""
+                    }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            box.innerHTML = html;
+        }
+
+        function renderCategoryPagination() {
+            const pagination = document.getElementById("categoryPagination");
+
+            if (!pagination || totalPage <= 1) {
+                pagination.innerHTML = "";
+                return;
+            }
+
+            let html = "";
+
+            html += `
+                <li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadCategoryDetail(${currentPage - 1})">
+                        Trước
+                    </a>
+                </li>
+            `;
+
+            for (let i = 0; i < totalPage; i++) {
+                html += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadCategoryDetail(${i})">
+                            ${i + 1}
+                        </a>
+                    </li>
+                `;
+            }
+
+            html += `
+                <li class="page-item ${currentPage + 1 >= totalPage ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadCategoryDetail(${currentPage + 1})">
+                        Sau
+                    </a>
+                </li>
+            `;
+
+            pagination.innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>
