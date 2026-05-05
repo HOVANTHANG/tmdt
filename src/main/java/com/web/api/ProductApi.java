@@ -2,6 +2,7 @@ package com.web.api;
 
 import com.web.dto.request.ProductRequest;
 import com.web.dto.response.ProductResponse;
+import com.web.dto.response.ProductShopResponse;
 import com.web.entity.Product;
 import com.web.entity.Shop;
 import com.web.entity.TradeMark;
@@ -165,5 +166,15 @@ public class ProductApi {
     public ResponseEntity<?> findByIdForAdmin1Entity(@RequestParam("id") Long id) {
         Product response = productService.findByIdForAdmin(id);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/public/find-by-shop")
+    public ResponseEntity<?> findByShop(
+            @RequestParam Long shopId,
+            Pageable pageable) {
+
+        Page<ProductShopResponse> response = productService.findByShop(shopId, pageable);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

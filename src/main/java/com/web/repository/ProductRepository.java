@@ -98,4 +98,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         "and p.category.id = ?3 and p.tradeMark.id = ?4")
         Page<Product> findByShopAndCategoryAndTrademark(Long shopId, String search, Long categoryId, Long trademarkId,
                         Pageable pageable);
+
+        Page<Product> findByShopIdAndDeletedFalse(Long shopId, Pageable pageable);
 }

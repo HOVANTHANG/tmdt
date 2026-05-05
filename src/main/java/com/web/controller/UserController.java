@@ -98,4 +98,9 @@ public class UserController {
         return "user/baohanh";
     }
 
+    @RequestMapping(value = { "/shop-detail" }, method = RequestMethod.GET)
+    public String shopDetail() {
+        return "user/shop-detail";
+    }
+
 }

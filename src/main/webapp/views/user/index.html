@@ -33,10 +33,12 @@
     <script src="js/banner.js"></script>
     <script src="js/product.js"></script>
     <script src="js/blog.js"></script>
+    <script src="js/category-index.js"></script>
     <script>
         window.onload = function () {
             loadMenu();
             loadBanner();
+            loadCategoryIndex();
             loadSanPhamMoiNhat(0);
             loadPhuKien(0);
             loadSanPhamBanChay(0);
@@ -77,6 +79,46 @@
                 </button>
             </div>
         </div>
+
+
+
+
+
+
+
+        <div class="container category-section">
+            <div class="category-title">DANH MỤC</div>
+
+            <div class="category-wrapper">
+                <button class="category-arrow category-arrow-left" onclick="scrollCategory(-1)">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+
+                <div class="category-grid" id="categoryGrid"></div>
+
+                <button class="category-arrow category-arrow-right" onclick="scrollCategory(1)">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <div class="container sectionproduct">
             <div class="headersection">

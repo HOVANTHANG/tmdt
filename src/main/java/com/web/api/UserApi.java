@@ -174,4 +174,5 @@ public class UserApi {
         UserDto userDto = userMapper.userToUserDto(user);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
+
 }

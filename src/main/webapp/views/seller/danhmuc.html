@@ -92,24 +92,38 @@
     </div>
 
 </body>
-<div class="modal fade" id="addtk" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+<div class="modal fade" id="addtk" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content category-modal">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Thêm cập nhật danh mục</h5> <button type="button"
-                    class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Thêm / cập nhật danh mục</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body row">
-                <form action="javascript:saveCategory()" class="col-sm-6" style="margin: auto;">
+
+            <div class="modal-body">
+                <form action="javascript:saveCategory()" class="category-form">
+                    <input id="idcate" type="hidden">
+
                     <label class="lb-form">Tên danh mục</label>
-                    <input id="idcate" type="hidden" class="form-control">
-                    <input id="catename" type="text" class="form-control">
-                    <label class="lb-form">Loại danh mục</label>
-                    <select id="catetype" type="text" class="form-control">
-                        <option value=""></option>
+                    <input id="catename" type="text" class="form-control modern-input" placeholder="Nhập tên danh mục">
+
+                    <label class="lb-form mt-3">Loại danh mục</label>
+                    <select id="catetype" class="form-control modern-input">
+                        <option value="">-- Chọn loại danh mục --</option>
+                        <option value="DIEN_TU">Điện tử</option>
+                        <option value="PHU_KIEN">Phụ kiện</option>
                     </select>
-                    <br>
-                    <button class="form-control btn btn-primary">Thêm/ cập nhật danh mục</button>
+
+                    <label class="lb-form mt-3">Ảnh danh mục</label>
+                    <input id="categoryImageFile" type="file" accept="image/*" class="form-control modern-input">
+                    <input id="categoryImage" type="hidden">
+
+                    <img id="categoryImagePreview"
+                        style="display:none; width:90px; height:90px; object-fit:cover; border-radius:12px; margin-top:12px; border:1px solid #ddd;">
+
+                    <button class="btn btn-primary form-control mt-4 btn-save-category">
+                        Thêm / cập nhật danh mục
+                    </button>
                 </form>
             </div>
         </div>

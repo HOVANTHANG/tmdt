@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gian hàng</title>
+
+    <link rel="shortcut icon" href="image/logo.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
+    <script src="js/main.js"></script>
+
+    <style>
+        body {
+            background: #f5f5f5;
+            font-family: 'Quicksand', sans-serif;
+            color: #222;
+        }
+
+        .shop-page {
+            padding: 20px 0 40px;
+        }
+
+        .shop-header-card {
+            background: linear-gradient(135deg, #2b2b2b, #111);
+            color: #fff;
+            padding: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            margin-bottom: 18px;
+        }
+
+        .shop-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 360px;
+        }
+
+        .shop-avatar {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, .4);
+            background: #fff;
+        }
+
+        .shop-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .shop-status {
+            font-size: 14px;
+            color: #d1d5db;
+            margin-bottom: 12px;
+        }
+
+        .shop-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-chat,
+        .btn-back {
+            height: 36px;
+            padding: 0 16px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-chat {
+            background: #ffeee8;
+            border: 1px solid #ee4d2d;
+            color: #ee4d2d;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .6);
+            color: #fff;
+        }
+
+        .shop-divider {
+            width: 1px;
+            height: 88px;
+            background: rgba(255, 255, 255, .25);
+        }
+
+        .shop-stats {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px 36px;
+        }
+
+        .shop-stat-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .shop-stat-item span {
+            color: #d1d5db;
+        }
+
+        .shop-stat-item b {
+            color: #ffb199;
+            font-weight: 600;
+        }
+
+        .shop-toolbar {
+            background: #fff;
+            padding: 16px 18px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shop-toolbar h4 {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .shop-toolbar span {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .shop-product-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            height: 100%;
+            overflow: hidden;
+            transition: .2s ease;
+        }
+
+        .shop-product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+        }
+
+        .shop-product-img {
+            width: 100%;
+            height: 210px;
+            object-fit: contain;
+            background: #fff;
+            padding: 10px;
+        }
+
+        .shop-product-body {
+            padding: 12px;
+        }
+
+        .shop-product-name {
+            color: #222;
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.4;
+            height: 40px;
+            overflow: hidden;
+            display: block;
+        }
+
+        .shop-product-name:hover {
+            color: #ee4d2d;
+        }
+
+        .shop-product-price {
+            color: #ee4d2d;
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .shop-product-oldprice {
+            color: #aaa;
+            font-size: 13px;
+            text-decoration: line-through;
+            margin-left: 6px;
+        }
+
+        .empty-shop,
+        .loading-shop {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 48px;
+            text-align: center;
+            color: #777;
+            border-radius: 4px;
+        }
+
+        .shop-pagination {
+            margin-top: 26px;
+            justify-content: center;
+        }
+
+        .shop-pagination .page-link {
+            color: #ee4d2d;
+            border-color: #eee;
+        }
+
+        .shop-pagination .page-item.active .page-link {
+            background: #ee4d2d;
+            border-color: #ee4d2d;
+            color: #fff;
+        }
+
+        @media (max-width: 992px) {
+            .shop-header-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .shop-left {
+                min-width: 100%;
+            }
+
+            .shop-divider {
+                display: none;
+            }
+
+            .shop-stats {
+                width: 100%;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .shop-header-card {
+                padding: 18px;
+            }
+
+            .shop-avatar {
+                width: 72px;
+                height: 72px;
+            }
+
+            .shop-product-img {
+                height: 170px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="headerweb"></div>
+
+    <div class="contentweb shop-page">
+        <div class="container">
+
+            <div class="shop-header-card">
+                <div class="shop-left">
+                    <img id="shopAvatar" src="image/logo.ico" class="shop-avatar">
+
+                    <div>
+                        <div class="shop-name" id="shopName">Gian hàng</div>
+                        <div class="shop-status">Online gần đây</div>
+
+                        <div class="shop-actions">
+                            <button class="btn-chat" onclick="openChatShop()">
+                                <i class="fa fa-comments"></i> Chat Ngay
+                            </button>
+
+                            <button class="btn-back" onclick="history.back()">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop-divider"></div>
+
+                <div class="shop-stats">
+                    <div class="shop-stat-item">
+                        <span>Đánh Giá</span>
+                        <b>3,3k</b>
+                    </div>
+                    <div class="shop-stat-item">
+                        <span>Tỉ Lệ Phản Hồi</span>
+                        <b>100%</b>
+                    </div>
+                    <div class="shop-stat-item">
+                        <span>Tham Gia</span>
+                        <b>5 năm trước</b>
+                    </div>
+                    <div class="shop-stat-item">
+                        <span>Sản Phẩm</span>
+                        <b id="shopProductCount">0</b>
+                    </div>
+                    <div class="shop-stat-item">
+                        <span>Thời Gian Phản Hồi</span>
+                        <b>trong vài giờ</b>
+                    </div>
+                    <div class="shop-stat-item">
+                        <span>Người Theo Dõi</span>
+                        <b>524</b>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-toolbar">
+                <h4>Sản phẩm của shop</h4>
+                <span id="totalProductText">0 sản phẩm</span>
+            </div>
+
+            <div class="row g-3" id="shopProductList"></div>
+
+            <ul class="pagination shop-pagination" id="shopPagination"></ul>
+
+        </div>
+    </div>
+
+    <div class="container" id="footer"></div>
+
+    <script>
+        const BASE_URL = "http://localhost:8080";
+
+        let currentShopId = null;
+        let currentShop = null;
+        let currentPage = 0;
+        let size = 12;
+        let totalPage = 0;
+
+        window.onload = function () {
+            if (typeof loadMenu === "function") {
+                loadMenu();
+            }
+            loadShopProducts(0);
+        };
+
+        function getShopIdFromUrl() {
+            const url = new URL(window.location.href);
+            return url.searchParams.get("id");
+        }
+
+        function formatmoney(amount) {
+            return Number(amount || 0).toLocaleString("vi-VN") + " ₫";
+        }
+
+        async function loadShopProducts(page = 0) {
+            currentShopId = getShopIdFromUrl();
+            currentPage = page;
+
+            if (!currentShopId) {
+                toastr.warning("Không tìm thấy shop");
+                return;
+            }
+
+            const listBox = document.getElementById("shopProductList");
+            listBox.innerHTML = `
+                <div class="col-12">
+                    <div class="loading-shop">Đang tải sản phẩm...</div>
+                </div>
+            `;
+
+            const url = `${BASE_URL}/api/product/public/find-by-shop?shopId=${currentShopId}&page=${page}&size=${size}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("Không tải được sản phẩm của shop");
+                }
+
+                const result = await response.json();
+
+                const products = result.content || [];
+                totalPage = result.totalPages || 0;
+
+                renderShopInfo(products, result.totalElements || 0);
+                renderShopProducts(products);
+                renderPagination();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            } catch (error) {
+                console.error(error);
+                toastr.error("Không tải được gian hàng");
+
+                listBox.innerHTML = `
+                    <div class="col-12">
+                        <div class="empty-shop">Không tải được sản phẩm của shop</div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderShopInfo(products, totalProduct) {
+            const firstProduct = products && products.length > 0 ? products[0] : null;
+
+            if (firstProduct && firstProduct.shop) {
+                currentShop = firstProduct.shop;
+
+                document.getElementById("shopName").innerText =
+                    currentShop.shopName || currentShop.name || "Gian hàng";
+
+                document.getElementById("shopAvatar").src =
+                    currentShop.avatar || currentShop.image || currentShop.logo || "image/logo.ico";
+            } else {
+                document.getElementById("shopName").innerText = "Gian hàng";
+                document.getElementById("shopAvatar").src = "image/logo.ico";
+            }
+
+            document.getElementById("shopProductCount").innerText = totalProduct;
+            document.getElementById("totalProductText").innerText = totalProduct + " sản phẩm";
+        }
+
+        function renderShopProducts(products) {
+            const box = document.getElementById("shopProductList");
+
+            if (!products || products.length === 0) {
+                box.innerHTML = `
+                    <div class="col-12">
+                        <div class="empty-shop">
+                            Shop này chưa có sản phẩm nào
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = "";
+
+            products.forEach(item => {
+                html += `
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                        <div class="shop-product-card">
+                            <a href="detail?id=${item.id}">
+                                <img class="shop-product-img"
+                                     src="${item.imageBanner || 'image/product1.webp'}">
+                            </a>
+
+                            <div class="shop-product-body">
+                                <a class="shop-product-name" href="detail?id=${item.id}">
+                                    ${item.name || ""}
+                                </a>
+
+                                <div>
+                                    <span class="shop-product-price">
+                                        ${formatmoney(item.price || 0)}
+                                    </span>
+                                    ${item.oldPrice
+                        ? `<span class="shop-product-oldprice">${formatmoney(item.oldPrice)}</span>`
+                        : ""
+                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            box.innerHTML = html;
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById("shopPagination");
+
+            if (!pagination || totalPage <= 1) {
+                pagination.innerHTML = "";
+                return;
+            }
+
+            let html = "";
+
+            html += `
+                <li class="page-item ${currentPage === 0 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadShopProducts(${currentPage - 1})">
+                        Trước
+                    </a>
+                </li>
+            `;
+
+            for (let i = 0; i < totalPage; i++) {
+                html += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadShopProducts(${i})">
+                            ${i + 1}
+                        </a>
+                    </li>
+                `;
+            }
+
+            html += `
+                <li class="page-item ${currentPage + 1 >= totalPage ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadShopProducts(${currentPage + 1})">
+                        Sau
+                    </a>
+                </li>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function openChatShop() {
+            toastr.info("Tính năng chat đang được phát triển");
+        }
+    </script>
+</body>
+
+</html>

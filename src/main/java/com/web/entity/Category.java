@@ -26,4 +26,10 @@ public class Category {
     private String name;
 
     private CategoryType categoryType;
+
+    @Column(name = "image")
+    private String image;
+
+    @Column(name = "deleted")
+    private Boolean deleted = false;
 }

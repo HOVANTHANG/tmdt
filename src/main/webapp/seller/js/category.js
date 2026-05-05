@@ -47,8 +47,62 @@ async function loadTypeCategory() {
 
 
 
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("categoryImageFile");
+
+    if (!input) {
+        console.warn("Không tìm thấy #categoryImageFile");
+        return;
+    }
+
+    input.addEventListener("change", async function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("http://localhost:8080/api/public/upload-file", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) {
+                throw new Error("Upload failed");
+            }
+
+            const imageUrl = await res.text();
+
+            document.getElementById("categoryImage").value = imageUrl;
+
+            const preview = document.getElementById("categoryImagePreview");
+            preview.src = imageUrl;
+            preview.style.display = "block";
+
+            toastr.success("Upload ảnh thành công");
+        } catch (e) {
+            console.error(e);
+            toastr.error("Upload ảnh thất bại");
+        }
+    });
+});
+
+
+
+
+
 async function loadACategory(id) {
-    var url = 'http://localhost:8080/api/category/admin/findById?id=' + id;
+    var url = 'http://localhost:8080/api/category/seller/findById?id=' + id;
     const response = await fetch(url, {
         method: 'GET',
         headers: new Headers({
@@ -59,28 +113,45 @@ async function loadACategory(id) {
     document.getElementById("idcate").value = result.id
     document.getElementById("catename").value = result.name
     document.getElementById("catetype").value = result.categoryType
+    document.getElementById("categoryImage").value = result.image || "";
+
+    const preview = document.getElementById("categoryImagePreview");
+    if (result.image) {
+        preview.src = result.image;
+        preview.style.display = "block";
+    } else {
+        preview.src = "";
+        preview.style.display = "none";
+    }
 }
 
-function clearData(){
-    document.getElementById("idcate").value = ""
-    document.getElementById("catename").value = ""
-}
 
+function clearData() {
+    document.getElementById("idcate").value = "";
+    document.getElementById("catename").value = "";
+    document.getElementById("categoryImage").value = "";
+    document.getElementById("categoryImageFile").value = "";
+
+    const preview = document.getElementById("categoryImagePreview");
+    preview.src = "";
+    preview.style.display = "none";
+}
 
 async function saveCategory() {
     var id = document.getElementById("idcate").value
     var catename = document.getElementById("catename").value
     var catetype = document.getElementById("catetype").value
 
-    var url = 'http://localhost:8080/api/category/admin/create';
+    var url = 'http://localhost:8080/api/category/seller/create';
     if (id != "" && id != null) {
-        url = 'http://localhost:8080/api/category/admin/update';
+        url = 'http://localhost:8080/api/category/seller/update';
     }
     var category = {
-        "id": id,
-        "name": catename,
-        "categoryType": catetype,
-    }
+        id: id,
+        name: catename,
+        categoryType: catetype,
+        image: document.getElementById("categoryImage").value
+    };
     const response = await fetch(url, {
         method: 'POST',
         headers: new Headers({
@@ -91,7 +162,7 @@ async function saveCategory() {
     });
     if (response.status < 300) {
         toastr.success("thêm/sửa danh mục thành công!");
-        loadCategory(0,"");
+        loadCategory(0, "");
         $("#addtk").modal('hide');
     }
     if (response.status == exceptionCode) {
@@ -105,7 +176,7 @@ async function deleteCategory(id) {
     if (con == false) {
         return;
     }
-    var url = 'http://localhost:8080/api/category/admin/delete?id=' + id;
+    var url = 'http://localhost:8080/api/category/seller/delete?id=' + id;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: new Headers({
@@ -114,7 +185,7 @@ async function deleteCategory(id) {
     });
     if (response.status < 300) {
         toastr.success("xóa danh mục thành công!");
-        loadCategory(0,"");
+        loadCategory(0, "");
     }
     if (response.status == exceptionCode) {
         var result = await response.json()

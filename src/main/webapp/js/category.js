@@ -1,4 +1,4 @@
-async function loadAllCategory(){
+async function loadAllCategory() {
     var url = 'http://localhost:8080/api/category/public/findAll';
     const res = await fetch(url, {});
     var list = await res.json();

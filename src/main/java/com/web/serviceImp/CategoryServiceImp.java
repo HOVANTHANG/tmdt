@@ -26,7 +26,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public Category save(Category category) {
-        if(categoryRepository.findByName(category.getName()).isPresent()){
+        if (categoryRepository.findByName(category.getName()).isPresent()) {
             throw new MessageException("Tên danh mục đã tồn tại");
         }
         Category result = categoryRepository.save(category);
@@ -35,7 +35,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public Category update(Category category) {
-        if(categoryRepository.findByNameAndId(category.getName(), category.getId()).isPresent()){
+        if (categoryRepository.findByNameAndId(category.getName(), category.getId()).isPresent()) {
             throw new MessageException("Tên danh mục đã tồn tại", 400);
         }
         Category result = categoryRepository.save(category);
@@ -50,8 +50,8 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public Category findById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        if(category.isEmpty()){
-            throw new MessageException("Not found category :"+id);
+        if (category.isEmpty()) {
+            throw new MessageException("Not found category :" + id);
         }
         return category.get();
     }
@@ -64,7 +64,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public Page<Category> search(String param, Pageable pageable) {
-        Page<Category> categories = categoryRepository.findByParam("%"+param+"%",pageable);
+        Page<Category> categories = categoryRepository.findByParam("%" + param + "%", pageable);
         return categories;
     }
 

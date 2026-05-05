@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface CategoryRepository extends JpaRepository<Category,Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("select c from Category c where c.name = ?1")
     public Optional<Category> findByName(String name);
@@ -22,8 +22,12 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     @Query("select c from Category c where c.name like ?1")
     public Page<Category> findByParam(String param, Pageable pageable);
 
-
     @Query("select c from Category c where c.categoryType = ?1")
     public List<Category> findByType(CategoryType categoryType);
 
+    @Query("select c from Category c where c.deleted <> true")
+    List<Category> findAllNotDeleted();
+
+    @Query("select c from Category c where c.deleted <> true and c.name like ?1")
+    Page<Category> search(String search, Pageable pageable);
 }

@@ -30,139 +30,6 @@
     <script src="js/cart.js"></script>
     <script src="js/comment.js"></script>
 
-    <style>
-        .variant-option {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px 12px;
-            cursor: pointer;
-            text-align: center;
-            background: #fff;
-            transition: 0.2s;
-            margin-bottom: 10px;
-            font-size: 14px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .variant-option:hover {
-            border-color: #d70018;
-        }
-
-        .variant-option.active {
-            border-color: #d70018;
-            background: #fff5f5;
-            color: #d70018;
-            font-weight: 600;
-        }
-
-        .variant-image {
-            width: 100%;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-
-        .thumb-item img {
-            width: 100%;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-        }
-
-        .thumb-item img.active-thumb {
-            border: 2px solid #d70018;
-        }
-
-        .price-box {
-            margin-bottom: 10px;
-        }
-
-        .stock-box {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #444;
-        }
-
-        .shop-line {
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        .shop-line span {
-            font-weight: 600;
-        }
-
-        .spec-row {
-            display: block;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        .spec-label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .spec-value {
-            color: #555;
-        }
-
-        #descriptiondetail {
-            max-height: 500px;
-            overflow: hidden;
-            transition: 0.3s;
-        }
-
-        .related-card {
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 12px;
-            height: 100%;
-        }
-
-        .related-card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .related-name {
-            display: block;
-            margin-top: 8px;
-            font-size: 14px;
-            color: #222;
-            text-decoration: none;
-            min-height: 42px;
-        }
-
-        .related-name:hover {
-            color: #d70018;
-        }
-
-        .variant-section-title {
-            font-weight: 600;
-            margin-top: 12px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .empty-comment {
-            padding: 12px;
-            background: #fafafa;
-            border: 1px dashed #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
-
     <script>
         window.onload = function () {
             loadMenu();
@@ -175,74 +42,146 @@
 <body>
     <div id="headerweb"></div>
 
-    <div class="contentweb">
-        <div class="container detailproduct">
-            <div class="row">
-                <div class="col-sm-8">
-                    <h4 class="pronamedetail" id="detailnamepro"></h4>
+    <div class="contentweb detail-page">
+        <div class="container">
 
-                    <div class="shop-line">
-                        <span>Mã SP:</span> <span id="codepro"></span>
-                        <span style="margin-left:16px;">Shop:</span> <span id="shopname"></span>
+            <!-- PRODUCT MAIN -->
+            <div class="product-detail-card">
+                <div class="product-gallery">
+                    <img id="imgdetailpro" src="image/product1.webp" class="main-product-image">
+                    <div class="thumb-list" id="listimgdetail"></div>
+                </div>
+
+                <div class="product-info-area">
+                    <h4 class="product-detail-name" id="detailnamepro"></h4>
+                    <span id="codepro" style="display:none;"></span>
+
+                    <div class="rating-row">
+                        <span class="rating-score">4.9</span>
+                        <span class="stars">★★★★★</span>
+                        <span class="divider"></span>
+                        <span>2,9k Đánh Giá</span>
+                        <span class="divider"></span>
+                        <span>Đã Bán 10k+</span>
+                        <span class="report-link">Tố cáo</span>
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-5">
-                            <img id="imgdetailpro" src="image/product1.webp" class="imgprodetail variant-image">
+                    <div class="price-panel">
+                        <strong class="newpricestr" id="pricedetail"></strong>
+                        <span class="oldpricestr" id="oldpricestr"></span>
+                        <span class="discount-badge">-21%</span>
+                    </div>
 
-                            <div class="listimgdetail row mt-2" id="listimgdetail"></div>
-                        </div>
-
-                        <div class="col-sm-7">
-                            <div class="price-box">
-                                <strong class="newpricestr" id="pricedetail"></strong>
-                                <span class="oldpricestr" id="oldpricestr"></span>
-                                <span class="vats">| Giá đã bao gồm VAT</span>
+                    <div class="shipping-row">
+                        <div class="label-col">Vận Chuyển</div>
+                        <div>
+                            <div class="ship-main">
+                                <i class="fa fa-truck"></i>
+                                Nhận từ 6 Th05 - 8 Th05
                             </div>
-
-                            <div class="divfreeship">
-                                <img src="image/freeship.png" class="freeshipimg">
-                                <span>MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</span>
-                            </div>
-
-                            <span id="tier1label" class="variant-section-title" style="display:none;"></span>
-                            <div class="row" id="listbonho"></div>
-
-                            <span id="tier2label" class="variant-section-title" style="display:none;"></span>
-                            <div class="row" id="listcolor"></div>
-
-                            <span class="variant-section-title">Thông tin biến thể</span>
-                            <div class="phukiendikem" id="phukiendikem">Chưa chọn biến thể</div>
-                            <div class="stock-box" id="variantstock"></div>
-
-                            <div class="btnmuahangngay mt-3">
-                                <button onclick="addCart('MUANGAY')" class="btnmuangay">
-                                    Mua ngay
-                                    <span class="lbgiaotannha">
-                                        Giao tận nhà (COD) <br>Hoặc nhận tại cửa hàng
-                                    </span>
-                                </button>
-                                <button onclick="addCart('ADD')" class="btnthemgiohang">
-                                    <i class="fa fa-shopping-cart iconcartdt"></i>Thêm giỏ hàng
-                                </button>
-                            </div>
+                            <div class="ship-sub">Phí ship 0₫</div>
                         </div>
                     </div>
 
-                    <div class="motasanphamdetail mt-4">
+                    <div class="shipping-row">
+                        <div class="label-col">An Tâm Mua Sắm</div>
+                        <div class="ship-main">
+                            <i class="fa fa-shield"></i>
+                            Trả hàng miễn phí 15 ngày · Bảo hiểm bảo vệ người tiêu dùng
+                        </div>
+                    </div>
+
+                    <div class="variant-area">
+                        <div class="variant-row">
+                            <div class="label-col">
+                                <span id="tier1label" style="display:none;"></span>
+                            </div>
+                            <div class="variant-options row" id="listbonho"></div>
+                        </div>
+
+                        <div class="variant-row">
+                            <div class="label-col">
+                                <span id="tier2label" style="display:none;"></span>
+                            </div>
+                            <div class="variant-options row" id="listcolor"></div>
+                        </div>
+                    </div>
+
+                    <div class="quantity-row">
+                        <div class="label-col">Số Lượng</div>
+                        <div class="quantity-box">
+                            <button type="button">−</button>
+                            <input value="1" readonly>
+                            <button type="button">+</button>
+                        </div>
+                        <span id="variantstock" class="stock-box"></span>
+                    </div>
+
+                    <div class="phukiendikem" id="phukiendikem" style="display:none;">Chưa chọn biến thể</div>
+
+                    <div class="buy-actions">
+                        <button onclick="addCart('ADD')" class="btn-add-cart">
+                            <i class="fa fa-cart-plus"></i> Thêm Vào Giỏ Hàng
+                        </button>
+                        <button onclick="addCart('MUANGAY')" class="btn-buy-now">
+                            Mua Ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHOP CARD -->
+            <div class="shop-block" id="shopCard" style="display:none;">
+                <div class="shop-left">
+                    <img id="shopAvatar" src="image/product1.webp" class="shop-avatar">
+
+                    <div class="shop-info">
+                        <a href="javascript:void(0)" id="shopname" class="shop-link" onclick="goToShopProducts()">
+                            <span id="shopNameText"></span>
+                        </a>
+                        <div class="shop-status">Online gần đây</div>
+
+                        <div class="shop-btns">
+                            <button class="btn-chat" onclick="openChatShop()">
+                                <i class="fa fa-comments"></i> Chat Ngay
+                            </button>
+                            <button class="btn-view" onclick="goToShopProducts()">
+                                <i class="fa fa-shopping-cart"></i> Xem Shop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shop-divider"></div>
+
+                <div class="shop-right">
+                    <div><span>Đánh Giá</span><b>3,3k</b></div>
+                    <div><span>Tỉ Lệ Phản Hồi</span><b>100%</b></div>
+                    <div><span>Tham Gia</span><b>5 năm trước</b></div>
+                    <div><span>Sản Phẩm</span><b id="shopProductCount">0</b></div>
+                    <div><span>Thời Gian Phản Hồi</span><b>trong vài giờ</b></div>
+                    <div><span>Người Theo Dõi</span><b>524</b></div>
+                </div>
+            </div>
+
+            <!-- DESCRIPTION + RELATED -->
+            <div class="row mt-3">
+                <div class="col-lg-8">
+                    <div class="detail-section-card">
+                        <h5 class="section-title">Mô tả sản phẩm</h5>
                         <div id="descriptiondetail"></div>
                         <div class="divmore">
                             <span id="lbxemthem">Xem thêm</span>
                         </div>
                     </div>
 
-                    <div class="phanhoisanpham mt-4">
-                        <p class="titledes">Phản hồi</p>
+                    <div class="detail-section-card mt-3">
+                        <h5 class="section-title">Phản hồi</h5>
                         <div class="listcautlct" id="listcautlct">
                             <div class="empty-comment">Chưa có bình luận nào</div>
                         </div>
 
-                        <div class="col-sm-12 col-12" id="mycomment">
+                        <div id="mycomment">
                             <div class="liststar" id="liststar">
                                 <span onclick="loadStar(0)" class="fa fa-star checkedstar"></span>
                                 <span onclick="loadStar(1)" class="fa fa-star checkedstar"></span>
@@ -270,26 +209,24 @@
                     </div>
                 </div>
 
-                <div class="col-sm-4">
-                    <div class="cauhinhchitiet">
-                        <p class="tieudesanpham">
-                            Thông số kỹ thuật
-                            <span id="tenspkythuat"></span>
-                        </p>
-
-                        <img id="imganhkythuat" src="image/product1.webp" class="anhcauhinhsp">
-
+                <div class="col-lg-4">
+                    <div class="detail-section-card">
+                        <h5 class="section-title">
+                            Thông số kỹ thuật <span id="tenspkythuat"></span>
+                        </h5>
+                        <img id="imganhkythuat" src="image/product1.webp" class="spec-image">
                         <div id="thongsochitiet" class="thongtincauhinhdv"></div>
                     </div>
 
-                    <div class="sanphamtuongtudetail mt-4">
-                        <p class="tieudesanpham">Sản phẩm tương tự</p>
+                    <div class="detail-section-card mt-3">
+                        <h5 class="section-title">Sản phẩm tương tự</h5>
                         <div id="listsanphamlienquan" class="row"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="container" id="footer"></div>
 
@@ -344,22 +281,52 @@
                 renderDescription(product);
                 renderTechnicalInfo(product);
                 loadSanPhamLienQuan(product);
+
+                console.log("PRODUCT DETAIL:", product);
+                console.log("SHOP:", product.shop);
             } catch (error) {
                 console.error("Lỗi loadAProduct:", error);
                 toastr.error("Không tải được chi tiết sản phẩm");
             }
         }
 
+        let currentShop = null;
+
         function renderProductInfo(product) {
             document.getElementById("detailnamepro").innerText = product.name || "";
             document.getElementById("codepro").innerText = product.code || "";
-            document.getElementById("shopname").innerText = product.shop ? product.shop.shopName : "Không có shop";
+
+            currentShop = product.shop || null;
+
+            if (currentShop) {
+                document.getElementById("shopCard").style.display = "flex";
+
+                document.getElementById("shopNameText").innerText =
+                    currentShop.shopName || currentShop.name || "Shop";
+
+                document.getElementById("shopAvatar").src =
+                    currentShop.avatar || currentShop.image || currentShop.logo || "image/logo.ico";
+
+                document.getElementById("shopProductCount").innerText =
+                    currentShop.totalProduct || currentShop.productCount || 0;
+            } else {
+                document.getElementById("shopCard").style.display = "none";
+            }
 
             document.getElementById("pricedetail").innerText = formatmoney(product.price || 0);
             document.getElementById("oldpricestr").innerText = product.oldPrice ? formatmoney(product.oldPrice) : "";
             document.getElementById("imgdetailpro").src = product.imageBanner || "image/product1.webp";
             document.getElementById("imganhkythuat").src = product.imageBanner || "image/product1.webp";
             document.getElementById("tenspkythuat").innerText = product.name || "";
+        }
+
+        function goToShopProducts() {
+            if (!currentShop || !currentShop.id) {
+                toastr.warning("Không tìm thấy shop");
+                return;
+            }
+
+            window.location.href = "shop-detail?id=" + currentShop.id;
         }
 
         function renderProductImages(product) {

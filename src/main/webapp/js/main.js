@@ -61,7 +61,7 @@ function loadMenu() {
     </div>
 </div>`
     document.getElementById("headerweb").innerHTML = menu;
-    loadThuongHieuAndPhuKien();
+    // loadThuongHieuAndPhuKien();
     countCart();
     // loadCou2();
     // loadCou3();

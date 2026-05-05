@@ -4,6 +4,8 @@ import com.web.dto.request.ColorRequest;
 import com.web.dto.request.ProductRequest;
 import com.web.dto.request.StorageRequest;
 import com.web.dto.request.VariantRequest;
+import com.web.dto.response.ProductShopResponse;
+import com.web.dto.response.ShopResponse;
 import com.web.entity.*;
 import com.web.enums.CategoryType;
 import com.web.exception.MessageException;
@@ -140,6 +142,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product update(ProductRequest productRequest) {
         if (productRequest.getId() == null) {
             throw new MessageException("id product require");
@@ -148,47 +151,66 @@ public class ProductServiceImp implements ProductService {
         Product exist = productRepository.findById(productRequest.getId())
                 .orElseThrow(() -> new MessageException("product not found"));
 
-        Optional<TradeMark> tradeMark = tradeMarkRepository.findById(productRequest.getTradeMarkId());
-        Optional<Category> category = categoryRepository.findById(productRequest.getCategoryId());
+        TradeMark tradeMark = tradeMarkRepository.findById(productRequest.getTradeMarkId())
+                .orElseThrow(() -> new MessageException("Không tìm thấy thương hiệu"));
 
-        if (tradeMark.isEmpty()) {
-            throw new MessageException("Không tìm thấy thương hiệu");
-        }
+        Category category = categoryRepository.findById(productRequest.getCategoryId())
+                .orElseThrow(() -> new MessageException("Không tìm thấy danh mục"));
 
-        if (category.isEmpty()) {
-            throw new MessageException("Không tìm thấy danh mục");
-        }
         Shop shop = resolveShop(productRequest);
 
-        // update info
         exist.setCode(productRequest.getCode());
         exist.setName(productRequest.getName());
         exist.setDescription(productRequest.getDescription());
         exist.setImageBanner(productRequest.getImageBanner());
         exist.setPrice(productRequest.getPrice());
         exist.setOldPrice(productRequest.getOldPrice());
-        exist.setTradeMark(tradeMark.get());
-        exist.setCategory(category.get());
+        exist.setTradeMark(tradeMark);
+        exist.setCategory(category);
         exist.setShop(shop);
 
         Product savedProduct = productRepository.save(exist);
 
-        // ❗ XÓA variant cũ
-        productVariantRepository.deleteByProductId(savedProduct.getId());
+        List<ProductVariant> oldVariants = productVariantRepository.findByProductId(savedProduct.getId());
 
-        // 🔥 thêm variant mới
-        for (VariantRequest v : productRequest.getVariants()) {
-            ProductVariant variant = new ProductVariant();
-            variant.setTier1name(v.getTier1name());
-            variant.setTier1value(v.getTier1value());
-            variant.setTier2name(v.getTier2name());
-            variant.setTier2value(v.getTier2value());
-            variant.setPrice(v.getPrice());
-            variant.setQuantity(v.getQuantity());
-            variant.setImage(v.getImage());
-            variant.setProduct(savedProduct);
+        Map<Long, ProductVariant> oldMap = oldVariants.stream()
+                .filter(v -> v.getId() != null)
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
 
-            productVariantRepository.save(variant);
+        Set<Long> requestIds = new HashSet<>();
+
+        if (productRequest.getVariants() != null) {
+            for (VariantRequest v : productRequest.getVariants()) {
+                ProductVariant variant;
+
+                if (v.getId() != null && oldMap.containsKey(v.getId())) {
+                    variant = oldMap.get(v.getId());
+                    requestIds.add(v.getId());
+                } else {
+                    variant = new ProductVariant();
+                    variant.setProduct(savedProduct);
+                }
+
+                variant.setTier1name(v.getTier1name());
+                variant.setTier1value(v.getTier1value());
+                variant.setTier2name(v.getTier2name());
+                variant.setTier2value(v.getTier2value());
+                variant.setPrice(v.getPrice());
+                variant.setQuantity(v.getQuantity());
+                variant.setImage(v.getImage());
+
+                productVariantRepository.save(variant);
+            }
+        }
+
+        for (ProductVariant old : oldVariants) {
+            if (old.getId() != null && !requestIds.contains(old.getId())) {
+                boolean usedInInvoice = invoiceDetailRepository.existsByProductVariantId(old.getId());
+
+                if (!usedInInvoice) {
+                    productVariantRepository.delete(old);
+                }
+            }
         }
 
         return savedProduct;
@@ -340,6 +362,42 @@ public class ProductServiceImp implements ProductService {
             return productRepository.findByShopAndTrademark(shopId, search, trademarkId, pageable);
         }
         return productRepository.findByShopAndCategoryAndTrademark(shopId, search, categoryId, trademarkId, pageable);
+    }
+
+    @Override
+    public Page<ProductShopResponse> findByShop(Long shopId, Pageable pageable) {
+
+        if (shopId == null) {
+            throw new MessageException("shopId không được để trống");
+        }
+
+        Page<Product> page = productRepository.findByShopIdAndDeletedFalse(shopId, pageable);
+
+        long totalProduct = page.getTotalElements();
+
+        return page.map(p -> {
+            ProductShopResponse dto = new ProductShopResponse();
+
+            dto.setId(p.getId());
+            dto.setCode(p.getCode());
+            dto.setName(p.getName());
+            dto.setImageBanner(p.getImageBanner());
+            dto.setPrice(p.getPrice());
+            dto.setOldPrice(p.getOldPrice());
+
+            if (p.getShop() != null) {
+                ShopResponse shop = new ShopResponse();
+
+                shop.setId(p.getShop().getId());
+                shop.setShopName(p.getShop().getShopName());
+                // shop.setAvatar(p.getShop().getAvatar()); // nếu có
+                shop.setTotalProduct(totalProduct);
+
+                dto.setShop(shop);
+            }
+
+            return dto;
+        });
     }
 
 }

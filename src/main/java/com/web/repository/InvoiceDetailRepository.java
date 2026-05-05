@@ -67,4 +67,9 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
         @Query("select d from InvoiceDetail d " +
                         "where d.invoice.id = ?1 and d.productVariant.product.shop.id = ?2")
         List<InvoiceDetail> findByInvoiceIdAndShopId(Long invoiceId, Long shopId);
+
+        // InvoiceDetailRepository
+        @Query("select count(i) > 0 from InvoiceDetail i where i.productVariant.id = ?1")
+        boolean existsByProductVariantId(Long productVariantId);
+
 }

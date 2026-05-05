@@ -1,0 +1,33 @@
+.category-modal {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.category-form {
+    width: 100%;
+    max-width: 460px;
+    margin: auto;
+}
+
+.lb-form {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.modern-input {
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.modern-input:focus {
+    border-color: #1677ff;
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.12);
+}
+
+.btn-save-category {
+    height: 44px;
+    border-radius: 8px;
+    font-weight: 600;
+}

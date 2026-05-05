@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class VariantRequest {
 
+    private Long id;
+
     private String tier1name; // Ví dụ: Màu
     private String tier1value; // Ví dụ: Đen
 

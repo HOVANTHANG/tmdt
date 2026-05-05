@@ -2,6 +2,7 @@ package com.web.servive;
 
 import com.web.dto.request.ProductRequest;
 import com.web.dto.response.ProductResponse;
+import com.web.dto.response.ProductShopResponse;
 import com.web.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,4 +42,5 @@ public interface ProductService {
 
     Page<Product> findByMyShop(String search, Long categoryId, Long trademarkId, Pageable pageable);
 
+    Page<ProductShopResponse> findByShop(Long shopId, Pageable pageable);
 }
