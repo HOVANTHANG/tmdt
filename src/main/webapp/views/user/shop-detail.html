@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/shop-detail.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
@@ -19,6 +21,7 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
 
     <script src="js/main.js"></script>
+
 
 </head>
 
@@ -275,10 +278,21 @@
             pagination.innerHTML = html;
         }
 
+
         function openChatShop() {
-            toastr.info("Tính năng chat đang được phát triển");
+            if (!currentShop || !currentShop.id) {
+                toastr.warning("Không tìm thấy shop");
+                return;
+            }
+
+            openChatWithShop(currentShop);
         }
+
     </script>
+
+
+
+    <script src="js/chat-widget.js"></script>
 </body>
 
 </html>

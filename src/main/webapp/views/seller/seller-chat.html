@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat khách hàng</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
+    <script src="/seller/js/menu1.js"></script>
+    <script src="/seller/js/dashboard-shop.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f4f6f8;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .seller-chat-page {
+            padding: 24px;
+        }
+
+        .seller-chat-wrapper {
+            height: calc(100vh - 95px);
+            background: #fff;
+            border-radius: 16px;
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(15, 23, 42, .08);
+        }
+
+        .chat-left {
+            border-right: 1px solid #edf0f2;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .chat-left-header {
+            padding: 18px;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .chat-left-header h4 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .chat-left-header span {
+            color: #8a8f98;
+            font-size: 13px;
+        }
+
+        .chat-search-box {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .chat-search-box input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #e0e3e7;
+            border-radius: 999px;
+            padding: 0 16px;
+            outline: none;
+        }
+
+        .room-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .room-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .room-item:hover,
+        .room-item.active {
+            background: #fff4ef;
+        }
+
+        .room-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .room-name {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .room-last {
+            font-size: 13px;
+            color: #8a8f98;
+            margin-top: 4px;
+        }
+
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+            background: #f7f8fa;
+        }
+
+        .chat-panel-header {
+            height: 72px;
+            background: #fff;
+            border-bottom: 1px solid #edf0f2;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-panel-header h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .chat-panel-header span {
+            color: #8a8f98;
+            font-size: 13px;
+        }
+
+        .seller-chat-body {
+            flex: 1;
+            padding: 22px;
+            overflow-y: auto;
+        }
+
+        .empty-chat {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+        }
+
+        .empty-chat i {
+            font-size: 54px;
+            margin-bottom: 12px;
+        }
+
+        .msg-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .msg-row.mine {
+            justify-content: flex-end;
+        }
+
+        .msg-bubble {
+            max-width: 62%;
+            padding: 11px 15px;
+            border-radius: 18px;
+            background: #fff;
+            color: #111827;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+        }
+
+        .msg-row.mine .msg-bubble {
+            background: #ee4d2d;
+            color: #fff;
+        }
+
+        .seller-chat-footer {
+            background: #fff;
+            border-top: 1px solid #edf0f2;
+            padding: 14px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .seller-chat-footer input {
+            flex: 1;
+            height: 44px;
+            border: 1px solid #e0e3e7;
+            border-radius: 999px;
+            padding: 0 18px;
+            outline: none;
+        }
+
+        .seller-chat-footer button {
+            border: none;
+            background: #ee4d2d;
+            color: #fff;
+            padding: 0 24px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+
+    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav"></div>
+
+        <div id="layoutSidenav_content">
+            <main class="seller-chat-page">
+                <div class="seller-chat-wrapper">
+                    <div class="chat-left">
+                        <div class="chat-left-header">
+                            <h4>Chat khách hàng</h4>
+                            <span id="roomCount">0 cuộc trò chuyện</span>
+                        </div>
+
+                        <div class="chat-search-box">
+                            <input id="searchRoomInput" onkeyup="filterRooms()" placeholder="Tìm khách hàng...">
+                        </div>
+
+                        <div class="room-list" id="roomList"></div>
+                    </div>
+
+                    <div class="chat-panel">
+                        <div class="chat-panel-header">
+                            <div>
+                                <h5 id="chatTitle">Chọn khách hàng để chat</h5>
+                                <span id="chatSubTitle">Tin nhắn với khách hàng sẽ hiển thị tại đây</span>
+                            </div>
+                        </div>
+
+                        <div class="seller-chat-body" id="sellerChatMessages">
+                            <div class="empty-chat">
+                                <i class="fas fa-comments"></i>
+                                <p>Chọn một khách hàng bên trái để bắt đầu trò chuyện</p>
+                            </div>
+                        </div>
+
+                        <div class="seller-chat-footer">
+                            <input id="sellerChatInput" onkeydown="handleEnter(event)" placeholder="Nhập tin nhắn...">
+                            <button onclick="sellerSendMessage()">Gửi</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = "http://localhost:8080";
+
+        let selectedRoomId = null;
+        let sellerInterval = null;
+
+        window.onload = function () {
+            loadSellerRooms();
+        };
+
+        async function loadSellerRooms() {
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`${BASE_URL}/api/chat/seller/rooms`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) {
+                alert("Không tải được danh sách chat");
+                return;
+            }
+
+            const rooms = await res.json();
+
+            let html = "";
+
+            rooms.forEach(room => {
+                html += `
+        <div class="room-item" id="room-${room.roomId}"
+             onclick="selectRoom(${room.roomId}, '${escapeJs(room.username || 'Khách hàng')}')">
+
+            <img class="room-avatar"
+                 src="/image/user.jpg">
+
+            <div class="room-info">
+                <div class="room-name">${room.username || 'Khách hàng'}</div>
+                <div class="room-last">Nhấn để xem tin nhắn...</div>
+            </div>
+        </div>
+    `;
+            });
+
+            document.getElementById("roomList").innerHTML =
+                html || `<div class="room-item">Chưa có khách hàng nhắn tin</div>`;
+        }
+
+        function selectRoom(roomId, username) {
+            selectedRoomId = roomId;
+
+            document.querySelectorAll(".room-item").forEach(item => {
+                item.classList.remove("active");
+            });
+
+            const active = document.getElementById("room-" + roomId);
+            if (active) active.classList.add("active");
+
+            document.getElementById("chatTitle").innerText = username;
+
+            loadSellerMessages();
+
+            if (sellerInterval) clearInterval(sellerInterval);
+            sellerInterval = setInterval(loadSellerMessages, 3000);
+        }
+
+        async function loadSellerMessages() {
+            if (!selectedRoomId) return;
+
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`${BASE_URL}/api/chat/seller/messages?roomId=${selectedRoomId}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) return;
+
+            const messages = await res.json();
+
+            let html = "";
+
+            messages.forEach(msg => {
+                html += `
+        <div class="msg-row ${msg.mine ? 'mine' : ''}">
+            <div class="msg-bubble">
+                ${escapeHtml(msg.content)}
+            </div>
+        </div>
+    `;
+            });
+
+            const box = document.getElementById("sellerChatMessages");
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sellerSendMessage() {
+            if (!selectedRoomId) {
+                alert("Vui lòng chọn khách hàng");
+                return;
+            }
+
+            const input = document.getElementById("sellerChatInput");
+            const content = input.value.trim();
+
+            if (!content) return;
+
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`${BASE_URL}/api/chat/seller/send`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    roomId: selectedRoomId,
+                    content: content
+                })
+            });
+
+            if (res.ok) {
+                input.value = "";
+                loadSellerMessages();
+            } else {
+                alert("Không gửi được tin nhắn");
+            }
+        }
+
+        function escapeJs(str) {
+            return String(str || "").replace(/'/g, "\\'");
+        }
+
+        function escapeHtml(text) {
+            return String(text || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+
+</html>

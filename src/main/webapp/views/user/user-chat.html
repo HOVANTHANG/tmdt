@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+
+    <link rel="shortcut icon" href="image/logo.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f5f5f5;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .chat-page {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-wrapper {
+            width: 980px;
+            height: 720px;
+            background: #fff;
+            border: 1px solid #ddd;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .chat-sidebar {
+            border-right: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .chat-sidebar-header {
+            height: 58px;
+            padding: 0 18px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            color: #ee4d2d;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .chat-count {
+            font-size: 13px;
+            color: #ee4d2d;
+        }
+
+        .chat-search-box {
+            padding: 14px 16px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .chat-search {
+            flex: 1;
+            height: 38px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0 12px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-filter {
+            border: none;
+            background: #fff;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .room-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .room-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f6f6f6;
+            position: relative;
+        }
+
+        .room-item:hover,
+        .room-item.active {
+            background: #fff7f4;
+        }
+
+        .room-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .room-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .room-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #222;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .room-date {
+            color: #888;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .room-last {
+            color: #777;
+            font-size: 13px;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .room-badge {
+            position: absolute;
+            right: 16px;
+            bottom: 14px;
+            background: #ee4d2d;
+            color: #fff;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-main {
+            display: flex;
+            flex-direction: column;
+            background: #f7f7f7;
+        }
+
+        .chat-main-header {
+            height: 58px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 0 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-shop-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .chat-shop-status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .chat-actions i {
+            color: #555;
+            margin-left: 14px;
+            cursor: pointer;
+        }
+
+        .chat-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            text-align: center;
+        }
+
+        .chat-empty-icon {
+            width: 170px;
+            height: 120px;
+            border: 6px solid #bbb;
+            border-radius: 12px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .chat-empty-icon::before {
+            content: "";
+            position: absolute;
+            width: 70px;
+            height: 32px;
+            background: #2f80ed;
+            border-radius: 5px;
+            left: 30px;
+            top: 25px;
+        }
+
+        .chat-empty-icon::after {
+            content: "...";
+            position: absolute;
+            width: 58px;
+            height: 38px;
+            background: #ee4d2d;
+            color: #fff;
+            border-radius: 8px;
+            right: -28px;
+            top: 42px;
+            font-size: 28px;
+            line-height: 26px;
+        }
+
+        .chat-empty h4 {
+            color: #444;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .chat-empty p {
+            color: #bbb;
+            font-size: 15px;
+        }
+
+        .chat-message-area {
+            flex: 1;
+            padding: 18px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .msg-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .msg-row.mine {
+            justify-content: flex-end;
+        }
+
+        .msg-bubble {
+            max-width: 70%;
+            padding: 9px 13px;
+            background: #fff;
+            border-radius: 14px;
+            color: #222;
+            font-size: 14px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .msg-row.mine .msg-bubble {
+            background: #ee4d2d;
+            color: #fff;
+        }
+
+        .chat-input-area {
+            display: none;
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 12px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 0 14px;
+            outline: none;
+        }
+
+        .chat-input-area button {
+            border: none;
+            background: #ee4d2d;
+            color: #fff;
+            height: 40px;
+            padding: 0 18px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-page">
+        <div class="chat-wrapper">
+
+            <div class="chat-sidebar">
+                <div class="chat-sidebar-header">
+                    <div>
+                        <span class="chat-title">Chat</span>
+                        <span class="chat-count" id="chatCount">(0)</span>
+                    </div>
+                    <i class="fa fa-external-link"></i>
+                </div>
+
+                <div class="chat-search-box">
+                    <input id="searchRoomInput" onkeyup="filterRooms()" class="chat-search"
+                        placeholder="Tìm theo tên shop">
+                    <button class="chat-filter">Tất cả <i class="fa fa-angle-down"></i></button>
+                </div>
+
+                <div class="room-list" id="roomList"></div>
+            </div>
+
+            <div class="chat-main">
+                <div class="chat-main-header">
+                    <div>
+                        <div class="chat-shop-name" id="chatShopName">Shopee Chat</div>
+                        <div class="chat-shop-status" id="chatShopStatus">Chọn shop để bắt đầu nhắn tin</div>
+                    </div>
+
+                    <div class="chat-actions">
+                        <i class="fa fa-refresh" onclick="reloadCurrentChat()"></i>
+                        <i class="fa fa-window-minimize"></i>
+                    </div>
+                </div>
+
+                <div class="chat-empty" id="chatEmpty">
+                    <div class="chat-empty-icon"></div>
+                    <h4>Chào mừng bạn đến với Shop Chat</h4>
+                    <p>Hãy chọn một shop để bắt đầu trò chuyện</p>
+                </div>
+
+                <div class="chat-message-area" id="chatMessages"></div>
+
+                <div class="chat-input-area" id="chatInputArea">
+                    <input id="chatInput" onkeydown="handleEnterSend(event)" placeholder="Nhập tin nhắn...">
+                    <button onclick="sendMessage()">Gửi</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = "http://localhost:8080";
+
+        let allRooms = [];
+        let selectedShopId = null;
+        let chatInterval = null;
+
+        window.onload = function () {
+            loadUserRooms();
+        };
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
+        async function loadUserRooms() {
+            const token = getToken();
+
+            if (!token) {
+                alert("Bạn cần đăng nhập");
+                window.location.href = "/dangnhap";
+                return;
+            }
+
+            const res = await fetch(`${BASE_URL}/api/chat/user/rooms`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) {
+                document.getElementById("roomList").innerHTML = `
+                    <div style="padding:16px;color:#777;">Không tải được danh sách chat</div>
+                `;
+                return;
+            }
+
+            allRooms = await res.json();
+
+            document.getElementById("chatCount").innerText = `(${allRooms.length})`;
+
+            renderRoomList(allRooms);
+        }
+
+        function renderRoomList(rooms) {
+            const box = document.getElementById("roomList");
+
+            if (!rooms || rooms.length === 0) {
+                box.innerHTML = `
+                    <div style="padding:16px;color:#777;">Bạn chưa nhắn tin với shop nào</div>
+                `;
+                return;
+            }
+
+            let html = "";
+
+            rooms.forEach(room => {
+                html += `
+                    <div class="room-item" id="room-${room.shopId}" onclick="selectRoom(${room.shopId}, '${escapeJs(room.shopName)}')">
+                        <img class="room-avatar"
+                             src="${room.shopAvatar || 'image/logo.ico'}"
+                             onerror="this.src='image/logo.ico'">
+
+                        <div class="room-info">
+                            <div class="room-top">
+                                <div class="room-name">${escapeHtml(room.shopName || "Shop")}</div>
+                                <div class="room-date">Hôm nay</div>
+                            </div>
+                            <div class="room-last">Nhấn để xem tin nhắn...</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            box.innerHTML = html;
+        }
+
+        function filterRooms() {
+            const keyword = document.getElementById("searchRoomInput").value.toLowerCase();
+
+            const filtered = allRooms.filter(room =>
+                String(room.shopName || "").toLowerCase().includes(keyword)
+            );
+
+            renderRoomList(filtered);
+        }
+
+        async function selectRoom(shopId, shopName) {
+            selectedShopId = shopId;
+
+            document.querySelectorAll(".room-item").forEach(item => {
+                item.classList.remove("active");
+            });
+
+            const active = document.getElementById("room-" + shopId);
+            if (active) active.classList.add("active");
+
+            document.getElementById("chatShopName").innerText = shopName || "Shop";
+            document.getElementById("chatShopStatus").innerText = "Đang hoạt động";
+
+            document.getElementById("chatEmpty").style.display = "none";
+            document.getElementById("chatMessages").style.display = "block";
+            document.getElementById("chatInputArea").style.display = "flex";
+
+            await loadMessages();
+
+            if (chatInterval) clearInterval(chatInterval);
+            chatInterval = setInterval(loadMessages, 3000);
+        }
+
+        async function loadMessages() {
+            if (!selectedShopId) return;
+
+            const token = getToken();
+
+            const res = await fetch(`${BASE_URL}/api/chat/user/messages?shopId=${selectedShopId}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) return;
+
+            const messages = await res.json();
+
+            renderMessages(messages);
+        }
+
+        function renderMessages(messages) {
+            const box = document.getElementById("chatMessages");
+
+            let html = "";
+
+            messages.forEach(msg => {
+                html += `
+                    <div class="msg-row ${msg.mine ? 'mine' : ''}">
+                        <div class="msg-bubble">${escapeHtml(msg.content)}</div>
+                    </div>
+                `;
+            });
+
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("chatInput");
+            const content = input.value.trim();
+
+            if (!content || !selectedShopId) return;
+
+            const token = getToken();
+
+            const res = await fetch(`${BASE_URL}/api/chat/user/send`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    shopId: selectedShopId,
+                    content: content
+                })
+            });
+
+            if (res.ok) {
+                input.value = "";
+                loadMessages();
+                loadUserRooms();
+            }
+        }
+
+        function reloadCurrentChat() {
+            if (selectedShopId) {
+                loadMessages();
+            } else {
+                loadUserRooms();
+            }
+        }
+
+        function handleEnterSend(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function escapeHtml(text) {
+            return String(text || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function escapeJs(text) {
+            return String(text || "").replace(/'/g, "\\'");
+        }
+    </script>
+</body>
+
+</html>

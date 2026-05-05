@@ -26,6 +26,7 @@
         integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
     <script src="/webjars/jquery/dist/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -34,6 +35,7 @@
     <script src="js/product.js"></script>
     <script src="js/blog.js"></script>
     <script src="js/category-index.js"></script>
+
     <script>
         window.onload = function () {
             loadMenu();
@@ -183,28 +185,10 @@
 
     <div class="container" id="footer"></div>
 
-    <div class="chat-container">
-        <button class="chat-button" id="btnopenchat" onclick="toggleChatSocket()"><i class="fa fa-comment"></i> Chat với
-            chúng tôi</button>
 
-        <div id="chat-box" class="chat-box">
-            <div class="chat-header">
-                <h3>Xin chào bạn!</h3>
-                <button class="close-btn" onclick="toggleChatSocket()">X</button>
-            </div>
-            <div class="chat-body" id="scroll-to-bottom">
-                <div id="listchat">
+    <script src="js/chat-widget.js"></script>
 
-                </div>
-            </div>
-            <div class="chat-footer">
-                <input type="text" id="contentmess" placeholder="Nhập tin nhắn..." />
-                <button id="sendmess">Gửi</button>
-            </div>
-        </div>
-    </div>
-
-    <th:block th:replace="user/chat :: chatMain">
+    <th:block th:replace="user/chat :: chatMain"></th:block>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
     integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="

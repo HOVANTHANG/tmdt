@@ -23,9 +23,9 @@ public class SellerController {
         return "seller/addvoucher";
     }
 
-    @RequestMapping(value = { "/chat" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "/seller-chat" }, method = RequestMethod.GET)
     public String chat() {
-        return "seller/chat";
+        return "seller/seller-chat";
     }
 
     @RequestMapping(value = { "/danhmuc" }, method = RequestMethod.GET)
