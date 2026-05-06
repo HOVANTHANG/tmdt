@@ -128,38 +128,86 @@ async function loadDetailInvoice(id) {
 
         const list = await res.json();
         let main = '';
+        let currentShopId = null;
 
         for (let i = 0; i < list.length; i++) {
             const item = list[i];
             const product = item.product || {};
             const variant = item.productVariant || {};
 
-            const image = getVariantImage(product, variant);
+            const image = safeImage(
+                item.image || variant.image || product.imageBanner,
+                "/image/product1.webp"
+            );
+
+            const shopAvatar = safeImage(
+                item.shopAvatar,
+                "/image/logo.ico"
+            );
+
+            const shopId = item.shopId || 0;
+            const shopName = item.shopName || "Shop";
+
             const variantText = getVariantDisplayName(variant);
             const price = Number(item.price || variant.price || 0);
             const quantity = Number(item.quantity || 0);
 
+            if (currentShopId !== shopId) {
+                currentShopId = shopId;
+
+                main += `
+                    <tr class="shop-row">
+                        <td colspan="5">
+                            <div class="shop-header">
+                                <div class="shop-left">
+                                    <img src="${shopAvatar}"
+                                         class="shop-avatar"
+                                         onerror="this.onerror=null; this.src='/image/logo.ico'">
+
+                                    <div>
+                                        <div class="shop-name">${shopName}</div>
+                                        <div class="shop-status">Nhà bán hàng</div>
+                                    </div>
+                                </div>
+
+                                ${shopId
+                        ? `<button class="btn-view-shop" onclick="goShop(${shopId})">Xem shop</button>`
+                        : ""
+                    }
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
             main += `
                 <tr>
                     <td>
-                        <img src="${image}" class="imgdetailacc"
-                             onerror="this.src='image/product1.webp'">
+                        <img src="${image}"
+                             class="imgdetailacc"
+                             onerror="this.onerror=null; this.src='/image/product1.webp'">
                     </td>
+
                     <td>
-                        <a href="../detail?id=${product.id || ''}">${product.name || ''}</a><br>
-                        <span>${variantText}</span><br>
-                        <span>Mã sản phẩm: ${product.code || ''}</span><br>
+                        <a class="product-link" href="../detail?id=${product.id || ''}">
+                            ${product.name || ''}
+                        </a>
+                        <br>
+
+                        <span class="variant-text">${variantText}</span>
+                        <br>
+
+                        <span class="product-code">Mã sản phẩm: ${product.code || ''}</span>
+                        <br>
+
                         <span class="slmobile">SL: ${quantity}</span>
                     </td>
+
                     <td>${formatmoney(price)}</td>
+
                     <td class="sldetailacc">${quantity}</td>
+
                     <td class="pricedetailacc yls">${formatmoney(price * quantity)}</td>
-                    <td class="d-flex">
-                        <input id="imei${item.id}" style="max-width: 150px" value="${item.imei == null ? '' : item.imei}">
-                        <button onclick="updateImei(${item.id})" class="btn btn-primary btn-sm">
-                            <i class="fa fa-check"></i>
-                        </button>
-                    </td>
                 </tr>
             `;
         }
@@ -176,11 +224,17 @@ async function loadDetailInvoice(id) {
 
         const result = await resp.json();
 
-        document.getElementById("ngaytaoinvoice").innerHTML = (result.createdTime || '') + " " + (result.createdDate || '');
-        document.getElementById("trangthaitt").innerHTML = result.payType === "MOMO" ? "Đã thanh toán" : "Thanh toán khi nhận hàng";
-        document.getElementById("loaithanhtoan").innerHTML = result.payType === "MOMO"
-            ? "Thanh toán qua momo"
-            : "Thanh toán khi nhận hàng (COD)";
+        document.getElementById("ngaytaoinvoice").innerHTML =
+            (result.createdTime || '') + " " + (result.createdDate || '');
+
+        document.getElementById("trangthaitt").innerHTML =
+            result.payType === "MOMO" ? "Đã thanh toán" : "Thanh toán khi nhận hàng";
+
+        document.getElementById("loaithanhtoan").innerHTML =
+            result.payType === "MOMO"
+                ? "Thanh toán qua momo"
+                : "Thanh toán khi nhận hàng (COD)";
+
         document.getElementById("ttvanchuyen").innerHTML = result.statusInvoice || '';
         document.getElementById("tennguoinhan").innerHTML = result.receiverName || '';
         document.getElementById("addnhan").innerHTML = result.address || '';
@@ -192,6 +246,17 @@ async function loadDetailInvoice(id) {
         console.error("Lỗi loadDetailInvoice:", error);
         toastr.error("Không tải được chi tiết hóa đơn");
     }
+}
+
+function safeImage(url, fallback) {
+    if (!url || String(url).trim() === "") {
+        return fallback;
+    }
+    return url;
+}
+
+function goShop(shopId) {
+    window.open("/shop-detail?id=" + shopId, "_blank");
 }
 
 /* =========================
@@ -278,37 +343,6 @@ async function loadAllStatus() {
     }
 }
 
-/* =========================
-   UPDATE IMEI
-========================= */
-async function updateImei(iddetail) {
-    var imei = document.getElementById("imei" + iddetail).value;
-    var url = `http://localhost:8080/api/invoice/admin/update-imei?detailId=${iddetail}&imei=${imei}`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-                'Authorization': 'Bearer ' + token
-            })
-        });
-
-        if (response.status < 300) {
-            toastr.success("Cập nhật imei thành công");
-            return;
-        }
-
-        if (response.status == exceptionCode) {
-            var result = await response.json();
-            toastr.error(result.defaultMessage);
-        } else {
-            toastr.error("Có lỗi " + response.status + " xảy ra");
-        }
-    } catch (error) {
-        console.error("Lỗi updateImei:", error);
-        toastr.error("Không thể cập nhật imei");
-    }
-}
 
 /* =========================
    PRINT INVOICE

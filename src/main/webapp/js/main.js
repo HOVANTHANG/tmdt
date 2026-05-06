@@ -13,7 +13,13 @@ function loadMenu() {
         ` <div class="subheader">
     <div class="container subcontainerheader">
         <ul>
-            <li><a href="javascript:void(0)" onclick="goSellerRegister()">Đăng ký trở thành nhà bán hàng</a></li>
+            <li>
+                <a href="javascript:void(0)"
+                   id="btnSellerRegister"
+                   onclick="goSellerRegister()">
+                   Đăng ký trở thành nhà bán hàng
+                </a>
+            </li>
             <li><a href="/baiviet">Tin tức công nghệ</a></li>
             <li><a href="/diachi">Địa chỉ cửa hàng</a></li>
             <li><a href="timdonhang">Tra cứu đơn hàng</a></li>
@@ -61,6 +67,7 @@ function loadMenu() {
     </div>
 </div>`
     document.getElementById("headerweb").innerHTML = menu;
+    checkSellerStatus();
     // loadThuongHieuAndPhuKien();
     countCart();
     // loadCou2();
@@ -304,5 +311,96 @@ function toggleChatSocket() {
     else {
         chatBox.style.display = "none";
         btnopenchat.style.display = ''
+    }
+}
+
+
+
+
+
+
+async function checkSellerStatus() {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+
+        const res = await fetch(
+            "http://localhost:8080/api/seller/public/my-seller-status",
+            {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        if (!res.ok) return;
+
+        const status = await res.text();
+
+        const btn = document.getElementById("btnSellerRegister");
+
+        if (!btn) return;
+
+        // chưa đăng ký
+        if (status === "NONE") {
+
+            btn.innerHTML = "Đăng ký trở thành nhà bán hàng";
+
+            btn.style.pointerEvents = "auto";
+            btn.style.opacity = "1";
+
+            btn.onclick = function () {
+                goSellerRegister();
+            };
+
+            return;
+        }
+
+        // đang chờ duyệt
+        if (status === "PENDING") {
+
+            btn.innerHTML = "Đang chờ admin duyệt";
+
+            btn.style.pointerEvents = "none";
+            btn.style.opacity = "0.6";
+
+            return;
+        }
+
+        // đã duyệt
+        if (status === "APPROVED") {
+
+            btn.innerHTML = "Trang người bán";
+
+            btn.style.pointerEvents = "auto";
+            btn.style.opacity = "1";
+
+            btn.onclick = function () {
+                window.location.href = "/seller/index";
+            };
+
+            return;
+        }
+
+        // bị từ chối
+        if (status === "REJECTED") {
+
+            btn.innerHTML = "Đăng ký lại nhà bán hàng";
+
+            btn.style.pointerEvents = "auto";
+            btn.style.opacity = "1";
+
+            btn.onclick = function () {
+                window.location.href = "/seller-register";
+            };
+
+            return;
+        }
+
+    } catch (e) {
+        console.error(e);
     }
 }

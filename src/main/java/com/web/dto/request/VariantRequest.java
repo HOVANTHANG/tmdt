@@ -16,6 +16,7 @@ public class VariantRequest {
     private String tier2value; // Ví dụ: L
 
     private Double price;
+    private Double importPrice;
     private Integer quantity;
     private String image;
 }

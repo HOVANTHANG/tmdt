@@ -15,36 +15,34 @@ import java.util.List;
 @Service
 public interface InvoiceService {
 
-    public InvoiceResponse create(InvoiceRequest invoiceRequest);
+        public InvoiceResponse create(InvoiceRequest invoiceRequest);
 
-    public InvoiceResponse updateStatus(Long invoiceId, StatusInvoice statusInvoice);
+        public InvoiceResponse updateStatus(Long invoiceId, StatusInvoice statusInvoice);
 
-    public List<InvoiceResponse> findByUser();
+        public List<InvoiceResponse> findByUser();
 
-    public Page<InvoiceResponse> findAll(Date from, Date to, Pageable pageable);
+        public Page<InvoiceResponse> findAll(Date from, Date to, Pageable pageable);
 
-    public InvoiceResponse cancelInvoice(Long invoiceId);
+        public InvoiceResponse cancelInvoice(Long invoiceId);
 
-    public InvoiceResponse findById(Long invoiceId);
+        public InvoiceResponse findById(Long invoiceId);
 
-    public InvoiceResponse findByIdForAdmin(Long invoiceId);
+        public InvoiceResponse findByIdForAdmin(Long invoiceId);
 
-    public InvoiceResponse timKiemDonHang(Long id, String phone);
+        public InvoiceResponse timKiemDonHang(Long id, String phone);
 
-    public Page<InvoiceResponse> findAllFull(Date from, Date to, PayType payType, StatusInvoice statusInvoice,
-            Pageable pageable);
+        public Page<InvoiceResponse> findAllFull(Date from, Date to, PayType payType, StatusInvoice statusInvoice,
+                        Pageable pageable);
 
-    public Page<InvoiceResponse> searchInvoice(String q, Pageable pageable);
+        public Page<InvoiceResponse> searchInvoice(String q, Pageable pageable);
 
-    void updateImei(Long detailId, String imei);
+        Page<Invoice> findInvoiceBySellerShop(String from, String to, PayType payType, StatusInvoice status,
+                        Pageable pageable, String sort);
 
-    Page<Invoice> findInvoiceBySellerShop(String from, String to, PayType payType, StatusInvoice status,
-            Pageable pageable, String sort);
+        Invoice findByIdForSeller(Long idInvoice);
 
-    Invoice findByIdForSeller(Long idInvoice);
+        void updateStatusForSeller(Long idInvoice, StatusInvoice status);
 
-    void updateStatusForSeller(Long idInvoice, StatusInvoice status);
-
-    Page<Invoice> searchInvoiceForSeller(String q, Pageable pageable);
+        Page<Invoice> searchInvoiceForSeller(String q, Pageable pageable);
 
 }

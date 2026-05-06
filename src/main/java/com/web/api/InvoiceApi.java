@@ -80,12 +80,6 @@ public class InvoiceApi {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @PostMapping("/admin/update-imei")
-    public ResponseEntity<?> updateImei(@RequestParam Long detailId, @RequestParam String imei) {
-        invoiceService.updateImei(detailId, imei);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
     @GetMapping("/public/tim-kiem-don-hang")
     public ResponseEntity<?> timKiemDonHang(@RequestParam("id") Long id, @RequestParam("phone") String phone) {
         InvoiceResponse result = invoiceService.timKiemDonHang(id, phone);

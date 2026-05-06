@@ -1,5 +1,7 @@
 package com.web.dto.response;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +16,8 @@ public class DashboardSellerResponse {
     private Long totalProduct;
     private Long totalInvoice;
     private Long totalInvoiceDone;
+
+    private Double profitThisMonth;
+    private Double profitToday;
+
 }

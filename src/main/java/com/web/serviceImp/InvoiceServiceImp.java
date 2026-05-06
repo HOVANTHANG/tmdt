@@ -175,6 +175,7 @@ public class InvoiceServiceImp implements InvoiceService {
             InvoiceDetail detail = new InvoiceDetail();
             detail.setInvoice(savedInvoice);
             detail.setPrice(variant.getPrice());
+            detail.setImportPrice(variant.getImportPrice());
             detail.setQuantity(c.getQuantity());
             detail.setProductVariant(variant);
 
@@ -394,17 +395,6 @@ public class InvoiceServiceImp implements InvoiceService {
         List<InvoiceResponse> list = invoiceMapper.invoiceListToInvoiceResponseList(page.getContent());
         Page<InvoiceResponse> result = commonPage.restPage(page, list);
         return result;
-    }
-
-    @Override
-    public void updateImei(Long detailId, String imei) {
-        InvoiceDetail invoiceDetail = invoiceDetailRepository.findById(detailId).get();
-        Long idCheck = invoiceDetailRepository.findByIdAndImei(detailId, imei);
-        if (idCheck != null) {
-            throw new MessageException("Imei đã được sử dụng");
-        }
-        invoiceDetail.setImei(imei);
-        invoiceDetailRepository.save(invoiceDetail);
     }
 
     private Long getCurrentSellerShopId() {

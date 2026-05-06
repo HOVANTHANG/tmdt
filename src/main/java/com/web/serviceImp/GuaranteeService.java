@@ -78,7 +78,7 @@ public class GuaranteeService {
         guarantee.setProductName(invoiceDetail.getProductVariant().getProduct().getName());
         guarantee.setProductVariantTier1(invoiceDetail.getProductVariant().getTier1value());
         guarantee.setProductVariantTier2(invoiceDetail.getProductVariant().getTier2value());
-        guarantee.setImei(invoiceDetail.getImei());
+        // guarantee.setImpo(invoiceDetail.());
         guaranteeRepository.save(guarantee);
 
         String date = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);

@@ -9,8 +9,8 @@ import java.util.Properties;
 
 @Configuration
 public class MailSenderConfig {
-    final static String username = "dev002102@gmail.com";
-    final static String password = "vlpenjdvmhzajkjc";
+    final static String username = "hothang2262004@gmail.com";
+    final static String password = "ckgmiphxbetkhmqa";
 
     @Bean
     public JavaMailSender getJavaMailSender() {

@@ -29,6 +29,8 @@ public class ProductVariant {
 
     private Double price;
 
+    private Double importPrice;
+
     private Integer quantity;
 
     @ManyToOne

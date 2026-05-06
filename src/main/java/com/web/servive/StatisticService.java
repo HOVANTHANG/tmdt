@@ -13,4 +13,6 @@ public interface StatisticService {
     List<RevenueMonthResponse> revenueChartForSeller(Integer year);
 
     List<Product> topProductsForSeller();
+
+    List<RevenueMonthResponse> profitChartForSeller(Integer year);
 }

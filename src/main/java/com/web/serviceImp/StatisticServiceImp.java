@@ -51,9 +51,15 @@ public class StatisticServiceImp implements StatisticService {
         Shop shop = getSellerShop();
 
         DashboardSellerResponse res = new DashboardSellerResponse();
+
         res.setShopName(shop.getShopName());
+
         res.setRevenueThisMonth(invoiceDetailRepository.revenueThisMonthByShop(shop.getId()));
         res.setRevenueToday(invoiceDetailRepository.revenueTodayByShop(shop.getId()));
+
+        res.setProfitThisMonth(invoiceDetailRepository.profitThisMonthByShop(shop.getId()));
+        res.setProfitToday(invoiceDetailRepository.profitTodayByShop(shop.getId()));
+
         res.setInvoiceDoneToday(invoiceDetailRepository.invoiceDoneTodayByShop(shop.getId()));
         res.setTotalProduct(productRepository.countByShopIdAndDeletedFalse(shop.getId()));
         res.setTotalInvoice(invoiceDetailRepository.totalInvoiceByShop(shop.getId()));
@@ -91,5 +97,32 @@ public class StatisticServiceImp implements StatisticService {
     public List<Product> topProductsForSeller() {
         Shop shop = getSellerShop();
         return productRepository.findTopSellingByShop(shop.getId());
+    }
+
+    @Override
+    public List<RevenueMonthResponse> profitChartForSeller(Integer year) {
+        Shop shop = getSellerShop();
+
+        List<Object[]> rows = invoiceDetailRepository.profitByMonthOfYearAndShop(shop.getId(), year);
+
+        List<RevenueMonthResponse> responses = new ArrayList<>();
+
+        for (int month = 1; month <= 12; month++) {
+            double profit = 0D;
+
+            for (Object[] row : rows) {
+                Integer rowMonth = ((Number) row[0]).intValue();
+                Double rowProfit = row[1] == null ? 0D : ((Number) row[1]).doubleValue();
+
+                if (rowMonth == month) {
+                    profit = rowProfit;
+                    break;
+                }
+            }
+
+            responses.add(new RevenueMonthResponse(month, profit));
+        }
+
+        return responses;
     }
 }

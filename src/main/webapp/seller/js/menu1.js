@@ -91,20 +91,45 @@ function formatmoney(money) {
 }
 
 async function checkroleSeller() {
-    var token = localStorage.getItem("token");
-    var url = 'http://localhost:8080/api/seller/check-role-seller';
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + token
-        })
-    });
-    if (response.status > 300) {
-        window.location.replace('../dangnhap')
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "/dangnhap";
+        return;
+    }
+
+    try {
+
+        const url = 'http://localhost:8080/api/seller/check-role-seller';
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+
+        if (!response.ok) {
+
+            const text = await response.text();
+
+            alert(text || "Bạn không có quyền seller");
+
+            window.location.href = "/index";
+
+            return;
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Không thể kết nối server");
+
+        window.location.href = "/index";
     }
 }
-
-
 
 
 

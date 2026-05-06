@@ -4,6 +4,7 @@ import com.web.dto.request.SellerRegisterRequest;
 import com.web.entity.Authority;
 import com.web.entity.Shop;
 import com.web.entity.User;
+import com.web.enums.ShopStatus;
 import com.web.repository.AuthorityRepository;
 import com.web.repository.ShopRepository;
 import com.web.repository.UserRepository;
@@ -27,13 +28,9 @@ public class SellerService {
 
     @Transactional
     public Shop registerSeller(Long userId, SellerRegisterRequest request) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
-
-        if (user.getAuthorities() != null
-                && "ROLE_SELLER".equals(user.getAuthorities().getName())) {
-            throw new RuntimeException("Tài khoản này đã là nhà bán hàng");
-        }
 
         if (shopRepository.existsByOwnerId(userId)) {
             throw new RuntimeException("Tài khoản này đã có shop");
@@ -43,24 +40,20 @@ public class SellerService {
             throw new RuntimeException("shopSlug đã tồn tại");
         }
 
-        Authority sellerRole = authorityRepository.findById("ROLE_SELLER")
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy ROLE_SELLER"));
-
         Shop shop = new Shop();
+
         shop.setShopName(request.getShopName());
         shop.setShopSlug(request.getShopSlug());
         shop.setPhone(request.getPhone());
         shop.setEmail(request.getEmail());
         shop.setDescription(request.getDescription());
         shop.setAvatar(request.getAvatar());
+
         shop.setOwner(user);
 
-        Shop savedShop = shopRepository.save(shop);
+        // CHỜ ADMIN DUYỆT
+        shop.setStatus(ShopStatus.PENDING);
 
-        user.setAuthorities(sellerRole);
-        user.setShop(savedShop);
-        userRepository.save(user);
-
-        return savedShop;
+        return shopRepository.save(shop);
     }
 }

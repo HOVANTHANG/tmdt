@@ -20,7 +20,7 @@ public class InvoiceDetail {
 
     private Double price;
 
-    private String imei;
+    private Double importPrice;
 
     @ManyToOne
     @JoinColumn(name = "product_variant_id")

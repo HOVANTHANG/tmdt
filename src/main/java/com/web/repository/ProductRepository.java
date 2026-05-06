@@ -103,4 +103,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         Page<Product> findByCategoryIdAndDeletedFalse(Long categoryId, Pageable pageable);
 
+        Long countByShopId(Long shopId);
+
 }

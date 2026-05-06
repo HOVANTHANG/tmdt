@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Dashboard Shop</title>
+
     <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
-        crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
+        rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
 
@@ -19,108 +22,245 @@
     <script src="/seller/js/dashboard-shop.js"></script>
 
     <style>
+        body {
+            background: #f4f6fb;
+            font-family: "Segoe UI", sans-serif;
+        }
+
         .dashboard-wrap {
-            padding: 24px;
-            background: #f5f7fb;
+            padding: 26px;
             min-height: 100vh;
         }
 
-        .dashboard-header {
-            margin-bottom: 20px;
+        .dashboard-hero {
+            background: linear-gradient(135deg, #ee4d2d, #ff8a65);
+            color: #fff;
+            border-radius: 22px;
+            padding: 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 14px 35px rgba(238, 77, 45, .22);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .dashboard-header h2 {
-            font-weight: 700;
+        .dashboard-hero h2 {
+            font-weight: 800;
             margin-bottom: 8px;
         }
 
-        .dashboard-time {
-            color: #6b7280;
+        .hero-time {
+            opacity: .95;
             font-size: 15px;
         }
 
-        .dashboard-card {
-            border-radius: 16px;
+        .shop-pill {
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .35);
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .hero-icon {
+            width: 78px;
+            height: 78px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 18px;
             padding: 20px;
-            color: #fff;
-            min-height: 118px;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+            min-height: 132px;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, .07);
+            border: 1px solid #edf0f5;
+            position: relative;
+            overflow: hidden;
         }
 
-        .dashboard-label {
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            right: -24px;
+            top: -24px;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            opacity: .12;
+        }
+
+        .stat-blue::after {
+            background: #4e73df;
+        }
+
+        .stat-green::after {
+            background: #1cc88a;
+        }
+
+        .stat-cyan::after {
+            background: #36b9cc;
+        }
+
+        .stat-yellow::after {
+            background: #f6c23e;
+        }
+
+        .stat-red::after {
+            background: #e74a3b;
+        }
+
+        .stat-purple::after {
+            background: #6f42c1;
+        }
+
+        .stat-darkgreen::after {
+            background: #059669;
+        }
+
+        .stat-orange::after {
+            background: #f97316;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .stat-label {
+            color: #6b7280;
             font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            opacity: 0.95;
+            font-weight: 700;
         }
 
-        .dashboard-value {
-            font-size: 28px;
-            font-weight: 800;
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .bg-blue {
+            background: #4e73df;
+        }
+
+        .bg-green {
+            background: #1cc88a;
+        }
+
+        .bg-cyan {
+            background: #36b9cc;
+        }
+
+        .bg-yellow {
+            background: #f6c23e;
+        }
+
+        .bg-red {
+            background: #e74a3b;
+        }
+
+        .bg-purple {
+            background: #6f42c1;
+        }
+
+        .bg-darkgreen {
+            background: #059669;
+        }
+
+        .bg-orange {
+            background: #f97316;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 850;
+            color: #111827;
             line-height: 1.2;
-        }
-
-        .card-1 {
-            background: linear-gradient(135deg, #4e73df, #224abe);
-        }
-
-        .card-2 {
-            background: linear-gradient(135deg, #1cc88a, #128c61);
-        }
-
-        .card-3 {
-            background: linear-gradient(135deg, #36b9cc, #258391);
-        }
-
-        .card-4 {
-            background: linear-gradient(135deg, #f6c23e, #dda20a);
-        }
-
-        .card-5 {
-            background: linear-gradient(135deg, #e74a3b, #b92d20);
-        }
-
-        .card-6 {
-            background: linear-gradient(135deg, #6f42c1, #4f2d8f);
         }
 
         .box-card {
             background: #fff;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-            border: 1px solid #edf2f7;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, .07);
+            border: 1px solid #edf0f5;
+            height: 100%;
         }
 
         .box-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .box-subtitle {
+            color: #8a8f98;
+            font-size: 13px;
+        }
+
+        .quick-info p {
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .quick-info strong {
+            color: #111827;
+        }
+
+        .table thead {
+            background: #f8fafc;
         }
 
         .table img {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
+            width: 58px;
+            height: 58px;
+            border-radius: 12px;
             object-fit: cover;
             border: 1px solid #eee;
         }
 
-        .shop-badge {
-            display: inline-block;
-            background: #eef4ff;
-            color: #1d4ed8;
-            padding: 8px 14px;
-            border-radius: 999px;
-            font-size: 14px;
-            font-weight: 600;
+        .year-select {
+            width: 160px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-hero {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .hero-icon {
+                width: 62px;
+                height: 62px;
+                font-size: 28px;
+            }
         }
     </style>
 
     <script>
         window.onload = function () {
+            if (typeof loadMenu === "function") {
+                loadMenu();
+            }
             loadSellerDashboard();
-        }
+        };
     </script>
 </head>
 
@@ -132,91 +272,158 @@
 
         <div id="layoutSidenav_content">
             <main class="dashboard-wrap">
-                <div class="dashboard-header">
-                    <h2>DASHBOARD SHOP</h2>
-                    <div class="dashboard-time">
-                        <span id="today-name"></span> -
-                        <span id="digital-clock"></span>
+
+                <div class="dashboard-hero">
+                    <div>
+                        <h2>Dashboard Shop</h2>
+                        <div class="hero-time">
+                            <span id="today-name"></span> -
+                            <span id="digital-clock"></span>
+                        </div>
+
+                        <div class="shop-pill">
+                            <i class="fas fa-store"></i>
+                            Shop: <span id="shopName">Đang tải...</span>
+                        </div>
                     </div>
-                    <div class="mt-2">
-                        <span class="shop-badge">Shop: <span id="shopName">Đang tải...</span></span>
+
+                    <div class="hero-icon">
+                        <i class="fas fa-chart-line"></i>
                     </div>
                 </div>
 
                 <div class="row g-4 mb-4">
                     <div class="col-xl-3 col-md-6">
-                        <div class="dashboard-card card-1">
-                            <div class="dashboard-label">Doanh thu tháng này</div>
-                            <div class="dashboard-value" id="doanhThuThang">0 đ</div>
+                        <div class="stat-card stat-blue">
+                            <div class="stat-top">
+                                <div class="stat-label">Doanh thu tháng này</div>
+                                <div class="stat-icon bg-blue"><i class="fas fa-money-bill-wave"></i></div>
+                            </div>
+                            <div class="stat-value" id="doanhThuThang">0 đ</div>
                         </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                        <div class="dashboard-card card-2">
-                            <div class="dashboard-label">Doanh thu hôm nay</div>
-                            <div class="dashboard-value" id="doanhThuNgay">0 đ</div>
+                        <div class="stat-card stat-green">
+                            <div class="stat-top">
+                                <div class="stat-label">Doanh thu hôm nay</div>
+                                <div class="stat-icon bg-green"><i class="fas fa-wallet"></i></div>
+                            </div>
+                            <div class="stat-value" id="doanhThuNgay">0 đ</div>
                         </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                        <div class="dashboard-card card-3">
-                            <div class="dashboard-label">Đơn hoàn thành hôm nay</div>
-                            <div class="dashboard-value" id="donHoanThanh">0</div>
+                        <div class="stat-card stat-darkgreen">
+                            <div class="stat-top">
+                                <div class="stat-label">Lợi nhuận tháng này</div>
+                                <div class="stat-icon bg-darkgreen"><i class="fas fa-coins"></i></div>
+                            </div>
+                            <div class="stat-value" id="loiNhuanThang">0 đ</div>
                         </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                        <div class="dashboard-card card-4">
-                            <div class="dashboard-label">Số lượng sản phẩm</div>
-                            <div class="dashboard-value" id="tongSanPham">0</div>
+                        <div class="stat-card stat-orange">
+                            <div class="stat-top">
+                                <div class="stat-label">Lợi nhuận hôm nay</div>
+                                <div class="stat-icon bg-orange"><i class="fas fa-hand-holding-usd"></i></div>
+                            </div>
+                            <div class="stat-value" id="loiNhuanNgay">0 đ</div>
                         </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                        <div class="dashboard-card card-5">
-                            <div class="dashboard-label">Tổng đơn hàng</div>
-                            <div class="dashboard-value" id="tongDonHang">0</div>
+                        <div class="stat-card stat-cyan">
+                            <div class="stat-top">
+                                <div class="stat-label">Đơn hoàn thành hôm nay</div>
+                                <div class="stat-icon bg-cyan"><i class="fas fa-check-circle"></i></div>
+                            </div>
+                            <div class="stat-value" id="donHoanThanh">0</div>
                         </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                        <div class="dashboard-card card-6">
-                            <div class="dashboard-label">Tổng đơn hoàn thành</div>
-                            <div class="dashboard-value" id="tongDonHoanThanh">0</div>
+                        <div class="stat-card stat-yellow">
+                            <div class="stat-top">
+                                <div class="stat-label">Số lượng sản phẩm</div>
+                                <div class="stat-icon bg-yellow"><i class="fas fa-box"></i></div>
+                            </div>
+                            <div class="stat-value" id="tongSanPham">0</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card stat-red">
+                            <div class="stat-top">
+                                <div class="stat-label">Tổng đơn hàng</div>
+                                <div class="stat-icon bg-red"><i class="fas fa-shopping-cart"></i></div>
+                            </div>
+                            <div class="stat-value" id="tongDonHang">0</div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card stat-purple">
+                            <div class="stat-top">
+                                <div class="stat-label">Tổng đơn hoàn thành</div>
+                                <div class="stat-icon bg-purple"><i class="fas fa-clipboard-check"></i></div>
+                            </div>
+                            <div class="stat-value" id="tongDonHoanThanh">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-6">
+                        <div class="box-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <div class="box-title">Biểu đồ doanh thu</div>
+                                    <div class="box-subtitle">Doanh thu theo từng tháng</div>
+                                </div>
+
+                                <select id="yearFilter" class="form-select year-select"
+                                    onchange="reloadRevenueChart()"></select>
+                            </div>
+
+                            <canvas id="shopRevenueChart" height="145"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="box-card">
+                            <div class="mb-3">
+                                <div class="box-title">Biểu đồ lợi nhuận</div>
+                                <div class="box-subtitle">Lợi nhuận theo từng tháng</div>
+                            </div>
+
+                            <canvas id="shopProfitChart" height="145"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-lg-8">
-                        <div class="box-card">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="box-title mb-0">Biểu đồ doanh thu theo tháng</div>
-                                <div style="width: 180px">
-                                    <select id="yearFilter" class="form-select"
-                                        onchange="reloadRevenueChart()"></select>
-                                </div>
-                            </div>
-                            <canvas id="shopRevenueChart" height="110"></canvas>
-                        </div>
-                    </div>
-
                     <div class="col-lg-4">
-                        <div class="box-card">
-                            <div class="box-title">Thông tin nhanh</div>
+                        <div class="box-card quick-info">
+                            <div class="box-title mb-3">Thông tin nhanh</div>
+
                             <p><strong>Shop hiện tại:</strong> <span id="shopNameSide">Đang tải...</span></p>
                             <p><strong>Vai trò:</strong> Seller</p>
-                            <p class="mb-0 text-muted">
-                                Dữ liệu thống kê được tự động khóa theo shop của tài khoản đang đăng nhập.
-                            </p>
+                            <p><strong>Phạm vi dữ liệu:</strong> Theo shop của tài khoản đăng nhập</p>
+
+                            <div class="text-muted">
+                                Doanh thu và lợi nhuận được tính từ các đơn hàng không bị hủy.
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-lg-8">
                         <div class="box-card">
-                            <div class="box-title">Sản phẩm bán chạy của shop</div>
+                            <div class="box-title mb-3">Sản phẩm bán chạy</div>
+
                             <div class="table-responsive">
-                                <table class="table table-striped align-middle">
+                                <table class="table table-hover align-middle">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -226,6 +433,7 @@
                                             <th>Đã bán</th>
                                         </tr>
                                     </thead>
+
                                     <tbody id="topProductTable">
                                         <tr>
                                             <td colspan="5" class="text-center">Đang tải...</td>
@@ -236,6 +444,7 @@
                         </div>
                     </div>
                 </div>
+
             </main>
         </div>
     </div>

@@ -1,6 +1,6 @@
 const exceptionCode = 417;
 var token = localStorage.getItem("token");
-$(document).ready(function() {
+$(document).ready(function () {
     checkroleAdmin();
     loadmenu();
 
@@ -13,6 +13,21 @@ $(document).ready(function() {
             <a class="nav-link" href="/admin/taikhoan">
                 <div class="sb-nav-link-icon"><i class="fas fa-user-alt iconmenu"></i></div>
                 Tài khoản
+            </a>
+            <a class="nav-link" href="/admin/seller-pending">
+                <div class="sb-nav-link-icon"><i class="fas fa-user-check iconmenu"></i></div>
+                Người bán chờ duyệt
+            </a>
+            <a class="nav-link" href="/admin/shop">
+                <div class="sb-nav-link-icon"> <i class="fas fa-store iconmenu"></i></div>
+                Danh sách shop
+            </a>
+
+            <a class="nav-link" href="/admin/shop-statistic">
+                <div class="sb-nav-link-icon">
+                    <i class="fas fa-chart-bar iconmenu"></i>
+                </div>
+                Thống kê shop
             </a>
             <a class="nav-link" href="/admin/danhmuc">
                 <div class="sb-nav-link-icon"><i class="fas fa-table iconmenu"></i></div>
@@ -41,22 +56,6 @@ $(document).ready(function() {
             <a class="nav-link" href="/admin/invoice">
                 <div class="sb-nav-link-icon"><i class="fa fa-shopping-cart iconmenu"></i></div>
                 Đơn hàng
-            </a>
-            <a class="nav-link" href="/admin/importproduct">
-                <div class="sb-nav-link-icon"><i class="fa fa-shopping-cart iconmenu"></i></div>
-                Nhập hàng
-            </a>
-            <a class="nav-link" href="/admin/provider">
-                <div class="sb-nav-link-icon"><i class="fa fa-users iconmenu"></i></div>
-                Nhà cung cấp
-            </a>
-            <a class="nav-link" href="/admin/doanhthu">
-                <div class="sb-nav-link-icon"><i class="fas fa-chart-bar iconmenu"></i></div>
-                Doanh thu
-            </a>
-            <a class="nav-link" href="/admin/chat">
-                <div class="sb-nav-link-icon"><i class="fas fa-chart-bar iconmenu"></i></div>
-                Tin nhắn
             </a>
             <a class="nav-link" href="/admin/baohanh">
                 <div class="sb-nav-link-icon"><i class="fas fa-list iconmenu"></i></div>
@@ -90,7 +89,7 @@ $(document).ready(function() {
         document.getElementById("top").innerHTML = top
     }
     var sidebarToggle = document.getElementById("sidebarToggle");
-    sidebarToggle.onclick = function() {
+    sidebarToggle.onclick = function () {
         document.body.classList.toggle('sb-sidenav-toggled');
         localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
     }

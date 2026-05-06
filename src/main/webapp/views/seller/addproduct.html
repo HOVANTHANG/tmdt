@@ -191,7 +191,8 @@
                             <th>Giá trị 1</th>
                             <th>Tên thuộc tính 2</th>
                             <th>Giá trị 2</th>
-                            <th>Giá</th>
+                            <th>Giá nhập</th>
+                            <th>Giá bán</th>
                             <th>Số lượng</th>
                             <th>Ảnh biến thể</th>
                             <th>Thao tác</th>
@@ -255,6 +256,7 @@
                 tier1value: item.tier1value || "",
                 tier2name: item.tier2name || "",
                 tier2value: item.tier2value || "",
+                importPrice: Number(item.importPrice || 0),
                 price: Number(item.price || 0),
                 quantity: Number(item.quantity || 0),
                 image: item.image || ""
@@ -457,6 +459,7 @@
                     tier1value: "Mặc định",
                     tier2name: null,
                     tier2value: null,
+                    importPrice: 0,
                     price: 0,
                     quantity: 0,
                     image: ""
@@ -544,9 +547,14 @@
             <td>${variant.tier2name || ""}</td>
             <td>${variant.tier2value || ""}</td>
             <td>
-                <input class="mini-input" type="number" value="${variant.price || 0}"
-                    onchange="updateVariantField(${index}, 'price', this.value)" />
-            </td>
+    <input class="mini-input" type="number" value="${variant.importPrice || 0}"
+        onchange="updateVariantField(${index}, 'importPrice', this.value)" />
+</td>
+
+<td>
+    <input class="mini-input" type="number" value="${variant.price || 0}"
+        onchange="updateVariantField(${index}, 'price', this.value)" />
+</td>
             <td>
                 <input class="mini-input" type="number" value="${variant.quantity || 0}"
                     onchange="updateVariantField(${index}, 'quantity', this.value)" />
@@ -565,7 +573,7 @@
         }
 
         function updateVariantField(index, field, value) {
-            if (field === "price" || field === "quantity") {
+            if (field === "price" || field === "quantity" || field === "importPrice") {
                 generatedVariants[index][field] = Number(value || 0);
             } else {
                 generatedVariants[index][field] = value;
@@ -638,6 +646,7 @@
                     tier1value: item.tier1value || "",
                     tier2name: item.tier2name || null,
                     tier2value: item.tier2value || null,
+                    importPrice: Number(item.importPrice || 0),
                     price: Number(item.price || 0),
                     quantity: Number(item.quantity || 0),
                     image: item.image || ""

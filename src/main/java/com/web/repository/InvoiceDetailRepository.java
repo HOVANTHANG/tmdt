@@ -14,9 +14,6 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
         @Query("select i from InvoiceDetail i where i.invoice.id = ?1")
         public List<InvoiceDetail> findByInvoiceId(Long invoiceId);
 
-        @Query("select i from InvoiceDetail i where i.id <> ?1 and i.imei = ?2")
-        Long findByIdAndImei(Long detailId, String imei);
-
         @Query("select coalesce(sum(d.price * d.quantity), 0) " +
                         "from InvoiceDetail d " +
                         "where d.productVariant.product.shop.id = ?1 " +
@@ -60,6 +57,31 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
                         "order by month(d.invoice.createdDate)")
         List<Object[]> revenueByMonthOfYearAndShop(Long shopId, Integer year);
 
+        @Query("select coalesce(sum((d.price - coalesce(d.importPrice, 0)) * d.quantity), 0) " +
+                        "from InvoiceDetail d " +
+                        "where d.productVariant.product.shop.id = ?1 " +
+                        "and month(d.invoice.createdDate) = month(current_date) " +
+                        "and year(d.invoice.createdDate) = year(current_date) " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
+        Double profitThisMonthByShop(Long shopId);
+
+        @Query("select coalesce(sum((d.price - coalesce(d.importPrice, 0)) * d.quantity), 0) " +
+                        "from InvoiceDetail d " +
+                        "where d.productVariant.product.shop.id = ?1 " +
+                        "and d.invoice.createdDate = current_date " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
+        Double profitTodayByShop(Long shopId);
+
+        @Query("select month(d.invoice.createdDate), coalesce(sum((d.price - coalesce(d.importPrice, 0)) * d.quantity), 0) "
+                        +
+                        "from InvoiceDetail d " +
+                        "where d.productVariant.product.shop.id = ?1 " +
+                        "and year(d.invoice.createdDate) = ?2 " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN " +
+                        "group by month(d.invoice.createdDate) " +
+                        "order by month(d.invoice.createdDate)")
+        List<Object[]> profitByMonthOfYearAndShop(Long shopId, Integer year);
+
         @Query("select count(d) > 0 from InvoiceDetail d " +
                         "where d.invoice.id = ?1 and d.productVariant.product.shop.id = ?2")
         boolean existsByInvoiceIdAndShopId(Long invoiceId, Long shopId);
@@ -71,5 +93,23 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
         // InvoiceDetailRepository
         @Query("select count(i) > 0 from InvoiceDetail i where i.productVariant.id = ?1")
         boolean existsByProductVariantId(Long productVariantId);
+
+        @Query("select coalesce(sum(d.price * d.quantity), 0) " +
+                        "from InvoiceDetail d " +
+                        "where d.productVariant.product.shop.id = ?1 " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
+        Double revenueByShop(Long shopId);
+
+        @Query("select coalesce(sum((d.price - coalesce(d.importPrice, 0)) * d.quantity), 0) " +
+                        "from InvoiceDetail d " +
+                        "where d.productVariant.product.shop.id = ?1 " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
+        Double profitByShop(Long shopId);
+
+        @Query("select count(distinct d.invoice.id) " +
+                        "from InvoiceDetail d " +
+                        "where d.productVariant.product.shop.id = ?1 " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
+        Long countOrderByShop(Long shopId);
 
 }

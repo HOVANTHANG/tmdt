@@ -100,4 +100,9 @@ public class StatiticsApi {
         return new ResponseEntity<>(statisticService.topProductsForSeller(), HttpStatus.OK);
     }
 
+    @GetMapping("/seller/profit-chart")
+    public ResponseEntity<?> profitChart(@RequestParam Integer year) {
+        return ResponseEntity.ok(statisticService.profitChartForSeller(year));
+    }
+
 }

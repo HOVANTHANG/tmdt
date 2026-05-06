@@ -74,19 +74,4 @@ public class InvoiceDetailServiceImp implements InvoiceDetailService {
         return responses;
     }
 
-    @Override
-    @Transactional
-    public void updateImeiForSeller(Long detailId, String imei) {
-        Long shopId = getCurrentSellerShopId();
-
-        InvoiceDetail detail = invoiceDetailRepository.findById(detailId)
-                .orElseThrow(() -> new MessageException("Không tìm thấy chi tiết hóa đơn"));
-
-        if (!detail.getProductVariant().getProduct().getShop().getId().equals(shopId)) {
-            throw new MessageException("Bạn không có quyền cập nhật imei này");
-        }
-
-        detail.setImei(imei);
-        invoiceDetailRepository.save(detail);
-    }
 }

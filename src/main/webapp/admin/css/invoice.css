@@ -1,0 +1,128 @@
+ body {
+     background: #f4f6f8;
+ }
+
+ .invoice-page {
+     padding: 24px;
+ }
+
+ .page-title {
+     font-weight: 700;
+     margin-bottom: 18px;
+ }
+
+ .filter-card,
+ .table-card {
+     background: #fff;
+     border-radius: 12px;
+     padding: 18px;
+     box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+     margin-bottom: 18px;
+ }
+
+ .table th {
+     white-space: nowrap;
+ }
+
+ .invoice-search {
+     width: 320px;
+     display: inline-block;
+ }
+
+ .imgdetailacc {
+     width: 78px;
+     height: 78px;
+     object-fit: cover;
+     border-radius: 8px;
+ }
+
+ .blockinfor {
+     background: #f8f9fa;
+     border-radius: 8px;
+     padding: 14px;
+     min-height: 96px;
+ }
+
+ .ttshipinfor {
+     font-weight: 700;
+     display: block;
+     margin-bottom: 8px;
+ }
+
+ .yls {
+     color: #ee4d2d;
+     font-weight: 700;
+ }
+
+ .sticky-col {
+     white-space: nowrap;
+ }
+
+
+
+
+ .shop-row td {
+     background: #fafafa;
+     border-top: 2px solid #eee;
+ }
+
+ .shop-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 10px;
+ }
+
+ .shop-left {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+ }
+
+ .shop-avatar {
+     width: 44px;
+     height: 44px;
+     border-radius: 50%;
+     object-fit: cover;
+     border: 1px solid #ddd;
+ }
+
+ .shop-name {
+     font-size: 15px;
+     font-weight: 700;
+     color: #222;
+ }
+
+ .shop-status {
+     font-size: 13px;
+     color: #888;
+ }
+
+ .btn-view-shop {
+     border: none;
+     background: #ee4d2d;
+     color: white;
+     padding: 7px 14px;
+     border-radius: 8px;
+     font-size: 13px;
+ }
+
+ .product-link {
+     font-weight: 600;
+     color: #222;
+     text-decoration: none;
+ }
+
+ .product-link:hover {
+     color: #ee4d2d;
+ }
+
+ .variant-text {
+     color: #888;
+     font-size: 13px;
+ }
+
+ .product-code {
+     color: #999;
+     font-size: 12px;
+ }

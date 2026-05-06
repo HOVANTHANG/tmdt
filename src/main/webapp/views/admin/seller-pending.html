@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Duyệt shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/menu.js"></script>
+
+    <style>
+        body {
+            background: #f4f6f8;
+        }
+
+        .page-title {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .shop-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+            overflow: hidden;
+        }
+
+        .shop-table img {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .shop-name {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .shop-slug {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .badge-pending {
+            background: #fff7ed;
+            color: #ea580c;
+            border: 1px solid #fed7aa;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .detail-avatar {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .detail-label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #111827;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav"></div>
+
+        <div id="layoutSidenav_content">
+            <main class="container-fluid px-4">
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <div>
+                        <h3 class="page-title mb-1">Duyệt đăng ký bán hàng</h3>
+                        <div class="text-muted">Xem thông tin shop và phê duyệt tài khoản người bán</div>
+                    </div>
+
+                    <button class="btn btn-outline-primary" onclick="loadPendingSeller()">
+                        <i class="fas fa-sync-alt"></i> Tải lại
+                    </button>
+                </div>
+
+                <div class="shop-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 shop-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Shop</th>
+                                    <th>Chủ shop</th>
+                                    <th>Liên hệ</th>
+                                    <th>Trạng thái</th>
+                                    <th style="width:230px;">Hành động</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="listSeller">
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">Đang tải dữ liệu...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="modal fade" id="shopDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết shop</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" id="shopDetailBody"></div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnApproveInModal">
+                        <i class="fas fa-check"></i> Duyệt shop
+                    </button>
+                    <button class="btn btn-danger" id="btnRejectInModal">
+                        <i class="fas fa-times"></i> Từ chối
+                    </button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = "http://localhost:8080";
+        let selectedShopId = null;
+
+        window.onload = function () {
+            if (typeof loadMenu === "function") {
+                loadMenu();
+            }
+            loadPendingSeller();
+        };
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
+        async function loadPendingSeller() {
+            const token = getToken();
+
+            const res = await fetch(`${BASE_URL}/api/admin/seller/pending`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) {
+                alert("Không tải được danh sách shop chờ duyệt");
+                return;
+            }
+
+            const list = await res.json();
+            renderSellerList(list);
+        }
+
+        function renderSellerList(list) {
+            let html = "";
+
+            list.forEach(item => {
+                html += `
+                    <tr>
+                        <td>#${item.id}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="${item.avatar || '/image/logo.ico'}"
+                                     onerror="this.src='/image/logo.ico'">
+                                <div>
+                                    <div class="shop-name">${escapeHtml(item.shopName)}</div>
+                                    <div class="shop-slug">${escapeHtml(item.shopSlug)}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div>${escapeHtml(item.ownerFullname || item.ownerUsername || "Không rõ")}</div>
+                            <small class="text-muted">${escapeHtml(item.ownerEmail || "")}</small>
+                        </td>
+
+                        <td>
+                            <div>${escapeHtml(item.phone || "")}</div>
+                            <small class="text-muted">${escapeHtml(item.email || "")}</small>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-pending">${item.status || "PENDING"}</span>
+                        </td>
+
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-primary btn-sm" onclick="viewShopDetail(${item.id})">
+                                    <i class="fas fa-eye"></i> Chi tiết
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="approveSeller(${item.id})">
+                                    <i class="fas fa-check"></i> Duyệt
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="rejectSeller(${item.id})">
+                                    <i class="fas fa-times"></i> Từ chối
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("listSeller").innerHTML =
+                html || `<tr><td colspan="6" class="text-center py-4">Không có shop nào đang chờ duyệt</td></tr>`;
+        }
+
+        async function viewShopDetail(id) {
+            selectedShopId = id;
+
+            const token = getToken();
+
+            const res = await fetch(`${BASE_URL}/api/admin/seller/detail/${id}`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!res.ok) {
+                alert("Không tải được chi tiết shop");
+                return;
+            }
+
+            const item = await res.json();
+
+            document.getElementById("shopDetailBody").innerHTML = `
+                <div class="row g-4">
+                    <div class="col-md-3 text-center">
+                        <img class="detail-avatar"
+                             src="${item.avatar || '/image/logo.ico'}"
+                             onerror="this.src='/image/logo.ico'">
+                        <div class="mt-2 fw-bold">${escapeHtml(item.shopName)}</div>
+                        <span class="badge badge-pending mt-1">${item.status || "PENDING"}</span>
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="detail-label">Tên shop</div>
+                                <div class="detail-value">${escapeHtml(item.shopName)}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-label">Slug</div>
+                                <div class="detail-value">${escapeHtml(item.shopSlug)}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-label">Số điện thoại shop</div>
+                                <div class="detail-value">${escapeHtml(item.phone)}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-label">Email shop</div>
+                                <div class="detail-value">${escapeHtml(item.email)}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-label">Chủ shop</div>
+                                <div class="detail-value">${escapeHtml(item.ownerFullname || item.ownerUsername)}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-label">Email tài khoản</div>
+                                <div class="detail-value">${escapeHtml(item.ownerEmail)}</div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="detail-label">Mô tả shop</div>
+                                <div class="p-3 bg-light rounded">
+                                    ${escapeHtml(item.description || "Không có mô tả")}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("btnApproveInModal").onclick = function () {
+                approveSeller(selectedShopId);
+            };
+
+            document.getElementById("btnRejectInModal").onclick = function () {
+                rejectSeller(selectedShopId);
+            };
+
+            const modal = new bootstrap.Modal(document.getElementById("shopDetailModal"));
+            modal.show();
+        }
+
+        async function approveSeller(id) {
+            if (!confirm("Bạn có chắc muốn duyệt shop này?")) return;
+
+            const token = getToken();
+
+            const res = await fetch(`${BASE_URL}/api/admin/seller/approve/${id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (res.ok) {
+                alert("Đã duyệt shop");
+                loadPendingSeller();
+                closeModal();
+            } else {
+                alert("Duyệt shop thất bại");
+            }
+        }
+
+        async function rejectSeller(id) {
+            if (!confirm("Bạn có chắc muốn từ chối shop này?")) return;
+
+            const token = getToken();
+
+            const res = await fetch(`${BASE_URL}/api/admin/seller/reject/${id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (res.ok) {
+                alert("Đã từ chối shop");
+                loadPendingSeller();
+                closeModal();
+            } else {
+                alert("Từ chối shop thất bại");
+            }
+        }
+
+        function closeModal() {
+            const modalEl = document.getElementById("shopDetailModal");
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+
+        function escapeHtml(text) {
+            return String(text || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+
+</html>

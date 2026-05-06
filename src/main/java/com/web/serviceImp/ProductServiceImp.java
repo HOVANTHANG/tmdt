@@ -131,6 +131,7 @@ public class ProductServiceImp implements ProductService {
             variant.setTier2name(v.getTier2name());
             variant.setTier2value(v.getTier2value());
             variant.setPrice(v.getPrice());
+            variant.setImportPrice(v.getImportPrice());
             variant.setQuantity(v.getQuantity());
             variant.setImage(v.getImage());
             variant.setProduct(savedProduct);
@@ -196,6 +197,7 @@ public class ProductServiceImp implements ProductService {
                 variant.setTier2name(v.getTier2name());
                 variant.setTier2value(v.getTier2value());
                 variant.setPrice(v.getPrice());
+                variant.setImportPrice(v.getImportPrice());
                 variant.setQuantity(v.getQuantity());
                 variant.setImage(v.getImage());
 

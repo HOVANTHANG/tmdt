@@ -7,6 +7,7 @@ import com.web.dto.request.TokenDto;
 import com.web.dto.request.UserRequest;
 import com.web.dto.response.UserDto;
 import com.web.entity.User;
+import com.web.enums.ShopStatus;
 import com.web.exception.MessageException;
 import com.web.jwt.JwtTokenProvider;
 import com.web.mapper.UserMapper;
@@ -128,8 +129,40 @@ public class UserApi {
     }
 
     @GetMapping("/seller/check-role-seller")
-    public void checkRoleSeller() {
-        System.out.println("seller");
+    public ResponseEntity<?> checkRoleSeller() {
+
+        User user = userUtils.getUserWithAuthority();
+
+        if (user == null) {
+            return new ResponseEntity<>("Bạn chưa đăng nhập", HttpStatus.UNAUTHORIZED);
+        }
+
+        // chưa phải seller
+        if (user.getAuthorities() == null
+                || !"ROLE_SELLER".equals(user.getAuthorities().getName())) {
+
+            return new ResponseEntity<>(
+                    "Tài khoản chưa được duyệt seller",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        // chưa có shop
+        if (user.getShop() == null) {
+
+            return new ResponseEntity<>(
+                    "Shop chưa được admin duyệt",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        // shop chưa approved
+        if (user.getShop().getStatus() != ShopStatus.APPROVED) {
+
+            return new ResponseEntity<>(
+                    "Shop chưa được admin duyệt",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        return ResponseEntity.ok("success");
     }
 
     @PostMapping("/admin/lockOrUnlockUser")

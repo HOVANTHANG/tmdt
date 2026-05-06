@@ -12,6 +12,4 @@ public interface InvoiceDetailService {
 
     List<InvoiceDetailResponse> findByInvoiceForSeller(Long idInvoice);
 
-    void updateImeiForSeller(Long detailId, String imei);
-
 }

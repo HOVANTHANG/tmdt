@@ -45,12 +45,4 @@ public class InvoiceDetailApi {
         return new ResponseEntity<>(invoiceDetailService.findByInvoiceForSeller(idInvoice), HttpStatus.OK);
     }
 
-    @PostMapping("/seller/update-imei")
-    public ResponseEntity<?> updateImeiForSeller(
-            @RequestParam("detailId") Long detailId,
-            @RequestParam("imei") String imei) {
-        invoiceDetailService.updateImeiForSeller(detailId, imei);
-        return new ResponseEntity<>("success", HttpStatus.OK);
-    }
-
 }

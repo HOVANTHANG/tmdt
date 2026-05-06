@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.web.enums.ShopStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,9 @@ public class Shop {
     @JoinColumn(name = "owner_user_id")
     @JsonIgnore
     private User owner;
+
+    @Enumerated(EnumType.STRING)
+    private ShopStatus status;
 
     @OneToMany(mappedBy = "shop")
     @JsonIgnore

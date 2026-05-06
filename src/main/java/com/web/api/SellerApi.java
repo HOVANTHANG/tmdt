@@ -3,8 +3,10 @@ package com.web.api;
 import com.web.dto.request.SellerRegisterRequest;
 import com.web.entity.Shop;
 import com.web.entity.User;
+import com.web.repository.ShopRepository;
 import com.web.repository.UserRepository;
 import com.web.servive.SellerService;
+import com.web.utils.UserUtils;
 
 import java.util.Optional;
 
@@ -19,10 +21,17 @@ public class SellerApi {
 
     private final SellerService sellerService;
     private final UserRepository userRepository;
+    private final UserUtils userUtils;
+    private final ShopRepository shopRepository;
 
-    public SellerApi(SellerService sellerService, UserRepository userRepository) {
+    public SellerApi(SellerService sellerService,
+            UserRepository userRepository,
+            UserUtils userUtils,
+            ShopRepository shopRepository) {
         this.sellerService = sellerService;
         this.userRepository = userRepository;
+        this.userUtils = userUtils;
+        this.shopRepository = shopRepository;
     }
 
     @PostMapping("/register")
@@ -42,5 +51,25 @@ public class SellerApi {
         Shop shop = sellerService.registerSeller(user.getId(), request);
 
         return ResponseEntity.ok(shop);
+    }
+
+    @GetMapping("/public/my-seller-status")
+    public ResponseEntity<?> mySellerStatus() {
+
+        User user = userUtils.getUserWithAuthority();
+
+        if (user == null) {
+            return ResponseEntity.ok("NONE");
+        }
+
+        Optional<Shop> shopOpt = shopRepository.findFirstByOwnerId(user.getId());
+
+        if (shopOpt.isEmpty()) {
+            return ResponseEntity.ok("NONE");
+        }
+
+        Shop shop = shopOpt.get();
+
+        return ResponseEntity.ok(shop.getStatus().name());
     }
 }

@@ -5,13 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+        integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -22,7 +26,8 @@
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js"></script>
     <link href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
+        rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
@@ -32,7 +37,7 @@
     <script src="js/index.js"></script>
     <script src="js/doanhthu.js"></script>
     <script>
-        window.onload = function() {
+        window.onload = function () {
             thongke();
             revenueYear(new Date().getFullYear());
         }
@@ -51,20 +56,22 @@
                     </script>
                 </h2>
                 <p class="text-gray fst-italic mb-0">
-                    <div id="digital-clock"></div>
+                <div id="digital-clock"></div>
                 </p>
 
                 <div class="row">
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-lefts shadow h-100 py-2">
                             <span class="lbcard">Doanh thu tháng này (VND)</span>
-                            <span className='solieudoanhthu'>[[${#numbers.formatDecimal(doanhThuThangNay, 0, 'POINT', 0, 'POINT')}]] đ</span>
+                            <span className='solieudoanhthu'>[[${#numbers.formatDecimal(doanhThuThangNay, 0, 'POINT', 0,
+                                'POINT')}]] đ</span>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-lefts shadow h-100 py-2">
                             <span class="lbcard">Doanh thu hôm nay</span>
-                            <span className='solieudoanhthu'>[[${#numbers.formatDecimal(doanhThuHomNay, 0, 'POINT', 0, 'POINT')}]] đ</span>
+                            <span className='solieudoanhthu'>[[${#numbers.formatDecimal(doanhThuHomNay, 0, 'POINT', 0,
+                                'POINT')}]] đ</span>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 mb-4">
@@ -100,7 +107,8 @@
                             </select>
                         </div>
                         <div class="col-md-2"><br>
-                            <button onclick="loadByNam()" class="btn btn-primary form-control" style="margin-top: 10px;"><i class="fa fa-filter"></i> Lọc</button>
+                            <button onclick="loadByNam()" class="btn btn-primary form-control"
+                                style="margin-top: 10px;"><i class="fa fa-filter"></i> Lọc</button>
                         </div>
                     </div>
                     <div class="col-sm-12 divtale" style="padding-top: 30px">
@@ -115,22 +123,22 @@
                 <h5 style="display: block; margin-top: 40px">Sản phẩm bán chạy tháng này</h5>
                 <table class="table table-striped tablefix">
                     <thead class="thead-tablefix">
-                    <tr>
-                        <th>id</th>
-                        <th>Ảnh</th>
-                        <th>Tên</th>
-                        <th>Giá</th>
-                        <th>Số lượng bán</th>
-                    </tr>
+                        <tr>
+                            <th>id</th>
+                            <th>Ảnh</th>
+                            <th>Tên</th>
+                            <th>Giá</th>
+                            <th>Số lượng bán</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="c : ${sanPhamBanChay}">
-                        <td th:text="${c.id}"></td>
-                        <td><img th:src="${c.imageBanner}" class="img-table"></td>
-                        <td th:text="${c.name}"></td>
-                        <td>[[${#numbers.formatDecimal(c.price, 0, 'POINT', 0, 'POINT')}]] đ</td>
-                        <td th:text="${c.quantitySold}"></td>
-                    </tr>
+                        <tr th:each="c : ${sanPhamBanChay}">
+                            <td th:text="${c.id}"></td>
+                            <td><img th:src="${c.imageBanner}" class="img-table"></td>
+                            <td th:text="${c.name}"></td>
+                            <td>[[${#numbers.formatDecimal(c.price, 0, 'POINT', 0, 'POINT')}]] đ</td>
+                            <td th:text="${c.quantitySold}"></td>
+                        </tr>
                     </tbody>
                 </table>
             </main>
@@ -140,23 +148,26 @@
 
 </body>
 <script>
-    $( document ).ready(function() {
-        var arr = ['#4e73df','#1cc88a','#36b9cc','#eb9534','#ed00c6','#edd500']
+    $(document).ready(function () {
+        var arr = ['#4e73df', '#1cc88a', '#36b9cc', '#eb9534', '#ed00c6', '#edd500']
         var act = document.getElementsByClassName("border-lefts");
         var lbcard = document.getElementsByClassName("lbcard");
-        for(var i=0; i<act.length; i++){
-            act[i].style.borderLeft = '.25rem solid '+arr[i]
+        for (var i = 0; i < act.length; i++) {
+            act[i].style.borderLeft = '.25rem solid ' + arr[i]
         }
-        for(var i=0; i<lbcard.length; i++){
+        for (var i = 0; i < lbcard.length; i++) {
             lbcard[i].style.color = arr[i]
         }
         var main = '';
-        for(i=new Date().getFullYear(); i > new Date().getFullYear() - 15; i--){
+        for (i = new Date().getFullYear(); i > new Date().getFullYear() - 15; i--) {
             main += `<option value="${i}">Năm ${i}</option>`
         }
         $("#nams").html(main)
     });
     revenueYear(new Date().getFullYear());
+
+
+
 </script>
 
 </html>
