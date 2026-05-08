@@ -36,15 +36,15 @@ public class ProductCommentServiceImp implements ProductCommentService {
 
     @Override
     public ProductCommentResponse create(CommentRequest commentRequest) {
-        if(commentRequest.getId() != null){
-           throw new MessageException("id must null");
+        if (commentRequest.getId() != null) {
+            throw new MessageException("id must null");
         }
         ProductComment productComment = productCommentMapper.productCmtRequestToProductComment(commentRequest);
         productComment.setCreatedDate(new Date(System.currentTimeMillis()));
         productComment.setCreatedTime(new Time(System.currentTimeMillis()));
         productComment.setUser(userUtils.getUserWithAuthority());
         ProductComment result = productCommentRepository.save(productComment);
-        for(String s : commentRequest.getListLink()){
+        for (String s : commentRequest.getListLink()) {
             ProductCommentImage image = new ProductCommentImage();
             image.setProductComment(result);
             image.setLinkImage(s);
@@ -57,14 +57,14 @@ public class ProductCommentServiceImp implements ProductCommentService {
 
     @Override
     public ProductCommentResponse update(CommentRequest commentRequest) {
-        if(commentRequest.getId() == null){
+        if (commentRequest.getId() == null) {
             throw new MessageException("id require");
         }
         Optional<ProductComment> optional = productCommentRepository.findById(commentRequest.getId());
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new MessageException("comment not found");
         }
-        if(optional.get().getUser().getId() != userUtils.getUserWithAuthority().getId()){
+        if (optional.get().getUser().getId() != userUtils.getUserWithAuthority().getId()) {
             throw new MessageException("access denied");
         }
         ProductComment productComment = productCommentMapper.productCmtRequestToProductComment(commentRequest);
@@ -74,7 +74,7 @@ public class ProductCommentServiceImp implements ProductCommentService {
         productComment.setProduct(optional.get().getProduct());
 
         ProductComment result = productCommentRepository.save(productComment);
-        for(String s : commentRequest.getListLink()){
+        for (String s : commentRequest.getListLink()) {
             ProductCommentImage image = new ProductCommentImage();
             image.setProductComment(result);
             image.setLinkImage(s);
@@ -87,14 +87,14 @@ public class ProductCommentServiceImp implements ProductCommentService {
 
     @Override
     public void delete(Long id) {
-        if(id == null){
+        if (id == null) {
             throw new MessageException("id require");
         }
         Optional<ProductComment> optional = productCommentRepository.findById(id);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new MessageException("comment not found");
         }
-        if(optional.get().getUser().getId() != userUtils.getUserWithAuthority().getId()){
+        if (optional.get().getUser().getId() != userUtils.getUserWithAuthority().getId()) {
             throw new MessageException("access denied");
         }
         productCommentRepository.deleteById(id);
@@ -107,23 +107,25 @@ public class ProductCommentServiceImp implements ProductCommentService {
 
     @Override
     public ProductCommentResponse findById(Long productId) {
-        if(productId == null){
+        if (productId == null) {
             throw new MessageException("id require");
         }
         Optional<ProductComment> optional = productCommentRepository.findById(productId);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new MessageException("comment not found");
         }
-        if(optional.get().getUser().getId() != userUtils.getUserWithAuthority().getId()){
+        if (optional.get().getUser().getId() != userUtils.getUserWithAuthority().getId()) {
             throw new MessageException("access denied");
         }
         return productCommentMapper.productCmtToProductCommentRes(optional.get());
     }
 
-    @Override
-    public List<ProductCommentResponse> findByProductId(Long productId) {
-        List<ProductComment> list = productCommentRepository.findByProductId(productId);
-        List<ProductCommentResponse> responses = productCommentMapper.listProductCmtToProCommentResponse(list);
-        return responses;
-    }
+    // @Override
+    // public List<ProductCommentResponse> findByProductId(Long productId) {
+    // List<ProductComment> list =
+    // productCommentRepository.findByProductId(productId);
+    // List<ProductCommentResponse> responses =
+    // productCommentMapper.listProductCmtToProCommentResponse(list);
+    // return responses;
+    // }
 }

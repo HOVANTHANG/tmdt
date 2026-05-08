@@ -1,154 +1,488 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài khoản - Bảo Ngọc Mobile</title>
+
     <link rel="shortcut icon" href="image/logo.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/user-modern.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
     <script src="js/main.js"></script>
     <script src="js/address.js"></script>
     <script src="js/addressuser.js"></script>
     <script src="js/banner.js"></script>
     <script src="js/user.js"></script>
-    <script src="js/invoice.js"></script>
     <script src="js/guarantee.js"></script>
+    <script src="js/invoice.js"></script>
+
+    <style>
+        .orders-table tbody tr {
+            cursor: pointer;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #fff7f2;
+        }
+
+        .invoice-modal-content {
+            border: none;
+            border-radius: 22px;
+            overflow: hidden;
+        }
+
+        .invoice-modal-header {
+            border-bottom: 1px solid #eee;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #ee4d2d, #ff8a65);
+            color: #fff;
+        }
+
+        .invoice-modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .invoice-top-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 22px;
+        }
+
+        .invoice-code-label {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .invoice-code-value {
+            font-size: 25px;
+            font-weight: 800;
+            color: #ee4d2d;
+        }
+
+        .invoice-status-badge {
+            background: #e8fff1;
+            color: #00a550;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .invoice-address-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #eef2f7;
+        }
+
+        .invoice-address-box h6 {
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .invoice-timeline {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding: 8px 0;
+        }
+
+        .timeline-step {
+            text-align: center;
+            min-width: 112px;
+        }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: auto;
+        }
+
+        .timeline-step.active .timeline-dot {
+            background: #ee4d2d;
+            box-shadow: 0 0 0 5px rgba(238, 77, 45, .12);
+        }
+
+        .timeline-text {
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .timeline-line {
+            flex: 1;
+            height: 3px;
+            background: #eee;
+            min-width: 50px;
+        }
+
+        .invoice-shop-card {
+            border: 1px solid #eee;
+            border-radius: 18px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .invoice-shop-header {
+            background: #fafafa;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .invoice-shop-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .invoice-shop-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .invoice-shop-name {
+            font-weight: 800;
+            color: #222;
+        }
+
+        .invoice-shop-sub {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .invoice-shop-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn-view-shop-small,
+        .btn-review-shop-small {
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .btn-view-shop-small {
+            background: #fff;
+            color: #ee4d2d;
+            border: 1px solid #ee4d2d;
+        }
+
+        .btn-review-shop-small {
+            background: #ee4d2d;
+            color: #fff;
+        }
+
+        .invoice-product-row {
+            display: flex;
+            gap: 18px;
+            padding: 18px;
+            border-top: 1px solid #f3f3f3;
+        }
+
+        .invoice-product-image {
+            width: 92px;
+            height: 92px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .invoice-product-name {
+            font-weight: 800;
+            color: #222;
+            margin-bottom: 4px;
+        }
+
+        .invoice-product-variant {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .invoice-product-price {
+            color: #ee4d2d;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .invoice-review-btn {
+            margin-top: 9px;
+            border: none;
+            background: #ee4d2d;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .invoice-summary-box {
+            margin-top: 20px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: #555;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid #ddd;
+            padding-top: 14px;
+            margin-top: 14px;
+            font-weight: 800;
+        }
+
+        .summary-row.total b {
+            color: #ee4d2d;
+            font-size: 24px;
+        }
+
+        .review-star-select {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            font-size: 34px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .review-star-select i {
+            cursor: pointer;
+        }
+
+        .review-star-select i.active {
+            color: #ffc107;
+        }
+
+        .review-textarea {
+            min-height: 120px;
+            resize: none;
+        }
+
+        .btn-submit-review {
+            width: 100%;
+            border: none;
+            background: #ee4d2d;
+            color: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 16px;
+            font-weight: 800;
+        }
+
+        .review-image-preview {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .review-image-preview img {
+            width: 76px;
+            height: 76px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+
+            .invoice-top-info,
+            .invoice-shop-header,
+            .invoice-product-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .invoice-shop-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+
     <script>
-        window.onload = function(){
+        window.onload = function () {
             loadMenu();
             loadAddress();
             loadAddressUser();
             loadBanner();
             loadMyInvoice();
-        }
+        };
     </script>
 </head>
+
 <body>
     <div id="headerweb"></div>
 
     <div class="contentweb">
-        <div class="container">
-            <div class="bannerhot1">
-                <a href=""><img src="image/hot1.png" alt=""></a>
-            </div>  
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-12 col-12 collistcart">
-                    <div class="navleft">
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-6 col-6 sinv">
-                                <div onclick="changeLink(this,'address')" class="tabdv activetabdv">
-                                    <a data-toggle="tab" href="#address"><img class="imgau" src="image/add.svg"> Sổ địa chỉ</a>
-                                </div>
-                                <div onclick="changeLink(this,'invoice')" class="tabdv">
-                                    <a data-toggle="tab" href="#invoice"><img class="imgau" src="image/invoice.svg"> Đơn hàng của tôi</a>
-                                </div>
-                                <div onclick="changeLink(this,'changepass')" class="tabdv">
-                                    <a data-toggle="tab" href="#changepass"><img class="imgau" src="image/pass.svg"> Đổi mật khẩu</a>
-                                </div>
+        <div class="container account-page-wrapper">
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-lg-3 col-md-4 col-sm-12 col-12">
+                    <div class="account-sidebar">
+                        <div class="account-sidebar-header">
+                            <div class="account-sidebar-avatar"><i class="fas fa-user"></i></div>
+                            <div class="account-sidebar-name" id="sidebar-user-name">Tài khoản</div>
+                            <div class="account-sidebar-email" id="sidebar-user-email">Quản lý tài khoản</div>
+                        </div>
+
+                        <div class="account-nav">
+                            <div onclick="changeLink(this,'address')" class="account-nav-item active"
+                                data-tab="address">
+                                <div class="nav-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <span>Sổ địa chỉ</span>
+                            </div>
+
+                            <div onclick="changeLink(this,'invoice')" class="account-nav-item" data-tab="invoice">
+                                <div class="nav-icon"><i class="fas fa-shopping-bag"></i></div>
+                                <span>Đơn hàng của tôi</span>
+                            </div>
+
+                            <div onclick="changeLink(this,'changepass')" class="account-nav-item" data-tab="changepass">
+                                <div class="nav-icon"><i class="fas fa-key"></i></div>
+                                <span>Đổi mật khẩu</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-9 col-md-9 col-sm-12 col-12 collistcart">
-                    <div class="navright">
-                        <div class="tab-content contentab">
-                            <div role="tabpanel" class="tab-pane" id="invoice">
-                                <div class="headeraccount">
-                                    <p class="fontyel">Đơn hàng của tôi</p>
-                                    <span>(Nhấp vào dòng đơn hàng để xem chi tiêt)</span>
-                                    <div class="right_flex">
-                                        <span class="textrf" id="sldonhang">0 đơn hàng</span>
-                                    </div>
-                                </div>
-                                <table class="table table-cart table-order" id="my-orders-table">
-                                    <thead class="thead-default">
-                                    <tr>
-                                        <th>Mã đơn hàng</th>
-                                        <th class="floatr">Ngày mua</th>
-                                        <th>Địa chỉ</th>
-                                        <th class="floatr">Giá trị<br>đơn hàng</th>
-                                        <th class="floatr">Phí ship</th>
-                                        <th>Trạng thái thanh toán</th>
-                                        <th class="floatr">Trạng thái vận chuyển</th>
-                                        <th>Hủy</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="listinvoice">
-                                    </tbody>
-                                </table>
 
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="changepass">
-                                <div class="headeraccount">
-                                    <span class="fontyel">Đổi mật khẩu</span><span class="smyl"> (Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác)</span>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 col-12 passacc">
-                                    <form action="javascript:changePassword()">
-                                        <label class="lbacc">Mật khẩu hiện tại *</label>
-                                        <input id="oldpass" type="password" class="form-control">
-                                        <label class="lbacc">Mật khẩu mới *</label>
-                                        <input id="newpass" type="password" class="form-control">
-                                        <label class="lbacc">Xác nhận mật khẩu mới *</label>
-                                        <input id="renewpass" type="password" class="form-control">
-                                        <br>
-                                        <button type="submit" class="btndoimk">LƯU</button>
-                                    </form>
-                                </div>
-                            </div>
+                <div class="col-lg-9 col-md-8 col-sm-12 col-12">
+                    <div class="account-main">
+                        <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="address">
-                                <div class="headeraccount">
-                                    <p class="fontyel">Địa chỉ của bạn</p>
-                                    <div class="right_flex">
-                                        <button onclick="clearData()" data-bs-toggle="modal" data-bs-target="#modaladd" class="btnsuathongtin">+ Thêm địa chỉ mới</button>
+                                <div class="account-content-card">
+                                    <div class="account-content-header">
+                                        <div>
+                                            <h3><i class="fas fa-map-marker-alt"></i> Địa chỉ của bạn</h3>
+                                        </div>
+                                        <button onclick="clearData()" data-bs-toggle="modal" data-bs-target="#modaladd"
+                                            class="btn-add-address">
+                                            <i class="fas fa-plus"></i> Thêm địa chỉ mới
+                                        </button>
                                     </div>
+                                    <div class="account-content-body" id="listaddacc"></div>
                                 </div>
-                                <div class="contentacc" id="listaddacc">
-                                    <div class="row singleadd">
-                                        <div class="col-lg-11 col-md-11 col-sm-12 col-12">
-                                            <table class="table tableadd">
-                                                <tr>
-                                                    <td class="tdleft">Họ tên:</td>
-                                                    <td class="tdright">Hieu Tran
-                                                        <span class="addressdef"><i class="fa fa-check-circle"></i> Địa chỉ mặc định</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="tdleft">Địa chỉ:</td>
-                                                    <td class="tdright">gia lam, ha noi, viet nam, vietnam, Hà Nội, Vietnam</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="tdleft">Số điện thoại:</td>
-                                                    <td class="tdright">0382267161</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="tdleft">Ngày tạo:</td>
-                                                    <td class="tdright">2023-19-08</td>
-                                                </tr>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane" id="invoice">
+                                <div class="account-content-card">
+                                    <div class="account-content-header">
+                                        <div>
+                                            <h3><i class="fas fa-shopping-bag"></i> Đơn hàng của tôi</h3>
+                                            <div class="header-subtitle">Nhấp vào dòng đơn hàng để xem chi tiết và đánh
+                                                giá</div>
+                                        </div>
+                                        <span class="header-badge" id="sldonhang">0 đơn hàng</span>
+                                    </div>
+
+                                    <div class="account-content-body">
+                                        <div class="orders-table-wrapper">
+                                            <table class="orders-table table table-cart table-order"
+                                                id="my-orders-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Mã đơn hàng</th>
+                                                        <th>Ngày mua</th>
+                                                        <th>Địa chỉ</th>
+                                                        <th>Giá trị</th>
+                                                        <th>Phí ship</th>
+                                                        <th>Thanh toán</th>
+                                                        <th>Vận chuyển</th>
+                                                        <th>Hủy</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="listinvoice"></tbody>
                                             </table>
                                         </div>
-                                        <div class="col-lg-1 col-md-1 col-sm-12 col-12">
-                                            <span data-bs-toggle="modal" data-bs-target="#modaladd" class="actionacc acsua">Sửa</span>
-                                            <span class="actionacc acdel">Xóa</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane" id="changepass">
+                                <div class="account-content-card">
+                                    <div class="account-content-header">
+                                        <div>
+                                            <h3><i class="fas fa-key"></i> Đổi mật khẩu</h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="account-content-body">
+                                        <div class="change-pass-form">
+                                            <div class="security-note">
+                                                <i class="fas fa-shield-alt"></i>
+                                                <span>Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người
+                                                    khác</span>
+                                            </div>
+
+                                            <form action="javascript:changePassword()">
+                                                <div class="form-group">
+                                                    <label>Mật khẩu hiện tại *</label>
+                                                    <input id="oldpass" type="password"
+                                                        placeholder="Nhập mật khẩu hiện tại">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Mật khẩu mới *</label>
+                                                    <input id="newpass" type="password" placeholder="Nhập mật khẩu mới">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Xác nhận mật khẩu mới *</label>
+                                                    <input id="renewpass" type="password"
+                                                        placeholder="Nhập lại mật khẩu mới">
+                                                </div>
+                                                <button type="submit" class="btn-save-pass">
+                                                    <i class="fas fa-save"></i> Lưu thay đổi
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-    
                             </div>
                         </div>
                     </div>
@@ -159,68 +493,67 @@
 
     <div class="container" id="footer"></div>
 
-
-    <div class="modal fade" id="modaladd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-fullscreen-sm-down modeladdres">
+    <div class="modal fade modal-modern" id="modaladd" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-sm-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Thêm địa chỉ mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title"><i class="fas fa-map-marker-alt"></i> Thêm địa chỉ mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <input type="hidden" id="idadduser">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-12 formadd">
                             <label class="lbacc">Họ tên</label>
-                            <input id="fullnameadd" class="form-control" placeholder="Họ tên">
+                            <input id="fullnameadd" class="form-control" placeholder="Nhập họ tên">
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-12 formadd">
                             <label class="lbacc">Số điện thoại</label>
-                            <input id="phoneadd" class="form-control" placeholder="Số điện thoại">
+                            <input id="phoneadd" class="form-control" placeholder="Nhập số điện thoại">
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-12 formadd">
                             <label class="lbacc">Tên đường, số nhà</label>
-                            <input id="stressadd" class="form-control" placeholder="Tên đường, số nhà">
+                            <input id="stressadd" class="form-control" placeholder="Nhập tên đường, số nhà">
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-12 formadd">
                             <label class="lbacc">Tỉnh thành</label>
-                            <select onchange="loadHuyenOnchange()" id="tinh" class="form-control">
-                               
-                            </select>
+                            <select onchange="loadHuyenOnchange()" id="tinh" class="form-control"></select>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-12 formadd">
                             <label class="lbacc">Quận/ huyện</label>
                             <select onchange="loadXaOnchange()" id="huyen" class="form-control">
-                                <option selected value="" hidden="">---</option>
+                                <option selected value="" hidden>---</option>
                             </select>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-12 formadd">
                             <label class="lbacc">Phường/ xã</label>
                             <select id="xa" class="form-control">
-                                <option value="" hidden="">---</option>
+                                <option value="" hidden>---</option>
                             </select>
                         </div>
                     </div>
-                    <br><label class="checkbox-custom">Đặt làm địa chỉ mặc định
-                    <input id="primaryadd" type="checkbox">
-                    <span class="checkmark-checkbox"></span>
-                </label>
+                    <br>
+                    <label class="checkbox-custom">Đặt làm địa chỉ mặc định
+                        <input id="primaryadd" type="checkbox">
+                        <span class="checkmark-checkbox"></span>
+                    </label>
                     <div class="col-lg-6 col-md-6">
-                        <br><button onclick="addAddressUser()" type="submit" class="btndoimk">LƯU</button>
+                        <br>
+                        <button onclick="addAddressUser()" type="submit" class="btn-save-pass" style="width:auto">
+                            <i class="fas fa-save"></i> Lưu địa chỉ
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-    <div class="modal fade" id="modaldeail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down modeladdres">
+    <div class="modal fade modal-modern" id="modaldeail" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Nhập mô tả hiện trạng lỗi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title"><i class="fas fa-tools"></i> Nhập mô tả hiện trạng lỗi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input id="ivdetail" type="hidden">
@@ -233,76 +566,170 @@
                             <label class="form-label">Số điện thoại liên hệ</label>
                             <input type="text" class="form-control" id="customerPhone">
                         </div>
-                    </div><br><br>
+                    </div>
+                    <br><br>
                     <textarea id="editor" name="content"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button onclick="sendBH()" class="btn btn-primary">Gửi yêu cầu</button>
+                    <button onclick="sendBH()" class="btn-save-pass" style="width:auto">
+                        <i class="fas fa-paper-plane"></i> Gửi yêu cầu
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-</body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="js/carousel.js"></script>
-<script src="https://cdn.tiny.cloud/1/f6s0gxhkpepxkws8jawvfwtj0l9lv0xjgq1swbv4lgcy3au3/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: 'textarea#editor', // Chọn textarea có id là 'editor'
-        // Tăng cường các plugin để hỗ trợ nhiều chức năng hơn
-        plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak ' +
-            'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking ' +
-            'table emoticons template paste codesample help',
-        // Định nghĩa các nút trên thanh công cụ. Chia thành nhiều dòng để dễ quản lý.
-        toolbar: 'undo redo | blocks | ' + // Hoàn tác, làm lại, và định dạng khối (Heading 1, 2, Paragraph,...)
-            'bold italic underline strikethrough | forecolor backcolor | ' + // Định dạng chữ: đậm, nghiêng, gạch chân, gạch ngang, màu chữ, màu nền
-            'alignleft aligncenter alignright alignjustify | outdent indent | ' + // Căn lề, lùi dòng
-            'numlist bullist | link image media table | ' + // Danh sách số, danh sách dấu chấm, chèn liên kết, ảnh, video, bảng
-            'charmap emoticons | fullscreen code preview | help', // Ký tự đặc biệt, biểu tượng cảm xúc, chế độ toàn màn hình, xem trước, mã nguồn, trợ giúp
-        height: 300, // Tăng chiều cao của trình soạn thảo
-        menubar: 'file edit view insert format tools table help', // Hiện thêm menu bar ở trên cùng
-        images_upload_handler: async function (blobInfo, success, failure) {
-            const formData = new FormData();
-            formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-            const res = await fetch('/api/public/upload-file', {
-                method: 'POST',
-                body: formData
-            });
-            if (res.status < 300) {
-                var linkImage = await res.text();
-                success(linkImage);
+    <div class="modal fade" id="invoiceDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content invoice-modal-content">
+                <div class="modal-header invoice-modal-header">
+                    <h5 class="modal-title"><i class="fa fa-shopping-bag"></i> Chi tiết đơn hàng</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="invoice-top-info">
+                        <div>
+                            <div class="invoice-code-label">Mã đơn hàng</div>
+                            <div class="invoice-code-value" id="invoiceCodeText">#</div>
+                        </div>
+                        <div><span class="invoice-status-badge" id="invoiceStatusText">Đang tải</span></div>
+                    </div>
+
+                    <div class="invoice-address-box">
+                        <h6><i class="fa fa-map-marker"></i> Thông tin nhận hàng</h6>
+                        <div><b id="invoiceReceiverName"></b> - <span id="invoicePhone"></span></div>
+                        <div id="invoiceAddress"></div>
+                        <div class="text-muted" id="invoiceNote"></div>
+                    </div>
+
+                    <div class="invoice-timeline">
+                        <div class="timeline-step active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-text">Đặt hàng</div>
+                        </div>
+                        <div class="timeline-line"></div>
+                        <div class="timeline-step active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-text">Xác nhận</div>
+                        </div>
+                        <div class="timeline-line"></div>
+                        <div class="timeline-step active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-text">Vận chuyển</div>
+                        </div>
+                        <div class="timeline-line"></div>
+                        <div class="timeline-step active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-text">Hoàn thành</div>
+                        </div>
+                    </div>
+
+                    <div id="invoiceProductList"></div>
+
+                    <div class="invoice-summary-box">
+                        <div class="summary-row"><span>Tạm tính</span><b id="invoiceTamTinh">0₫</b></div>
+                        <div class="summary-row"><span>Phí vận chuyển</span><b id="invoiceShip">0₫</b></div>
+                        <div class="summary-row total"><span>Tổng thanh toán</span><b id="invoiceTotal">0₫</b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reviewModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewTitle">Đánh giá</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reviewType">
+                    <input type="hidden" id="reviewTargetId">
+                    <input type="hidden" id="reviewInvoiceId">
+                    <input type="hidden" id="reviewStarValue" value="5">
+
+                    <div class="review-star-select">
+                        <i class="fa fa-star active" onclick="setReviewStar(1)"></i>
+                        <i class="fa fa-star active" onclick="setReviewStar(2)"></i>
+                        <i class="fa fa-star active" onclick="setReviewStar(3)"></i>
+                        <i class="fa fa-star active" onclick="setReviewStar(4)"></i>
+                        <i class="fa fa-star active" onclick="setReviewStar(5)"></i>
+                    </div>
+
+                    <textarea id="reviewContent" class="form-control review-textarea"
+                        placeholder="Hãy chia sẻ trải nghiệm của bạn..."></textarea>
+
+                    <div id="reviewImageBox">
+                        <input type="file" id="reviewImages" class="form-control mt-3" accept="image/*" multiple
+                            onchange="previewReviewImages()">
+                        <small class="text-muted">Chọn tối đa 5 ảnh cho đánh giá sản phẩm</small>
+                        <div class="review-image-preview" id="reviewImagePreview"></div>
+                    </div>
+
+                    <button class="btn-submit-review" onclick="submitReview()">Gửi đánh giá</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="https://cdn.tiny.cloud/1/f6s0gxhkpepxkws8jawvfwtj0l9lv0xjgq1swbv4lgcy3au3/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea#editor',
+            plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking table emoticons template paste codesample help',
+            toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | link image media table | charmap emoticons | fullscreen code preview | help',
+            height: 300,
+            menubar: 'file edit view insert format tools table help',
+            images_upload_handler: async function (blobInfo, success, failure) {
+                const formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                const res = await fetch('/api/public/upload-file', { method: 'POST', body: formData });
+                if (res.status < 300) {
+                    var linkImage = await res.text();
+                    success(linkImage);
+                }
             }
-        }
-    });
-</script>
+        });
 
-<script>
-    function changeLink(e, link) {
-        var tabs = document.getElementsByClassName("tabdv");
-        for (i = 0; i < tabs.length; i++) {
-            document.getElementsByClassName("tabdv")[i].classList.remove("activetabdv");
-        }
-        e.classList.add('activetabdv')
+        function changeLink(e, link) {
+            var navItems = document.getElementsByClassName("account-nav-item");
+            for (var i = 0; i < navItems.length; i++) navItems[i].classList.remove("active");
+            e.classList.add('active');
 
-        var tabb = document.getElementsByClassName("tab-pane");
-        for (i = 0; i < tabb.length; i++) {
-            document.getElementsByClassName("tab-pane")[i].classList.remove("active");
+            var tabb = document.getElementsByClassName("tab-pane");
+            for (var j = 0; j < tabb.length; j++) tabb[j].classList.remove("active");
+            document.getElementById(link).classList.add('active');
         }
-        document.getElementById(link).classList.add('active')
-    }
 
-    var hash = location.hash.substr(1);
-    if (hash != "") {
-        var tabb = document.getElementsByClassName("tab-pane");
-        for (i = 0; i < tabb.length; i++) {
-            document.getElementsByClassName("tab-pane")[i].classList.remove("active");
+        var hash = location.hash.substr(1);
+        if (hash !== "") {
+            var tabb = document.getElementsByClassName("tab-pane");
+            for (var i = 0; i < tabb.length; i++) tabb[i].classList.remove("active");
+
+            var navItems = document.getElementsByClassName("account-nav-item");
+            for (var j = 0; j < navItems.length; j++) {
+                navItems[j].classList.remove("active");
+                if (navItems[j].getAttribute('data-tab') === hash) navItems[j].classList.add('active');
+            }
+
+            if (document.getElementById(hash)) document.getElementById(hash).classList.add('active');
         }
-        var tabs = document.getElementsByClassName("tabdv");
-        for (i = 0; i < tabs.length; i++) {
-            document.getElementsByClassName("tabdv")[i].classList.remove("activetabdv");
-        }
-        document.getElementById(hash).classList.add('active')
-    }
-</script>
+
+        try {
+            var userInfo = JSON.parse(localStorage.getItem("user"));
+            if (userInfo) {
+                var nameEl = document.getElementById("sidebar-user-name");
+                var emailEl = document.getElementById("sidebar-user-email");
+                if (nameEl && userInfo.fullname) nameEl.textContent = userInfo.fullname;
+                if (emailEl && userInfo.email) emailEl.textContent = userInfo.email;
+            }
+        } catch (e) { }
+    </script>
+</body>
+
 </html>

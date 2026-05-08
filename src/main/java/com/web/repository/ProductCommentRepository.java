@@ -1,14 +1,16 @@
 package com.web.repository;
 
-import com.web.entity.Category;
 import com.web.entity.ProductComment;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ProductCommentRepository extends JpaRepository<ProductComment,Long> {
+public interface ProductCommentRepository extends JpaRepository<ProductComment, Long> {
 
-    @Query("select p from ProductComment p where p.product.id = ?1")
-    public List<ProductComment> findByProductId(Long productId);
+    boolean existsByUserIdAndInvoiceDetailId(Long userId, Long invoiceDetailId);
+
+    List<ProductComment> findByProductIdOrderByIdDesc(Long productId);
+
+    Optional<ProductComment> findByUserIdAndInvoiceDetailId(Long userId, Long invoiceDetailId);
 }

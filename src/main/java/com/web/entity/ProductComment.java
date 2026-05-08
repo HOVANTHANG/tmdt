@@ -37,6 +37,10 @@ public class ProductComment {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "invoice_detail_id")
+    private InvoiceDetail invoiceDetail;
+
     @OneToMany(mappedBy = "productComment", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<ProductCommentImage> productCommentImages;

@@ -9,34 +9,35 @@ async function loadAddressUser() {
     var list = await response.json();
     var main = '';
     for (i = 0; i < list.length; i++) {
-        main += `<div class="row singleadd">
-        <div class="col-lg-11 col-md-11 col-sm-12 col-12">
-            <table class="table tableadd">
-                <tr class="trthead">
-                    <td class="tdleft">Họ tên:</td>
-                    <td class="tdright">${list[i].fullname}
-                        <span class="addressdef">${list[i].primaryAddres == true ?'<i class="fa fa-check-circle"></i> Địa chỉ mặc định':''}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="tdleft">Địa chỉ:</td>
-                    <td class="tdright">${list[i].streetName}, ${list[i].wards.name}, ${list[i].wards.districts.name},<br> ${list[i].wards.districts.province.name}</td>
-                </tr>
-                <tr>
-                    <td class="tdleft">Số điện thoại:</td>
-                    <td class="tdright">${list[i].phone}</td>
-                </tr>
-                <tr>
-                    <td class="tdleft">Ngày tạo:</td>
-                    <td class="tdright">${list[i].createdDate}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-lg-1 col-md-1 col-sm-12 col-12">
-            <span onclick="loadAddressUserById(${list[i].id})" data-bs-toggle="modal" data-bs-target="#modaladd" class="actionacc acsua">Sửa</span>
-            <span onclick="deleteAddressUser(${list[i].id})" class="actionacc acdel">Xóa</span>
-        </div>
-    </div>`
+        var defaultBadge = list[i].primaryAddres == true 
+            ? '<span class="address-card-default"><i class="fas fa-check-circle"></i> Mặc định</span>' 
+            : '';
+        main += `<div class="address-card">
+            <div class="address-card-header">
+                <div>
+                    <span class="address-card-name">${list[i].fullname}</span>
+                    ${defaultBadge}
+                </div>
+                <div class="address-card-actions">
+                    <button onclick="loadAddressUserById(${list[i].id})" data-bs-toggle="modal" data-bs-target="#modaladd" class="btn-action btn-edit"><i class="fas fa-pen"></i> Sửa</button>
+                    <button onclick="deleteAddressUser(${list[i].id})" class="btn-action btn-delete"><i class="fas fa-trash"></i> Xóa</button>
+                </div>
+            </div>
+            <div class="address-card-info">
+                <div class="info-item">
+                    <i class="fas fa-home"></i>
+                    <span>${list[i].streetName}, ${list[i].wards.name}, ${list[i].wards.districts.name}, ${list[i].wards.districts.province.name}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <span>${list[i].phone}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>${list[i].createdDate}</span>
+                </div>
+            </div>
+        </div>`
     }
     document.getElementById("listaddacc").innerHTML = main
 }

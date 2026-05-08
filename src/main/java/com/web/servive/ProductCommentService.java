@@ -20,5 +20,5 @@ public interface ProductCommentService {
 
     public ProductCommentResponse findById(Long productId);
 
-    public List<ProductCommentResponse> findByProductId(Long productId);
+    // public List<ProductCommentResponse> findByProductId(Long productId);
 }
