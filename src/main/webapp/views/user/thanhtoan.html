@@ -1,142 +1,827 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán — Sellora</title>
     <link rel="shortcut icon" href="image/logo.ico">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
     <script src="js/main.js"></script>
     <script src="js/checkout.js"></script>
     <script src="js/addressuser.js"></script>
+
     <script>
-        window.onload = function(){
+        window.onload = function () {
             checkroleUser();
             loadAddressUserSelect();
             loadCartCheckOut();
-        }
+        };
     </script>
+
+    <style>
+        :root {
+            --p: #0d9488;
+            --p-lt: #14b8a6;
+            --p-grad: linear-gradient(135deg, #0d9488 0%, #065f46 100%);
+            --danger: #ef4444;
+            --warn: #f59e0b;
+            --bg: #f0f4f8;
+            --card: #fff;
+            --tx: #1e293b;
+            --tx2: #64748b;
+            --tx3: #94a3b8;
+            --border: #e2e8f0;
+            --r: 14px;
+            --sh: 0 2px 12px rgba(0, 0, 0, .07);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+        }
+
+        /* ── Top checkout bar ── */
+        .ck-topbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+        }
+
+        .ck-topbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ck-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .ck-logo img {
+            height: 34px;
+        }
+
+        .ck-logo span {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--tx);
+            letter-spacing: -.3px;
+        }
+
+        .ck-steps {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--tx3);
+        }
+
+        .ck-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ck-step.active {
+            color: var(--p);
+            font-weight: 600;
+        }
+
+        .ck-step-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--tx3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ck-step.active .ck-step-dot {
+            background: var(--p-grad);
+            color: #fff;
+        }
+
+        .ck-step-sep {
+            color: var(--border);
+            font-size: 10px;
+        }
+
+        /* ── Page layout ── */
+        .ck-page {
+            padding: 32px 0 60px;
+        }
+
+        .ck-layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* ── Card base ── */
+        .ck-card {
+            background: var(--card);
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+            box-shadow: var(--sh);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .ck-card-header {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ck-card-header h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--tx);
+            margin: 0;
+        }
+
+        .ck-card-header .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--p-grad);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .ck-card-body {
+            padding: 22px;
+        }
+
+        /* ── Form fields ── */
+        .ck-field {
+            margin-bottom: 16px;
+        }
+
+        .ck-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--tx3);
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            margin-bottom: 6px;
+        }
+
+        .ck-input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: var(--tx);
+            background: #f8fafc;
+            outline: none;
+            transition: border-color .25s, box-shadow .25s, background .25s;
+        }
+
+        .ck-input:focus {
+            border-color: var(--p-lt);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, .1);
+        }
+
+        .ck-input[readonly] {
+            background: #f1f5f9;
+            color: var(--tx2);
+            cursor: default;
+        }
+
+        /* ── Payment options ── */
+        .pay-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pay-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            transition: all .25s;
+            background: #fafbfc;
+            position: relative;
+        }
+
+        .pay-option:hover {
+            border-color: var(--p-lt);
+            background: #f0fdf9;
+        }
+
+        .pay-option.selected {
+            border-color: var(--p);
+            background: #f0fdf9;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, .1);
+        }
+
+        .pay-option input[type="radio"] {
+            display: none;
+        }
+
+        .pay-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: border-color .2s;
+        }
+
+        .pay-option.selected .pay-radio {
+            border-color: var(--p);
+        }
+
+        .pay-radio-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--p);
+            display: none;
+        }
+
+        .pay-option.selected .pay-radio-dot {
+            display: block;
+        }
+
+        .pay-info {
+            flex: 1;
+        }
+
+        .pay-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--tx);
+        }
+
+        .pay-desc {
+            font-size: 12px;
+            color: var(--tx2);
+            margin-top: 2px;
+        }
+
+        .pay-logo {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .pay-icon {
+            font-size: 24px;
+            color: var(--p);
+        }
+
+        /* ── Delivery note ── */
+        .ck-note {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #92400e;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 6px;
+        }
+
+        .ck-note i {
+            color: #f59e0b;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        /* ── RIGHT: Order summary ── */
+        .ck-summary {
+            position: sticky;
+            top: 88px;
+        }
+
+        /* Product list */
+        .ck-prod-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .ck-prod-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ck-prod-item:last-child {
+            border-bottom: none;
+        }
+
+        .ck-prod-img-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .ck-prod-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            object-fit: contain;
+            padding: 4px;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+        }
+
+        .ck-prod-qty {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--tx2);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ck-prod-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--tx);
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .ck-prod-variant {
+            font-size: 11.5px;
+            color: var(--tx2);
+            margin-top: 3px;
+        }
+
+        .ck-prod-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--tx);
+            white-space: nowrap;
+        }
+
+        /* Voucher */
+        .ck-voucher {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ck-voucher-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ck-vou-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: var(--tx);
+            outline: none;
+            transition: border-color .25s;
+        }
+
+        .ck-vou-input:focus {
+            border-color: var(--p-lt);
+        }
+
+        .ck-vou-btn {
+            padding: 10px 18px;
+            background: var(--p-grad);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: opacity .2s;
+            white-space: nowrap;
+        }
+
+        .ck-vou-btn:hover {
+            opacity: .88;
+        }
+
+        .ck-vou-success {
+            display: none;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #059669;
+            font-weight: 600;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ck-vou-error {
+            display: none;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Totals */
+        .ck-totals {
+            padding: 16px 22px;
+        }
+
+        .ck-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .ck-total-row:last-child {
+            border-bottom: none;
+        }
+
+        .ck-total-row .lbl {
+            color: var(--tx2);
+        }
+
+        .ck-total-row .val {
+            font-weight: 600;
+            color: var(--tx);
+        }
+
+        .ck-grand-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: #f8fafc;
+            border-top: 2px solid var(--border);
+        }
+
+        .ck-grand-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--tx2);
+        }
+
+        .ck-grand-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--danger);
+        }
+
+        /* Checkout button */
+        .ck-submit-wrap {
+            padding: 0 22px 22px;
+        }
+
+        .ck-submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--p-grad);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: -.2px;
+        }
+
+        .ck-submit-btn:hover {
+            opacity: .9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(13, 148, 136, .35);
+        }
+
+        .ck-back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--tx2);
+            text-decoration: none;
+            padding-bottom: 16px;
+            transition: color .2s;
+        }
+
+        .ck-back-link:hover {
+            color: var(--p);
+        }
+
+        /* Security badges */
+        .ck-secure {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 12px 22px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ck-secure-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--tx3);
+        }
+
+        .ck-secure-item i {
+            color: var(--p);
+            font-size: 12px;
+        }
+
+        @media (max-width: 992px) {
+            .ck-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .ck-summary {
+                position: static;
+            }
+
+            .ck-steps {
+                display: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="row">
-        <div class="col-lg-8 col-md-8 col-sm-12 col-12 checkoutdiv" id="checkleft">
-            <div class="d-flex flex-column align-items-center divimglogocheck divafter">
-                <img class="imgcheckout" src="image/logo.png">
-            </div>
+    <!-- ── TOP BAR ── -->
+    <div class="ck-topbar">
+        <div class="container ck-topbar-inner">
+            <a href="index" class="ck-logo">
+                <img src="image/logo.png" alt="Sellora">
 
-            <div class="inforship">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                        <br><span class="titlecheckout">Thông tin giao hàng</span>
-                        <div class="col-12 formadd">
-                            <label class="lbsatop">Sổ địa chỉ</label>
-                            <select onchange="loadAddInfor()" id="sodiachi" class="form-control">
-                                <option value="" hidden="">---</option>
-                                <option value="haf npio">hà nội</option>
-                            </select>
-                        </div>
-                        <input readonly id="fullname" class="form-control fomd" placeholder="Họ tên">
-                        <input readonly id="phone" class="form-control fomd" placeholder="Số điện thoại">
-                        <input readonly id="stressName" class="form-control fomd" placeholder="Tên đường, số nhà">
-                        <textarea id="ghichudonhang" class="form-control fomd" placeholder="ghi chú"></textarea>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                        <br><span class="titlecheckout">Thanh toán</span>
-                        <table class="table tablepay">
-                            <tr onclick="momo.click()">
-                                <td><label class="radiocustom">	Thanh toán qua Ví MoMo
-                                        <input value="momo" id="momo" type="radio" name="paytype" checked="checked">
-                                        <span class="checkmark"></span></label></td>
-                                <td><img src="image/momo.webp" class="momopay"></td>
-                            </tr>
-
-                            <tr onclick="code.click()">
-                                <td><label class="radiocustom">	Thanh toán khi nhận hàng (COD)
-                                        <input value="cod" id="code" type="radio" name="paytype">
-                                        <span class="checkmark"></span></label></td>
-                                <td><i class="fa fa-money paycode"></i></td>
-                            </tr>
-                        </table>
-
-                    </div>
+            </a>
+            <div class="ck-steps">
+                <div class="ck-step">
+                    <span class="ck-step-dot">✓</span> Giỏ hàng
                 </div>
-            </div>
-
-            <div class="notecheckout">
-                <hr>
-                <span>Sau khi hoàn tất đơn hàng khoảng 60-90 phút (trong giờ hành chính), Chúng tôi sẽ nhanh chóng gọi điện xác nhận lại thời gian giao hàng với bạn. xin cảm ơn!</span>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-12 col-12" id="checkright">
-            <div class="d-flex flex-column align-items-center divimglogocheck divbefor">
-                <img class="imgcheckout" src="image/checkout_logo.webp">
-            </div>
-            <div class="infordoncheck">
-                <span class="dhcheck">Đơn hàng (<span id="slcartcheckout">1</span> sản phẩm)</span>
-                <div id="listproductcheck">
-                    <div class="row">
-                        <div class="col-lg-2 col-md-3 col-sm-3 col-3 colimgcheck">
-                            <img src="image/product1.webp" class="procheckout">
-                            <span class="slpro">1</span>
-                        </div>
-                        <div class="col-lg-7 col-md-6 col-sm-6 col-6">
-                            <span class="namecheck">Iphone 14 promax</span>
-                            <span class="colorcheck">Vàng / 64GB</span>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-3 col-3 pricecheck">
-                            <span>14.359.000đ</span>
-                        </div>
-                    </div>
+                <span class="ck-step-sep"><i class="fa-solid fa-chevron-right"></i></span>
+                <div class="ck-step active">
+                    <span class="ck-step-dot">2</span> Thanh toán
                 </div>
-                <div class="row magg">
-                    <div class="col-8"><input id="codevoucher" class="form-control" placeholder="Nhập mã giảm giá"></div>
-                    <div class="col-4"><button onclick="loadVoucher()" class="btnmagg">Áp dụng</button></div>
-                    <div class="col-12" id="blockmess">
-                        <span class="successvou">Mã giảm giá đã được áp dụng</span>
-                    </div>
-                    <div class="col-12" id="blockmessErr">
-                        <br><i class="fa fa-warning"> <span id="messerr">Mã giảm giá không khả dụng</span></i>
-                    </div>
-                </div>
-                <div class="magg">
-                    <table class="table">
-                        <tr>
-                            <td>Tạm tính</td>
-                            <td class="colright" id="totalAmount">359.000đ</td>
-                        </tr>
-                        <tr>
-                            <td>Phí vận chuyển</td>
-                            <td class="colright" id="phiship">30.000.đ</td>
-                        </tr>
-                        <tr>
-                            <td>Giảm giá</td>
-                            <td class="colright" id="moneyDiscount">0đ</td>
-                        </tr>
-                        <tr>
-                            <td>Tổng cộng</td>
-                            <td class="colright ylsbold" id="totalfi">379.000đ</td>
-                        </tr>
-                    </table>
-                    <button onclick="checkout()" class="btndathang">Đặt hàng</button>
+                <span class="ck-step-sep"><i class="fa-solid fa-chevron-right"></i></span>
+                <div class="ck-step">
+                    <span class="ck-step-dot">3</span> Xác nhận
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ── PAGE ── -->
+    <div class="ck-page">
+        <div class="container">
+            <div class="ck-layout">
+
+                <!-- ===== LEFT: Form ===== -->
+                <div class="ck-left">
+
+                    <!-- Delivery info -->
+                    <div class="ck-card">
+                        <div class="ck-card-header">
+                            <div class="step-num">1</div>
+                            <h2><i class="fa-solid fa-location-dot" style="color:#0d9488"></i> Thông tin giao hàng</h2>
+                        </div>
+                        <div class="ck-card-body">
+                            <div class="ck-field">
+                                <label><i class="fa-solid fa-address-book"></i> Sổ địa chỉ</label>
+                                <select onchange="loadAddInfor()" id="sodiachi" class="ck-input">
+                                    <option value="" hidden>— Chọn địa chỉ giao hàng —</option>
+                                </select>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="ck-field">
+                                        <label><i class="fa-solid fa-user"></i> Họ và tên</label>
+                                        <input readonly id="fullname" class="ck-input"
+                                            placeholder="Tự động điền từ sổ địa chỉ">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="ck-field">
+                                        <label><i class="fa-solid fa-phone"></i> Số điện thoại</label>
+                                        <input readonly id="phone" class="ck-input"
+                                            placeholder="Tự động điền từ sổ địa chỉ">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ck-field">
+                                <label><i class="fa-solid fa-road"></i> Địa chỉ giao hàng</label>
+                                <input readonly id="stressName" class="ck-input" placeholder="Tên đường, số nhà">
+                            </div>
+                            <div class="ck-field">
+                                <label><i class="fa-solid fa-pen-to-square"></i> Ghi chú đơn hàng</label>
+                                <textarea id="ghichudonhang" class="ck-input" rows="2"
+                                    placeholder="Ghi chú thêm (giao giờ hành chính, để tại bảo vệ...)"></textarea>
+                            </div>
+                            <div class="ck-note">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Sau khi đặt hàng 60–90 phút (giờ hành chính), chúng tôi sẽ gọi xác nhận thời gian giao
+                                hàng. Xin cảm ơn!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment method -->
+                    <div class="ck-card">
+                        <div class="ck-card-header">
+                            <div class="step-num">2</div>
+                            <h2><i class="fa-solid fa-credit-card" style="color:#0d9488"></i> Phương thức thanh toán
+                            </h2>
+                        </div>
+                        <div class="ck-card-body">
+                            <div class="pay-options">
+                                <div class="pay-option selected" onclick="selectPay(this,'momo')">
+                                    <input value="momo" id="momo" type="radio" name="paytype" checked>
+                                    <div class="pay-radio">
+                                        <div class="pay-radio-dot"></div>
+                                    </div>
+                                    <div class="pay-info">
+                                        <div class="pay-name">Ví MoMo</div>
+                                        <div class="pay-desc">Thanh toán nhanh qua ứng dụng MoMo</div>
+                                    </div>
+                                    <img src="image/momo.webp" class="pay-logo" alt="MoMo">
+                                </div>
+                                <div class="pay-option" onclick="selectPay(this,'code')">
+                                    <input value="cod" id="code" type="radio" name="paytype">
+                                    <div class="pay-radio">
+                                        <div class="pay-radio-dot"></div>
+                                    </div>
+                                    <div class="pay-info">
+                                        <div class="pay-name">Thanh toán khi nhận hàng (COD)</div>
+                                        <div class="pay-desc">Trả tiền mặt khi nhận hàng tại nhà</div>
+                                    </div>
+                                    <i class="fa-solid fa-money-bill-wave pay-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ===== RIGHT: Summary ===== -->
+                <div class="ck-summary">
+                    <div class="ck-card">
+                        <div class="ck-card-header">
+                            <h2>
+                                <i class="fa-solid fa-bag-shopping" style="color:#0d9488"></i>
+                                Đơn hàng
+                                (<span id="slcartcheckout">0</span> sản phẩm)
+                            </h2>
+                        </div>
+
+                        <!-- Product list -->
+                        <div id="listproductcheck" class="ck-prod-list">
+                            <!-- JS rendered -->
+                        </div>
+
+                        <!-- Voucher -->
+                        <div class="ck-voucher">
+                            <div class="ck-voucher-row">
+                                <input id="codevoucher" class="ck-vou-input" placeholder="Nhập mã giảm giá...">
+                                <button onclick="loadVoucher()" class="ck-vou-btn">
+                                    <i class="fa-solid fa-tag"></i> Áp dụng
+                                </button>
+                            </div>
+                            <div class="ck-vou-success" id="blockmess">
+                                <i class="fa-solid fa-circle-check"></i> Mã giảm giá đã được áp dụng!
+                            </div>
+                            <div class="ck-vou-error" id="blockmessErr">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                                <span id="messerr">Mã giảm giá không khả dụng</span>
+                            </div>
+                        </div>
+
+                        <!-- Totals -->
+                        <div class="ck-totals">
+                            <div class="ck-total-row">
+                                <span class="lbl">Tạm tính</span>
+                                <span class="val" id="totalAmount">—</span>
+                            </div>
+                            <div class="ck-total-row">
+                                <span class="lbl">Phí vận chuyển</span>
+                                <span class="val" id="phiship" style="color:#059669">Miễn phí</span>
+                            </div>
+                            <div class="ck-total-row">
+                                <span class="lbl">Giảm giá</span>
+                                <span class="val" id="moneyDiscount">—</span>
+                            </div>
+                        </div>
+
+                        <div class="ck-grand-row">
+                            <span class="ck-grand-label">Tổng thanh toán</span>
+                            <span class="ck-grand-value" id="totalfi">—</span>
+                        </div>
+
+                        <div class="ck-submit-wrap" style="padding-top:16px">
+                            <button onclick="checkout()" class="ck-submit-btn" id="btnDatHang">
+                                <i class="fa-solid fa-lock"></i> Đặt hàng ngay
+                            </button>
+                        </div>
+                        <div style="text-align:center; padding: 0 22px 4px">
+                            <a href="giohang" class="ck-back-link">
+                                <i class="fa-solid fa-arrow-left"></i> Quay lại giỏ hàng
+                            </a>
+                        </div>
+
+                        <div class="ck-secure">
+                            <div class="ck-secure-item">
+                                <i class="fa-solid fa-shield-halved"></i> Bảo mật SSL
+                            </div>
+                            <div class="ck-secure-item">
+                                <i class="fa-solid fa-rotate-left"></i> Đổi trả 7 ngày
+                            </div>
+                            <div class="ck-secure-item">
+                                <i class="fa-solid fa-headset"></i> HT 24/7
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectPay(el, id) {
+            document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById(id).checked = true;
+        }
+    </script>
 </body>
+
 </html>

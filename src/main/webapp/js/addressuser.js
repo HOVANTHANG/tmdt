@@ -174,43 +174,29 @@ async function loadAddressUserSelect() {
 }
 
 
-var soluongsp = 0;
-var phiShip = 0
+/**
+ * Điền thông tin địa chỉ vào form checkout và cập nhật phí vận chuyển
+ */
 async function loadAddInfor() {
     var val = document.getElementById("sodiachi").value;
     var address = null;
-    for (i = 0; i < listAddUser.length; i++) {
+
+    for (var i = 0; i < listAddUser.length; i++) {
         if (listAddUser[i].id == val) {
             address = listAddUser[i];
             break;
         }
     }
-    document.getElementById("fullname").value = address.fullname
-    document.getElementById("phone").value = address.phone
-    document.getElementById("stressName").value = address.streetName
-    var prov = address.wards.name + ", " + address.wards.districts.name + ", " + address.wards.districts.province.name
-    var province = `<option>${prov}</option>`
 
-    // tính phí ship
-    if(address != null){
-        total = Number(total) - Number(phiShip)
-        var province = await loadTinhShip(address.wards.districts.province.name)
-        console.log(province)
+    if (!address) return;
 
-        var district = await loadHuyenShip(address.wards.districts.name, province.ProvinceID);
-        console.log(district)
+    // Điền thông tin vào các ô readonly
+    document.getElementById("fullname").value    = address.fullname;
+    document.getElementById("phone").value       = address.phone;
+    document.getElementById("stressName").value  = address.streetName;
 
-        var ward = await loadXaShip(address.wards.name, district.DistrictID);
-        console.log(ward)
-        var weight = Math.ceil(soluongsp * 0.5);
-        var url = '/api/shipping/tinh-phi?toDistrictId='+district.DistrictID+'&toWardCode='+ward.WardCode+'&weight='+weight
-        const res = await fetch(url, {});
-        var result = await res.json();
-        phiShip = result.data.total;
-        document.getElementById("phiship").innerHTML = formatmoney(phiShip)
-        total = Number(total) + Number(phiShip)
-        document.getElementById("totalfi").innerHTML = formatmoneyCheck(total);
-    }
+    // Tính phí vận chuyển (hàm định nghĩa trong checkout.js)
+    await capNhatPhiShip(address);
 }
 
 
@@ -218,37 +204,5 @@ async function loadAddInfor() {
 
 
 
-async function loadTinhShip(tentinh){
-    var respon = await fetch('http://localhost:8080/api/shipping/public/province', {});
-    var provinces = await respon.json();
-    var province = null;
-    for(var i=0; i< provinces.data.length; i++){
-        if(tentinh.toLowerCase().includes(provinces.data[i].ProvinceName.toLowerCase())){
-            province = provinces.data[i];
-        }
-    }
-    return province
-}
-async function loadHuyenShip(tenhuyen, ProvinceID){
-    var respon = await fetch('http://localhost:8080/api/shipping/public/district?provinceId='+ProvinceID, {});
-    var districts = await respon.json();
-    var district = null;
-    for(var i=0; i< districts.data.length; i++){
-        if(tenhuyen.toLowerCase().includes(districts.data[i].DistrictName.toLowerCase())){
-            district = districts.data[i];
-        }
-    }
-    return district
-}
-
-async function loadXaShip(tenxa, DistrictID){
-    var respon = await fetch('http://localhost:8080/api/shipping/public/wards?districtId='+DistrictID, {});
-    var wards = await respon.json();
-    var ward = null;
-    for(var i=0; i< wards.data.length; i++){
-        if(tenxa.toLowerCase().includes(wards.data[i].WardName.toLowerCase())){
-            ward = wards.data[i];
-        }
-    }
-    return ward
-}
+// Các hàm layTinhShip / layHuyenShip / layXaShip đã được chuyển sang checkout.js
+// để tránh trùng lặp. Gọi capNhatPhiShip(address) để tính phí vận chuyển.

@@ -141,30 +141,35 @@ async function loadAllCart() {
             main += `
                 <tr>
                     <td>
-                        <a href="detail?id=${product.id || ""}">
-                            <img class="imgprocart" src="${image}" onerror="this.src='image/product1.webp'">
-                        </a>
-                        <div class="divnamecart">
-                            <a href="detail?id=${product.id || ""}" class="nameprocart">${product.name || ""}</a>
-                            <p class="sizecart">${variantName}</p>
+                        <div class="cart-product-cell">
+                            <a href="detail?id=${product.id || ''}" class="cart-img-wrap">
+                                <img src="${image}" alt="${product.name || ''}"
+                                     onerror="this.src='image/product1.webp'">
+                            </a>
+                            <div class="cart-product-info">
+                                <a href="detail?id=${product.id || ''}" class="cart-product-name">
+                                    ${product.name || ''}
+                                </a>
+                                <span class="cart-variant-badge">${variantName}</span>
+                            </div>
                         </div>
                     </td>
                     <td>
-                        <p class="boldcart">${formatmoney(price)}</p>
+                        <span class="cart-price">${formatmoney(price)}</span>
                     </td>
                     <td>
-                        <div class="clusinp">
-                            <button onclick="upDownQuantity(${item.id}, 'UP')" class="cartbtn"> + </button>
-                            <input value="${quantity}" class="inputslcart" readonly>
-                            <button onclick="upDownQuantity(${item.id}, 'DOWN')" class="cartbtn"> - </button>
+                        <div class="qty-control">
+                            <button onclick="upDownQuantity(${item.id}, 'UP')" class="qty-btn">+</button>
+                            <input value="${quantity}" class="qty-input" readonly>
+                            <button onclick="upDownQuantity(${item.id}, 'DOWN')" class="qty-btn">−</button>
                         </div>
                     </td>
                     <td>
-                        <div class="tdpricecart">
-                            <p class="boldcart">${formatmoney(itemTotal)}</p>
-                            <p onclick="removeCart(${item.id})" class="delcart">
-                                <i class="fa fa-trash-o facartde"></i>
-                            </p>
+                        <div class="cart-total-cell">
+                            <div class="cart-item-total">${formatmoney(itemTotal)}</div>
+                            <button onclick="removeCart(${item.id})" class="cart-delete-btn">
+                                <i class="fa-solid fa-trash"></i> Xóa
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -172,18 +177,37 @@ async function loadAllCart() {
         }
 
         if (list.length === 0) {
-            main = `<tr><td colspan="4"><h3>Giỏ hàng trống</h3></td></tr>`;
+            main = `<tr><td colspan="4">
+                <div class="cart-empty">
+                    <div class="cart-empty-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <h3>Giỏ hàng của bạn đang trống</h3>
+                    <p>Hãy thêm sản phẩm vào giỏ để tiến hành thanh toán</p>
+                    <a href="product" class="cart-empty-btn">
+                        <i class="fa-solid fa-bag-shopping"></i> Mua sắm ngay
+                    </a>
+                </div>
+            </td></tr>`;
         }
 
         document.getElementById("listcartDes").innerHTML = main;
-        document.getElementById("tonggiatien").innerHTML = formatmoney(totalAmount);
+        const totalFormatted = formatmoney(totalAmount);
+        document.getElementById("tonggiatien").innerHTML = totalFormatted;
         document.getElementById("soluonggiohang").innerHTML = totalCart;
+        // Sync total to summary panel
+        var fin = document.getElementById("totalFinal");
+        if (fin) fin.innerHTML = totalFormatted;
 
     } catch (error) {
         console.error("Lỗi loadAllCart:", error);
         toastr.error("Không tải được giỏ hàng");
         document.getElementById("listcartDes").innerHTML =
-            `<tr><td colspan="4"><h3>Không tải được giỏ hàng</h3></td></tr>`;
+            `<tr><td colspan="4">
+                <div class="cart-empty">
+                    <div class="cart-empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                    <h3>Không tải được giỏ hàng</h3>
+                    <p>Vui lòng thử lại sau</p>
+                </div>
+            </td></tr>`;
     }
 }
 

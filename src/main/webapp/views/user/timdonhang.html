@@ -1,114 +1,314 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu đơn hàng — Sellora</title>
+    <meta name="description" content="Tra cứu trạng thái đơn hàng của bạn tại Sellora.">
     <link rel="shortcut icon" href="image/logo.ico">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
     <script src="js/main.js"></script>
     <script src="js/banner.js"></script>
     <script src="js/product.js"></script>
     <script src="js/invoice.js"></script>
+
     <script>
-        window.onload = function(){
+        window.onload = function () {
             loadMenu();
-            loadBanner();
             loadSanPhamNoiBat();
-        }
+        };
     </script>
+
+    <style>
+        :root {
+            --p: #0d9488; --p-lt: #14b8a6;
+            --p-grad: linear-gradient(135deg, #0d9488 0%, #065f46 100%);
+            --bg: #f0f4f8; --card: #fff;
+            --tx: #1e293b; --tx2: #64748b; --tx3: #94a3b8;
+            --border: #e2e8f0; --r: 14px;
+            --sh: 0 2px 12px rgba(0,0,0,.07);
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); }
+
+        .tdk-page { padding: 32px 0 60px; }
+
+        /* Breadcrumb */
+        .tdk-breadcrumb {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--tx2); margin-bottom: 24px;
+        }
+        .tdk-breadcrumb a { color: var(--tx2); text-decoration: none; transition: color .2s; }
+        .tdk-breadcrumb a:hover { color: var(--p); }
+        .tdk-breadcrumb .sep { color: var(--tx3); font-size: 10px; }
+
+        /* Layout */
+        .tdk-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+
+        /* Card */
+        .tdk-card {
+            background: var(--card); border-radius: var(--r);
+            border: 1px solid var(--border); box-shadow: var(--sh);
+            overflow: hidden; margin-bottom: 20px;
+        }
+        .tdk-card-header {
+            padding: 18px 24px; border-bottom: 1px solid var(--border);
+            background: #fafbfc; display: flex; align-items: center; gap: 10px;
+        }
+        .tdk-card-header h2 {
+            font-size: 16px; font-weight: 700; color: var(--tx); margin: 0;
+        }
+        .tdk-card-body { padding: 24px; }
+
+        /* Hero search banner */
+        .tdk-hero {
+            background: var(--p-grad);
+            border-radius: var(--r); padding: 36px 32px;
+            margin-bottom: 24px; position: relative; overflow: hidden;
+        }
+        .tdk-hero::before {
+            content: '';
+            position: absolute; top: -40px; right: -40px;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(255,255,255,.07);
+        }
+        .tdk-hero::after {
+            content: '';
+            position: absolute; bottom: -60px; right: 80px;
+            width: 150px; height: 150px; border-radius: 50%;
+            background: rgba(255,255,255,.05);
+        }
+        .tdk-hero-label {
+            font-size: 12px; font-weight: 600; color: rgba(255,255,255,.7);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+        }
+        .tdk-hero-title {
+            font-size: 24px; font-weight: 800; color: #fff;
+            margin-bottom: 6px; letter-spacing: -.3px;
+        }
+        .tdk-hero-sub { font-size: 14px; color: rgba(255,255,255,.78); margin-bottom: 26px; }
+
+        .tdk-search-row {
+            display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1;
+        }
+        .tdk-search-input {
+            flex: 1; min-width: 140px; padding: 13px 16px;
+            border: none; border-radius: 10px;
+            font-size: 14px; font-family: 'Inter', sans-serif; color: var(--tx);
+            outline: none; box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        }
+        .tdk-search-input::placeholder { color: var(--tx3); }
+        .tdk-search-btn {
+            padding: 13px 28px; background: #f59e0b; border: none;
+            border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700;
+            font-family: 'Inter', sans-serif; cursor: pointer;
+            transition: all .25s; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15); white-space: nowrap;
+        }
+        .tdk-search-btn:hover { background: #d97706; transform: translateY(-1px); }
+
+        /* Results table */
+        .tdk-table { width: 100%; border-collapse: collapse; }
+        .tdk-table thead tr { border-bottom: 2px solid var(--border); }
+        .tdk-table thead th {
+            padding: 12px 16px; font-size: 12px; font-weight: 700;
+            color: var(--tx3); text-transform: uppercase; letter-spacing: .5px;
+            white-space: nowrap; background: #fafbfc;
+        }
+        .tdk-table tbody tr {
+            border-bottom: 1px solid var(--border); transition: background .2s;
+        }
+        .tdk-table tbody tr:last-child { border-bottom: none; }
+        .tdk-table tbody tr:hover { background: #f8fafc; }
+        .tdk-table tbody td { padding: 16px; font-size: 14px; color: var(--tx); vertical-align: middle; }
+
+        /* Order ID link */
+        .order-id-link {
+            font-weight: 700; color: var(--p); text-decoration: none;
+            font-family: 'Inter', monospace; font-size: 13px;
+        }
+        .order-id-link:hover { color: var(--p-lt); }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 11.5px; font-weight: 600;
+        }
+        .status-pending  { background: #fef3c7; color: #92400e; }
+        .status-paid     { background: #dcfce7; color: #166534; }
+        .status-shipping { background: #dbeafe; color: #1e40af; }
+        .status-done     { background: #d1fae5; color: #065f46; }
+        .status-cancel   { background: #fee2e2; color: #991b1b; }
+
+        /* Empty state */
+        .tdk-empty {
+            text-align: center; padding: 60px 20px;
+        }
+        .tdk-empty-icon { font-size: 56px; color: #e2e8f0; margin-bottom: 16px; }
+        .tdk-empty h3 { font-size: 17px; font-weight: 700; color: var(--tx); margin-bottom: 8px; }
+        .tdk-empty p { font-size: 14px; color: var(--tx2); }
+
+        /* Sidebar: featured products */
+        .tdk-sidebar { position: sticky; top: 20px; }
+        .tdk-sp-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border-bottom: 1px solid var(--border);
+            transition: background .2s;
+        }
+        .tdk-sp-item:last-child { border-bottom: none; }
+        .tdk-sp-item:hover { background: #f8fafc; }
+        .tdk-sp-img {
+            width: 54px; height: 54px; border-radius: 10px;
+            object-fit: contain; padding: 4px;
+            background: #f1f5f9; border: 1px solid var(--border); flex-shrink: 0;
+        }
+        .tdk-sp-name {
+            font-size: 13px; font-weight: 600; color: var(--tx);
+            text-decoration: none; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            transition: color .2s;
+        }
+        .tdk-sp-name:hover { color: var(--p); }
+        .tdk-sp-price { font-size: 13px; font-weight: 700; color: #ef4444; margin-top: 3px; }
+
+        @media (max-width: 992px) {
+            .tdk-layout { grid-template-columns: 1fr; }
+            .tdk-sidebar { position: static; }
+        }
+        @media (max-width: 640px) {
+            .tdk-search-row { flex-direction: column; }
+            .tdk-search-btn { justify-content: center; }
+            .tdk-table thead { display: none; }
+            .tdk-table tbody tr { display: block; padding: 12px 0; }
+            .tdk-table tbody td { display: block; padding: 4px 16px; border: none; }
+        }
+    </style>
 </head>
+
 <body>
     <div id="headerweb"></div>
 
-    <div class="contentweb">
+    <div class="contentweb tdk-page">
         <div class="container">
-            <div class="bannerhot1">
-                <a href=""><img src="image/hot1.png" alt=""></a>
-            </div>  
-            <div class="divbaiviet">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <p class="tintuctieude">Tìm kiếm đơn hàng của bạn</p>
-                        <hr>
-                        <div id="noidungbaiviet">
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <input type="number" id="madonhang" class="inputlogin" placeholder="Nhập mã đơn hàng của bạn">
-                                </div>
-                                <div class="col-sm-7">
-                                    <input id="sodienthoai" class="inputlogin" placeholder="Nhập số điện thoại">
-                                </div>
-                            </div>
-                            <button onclick="timKiemDonHang()" class="btntracuu">Tra cứu</button>
+
+            <!-- Breadcrumb -->
+            <nav class="tdk-breadcrumb">
+                <a href="index"><i class="fa-solid fa-house"></i> Trang chủ</a>
+                <span class="sep"><i class="fa-solid fa-chevron-right"></i></span>
+                <span style="color:var(--tx);font-weight:600">Tra cứu đơn hàng</span>
+            </nav>
+
+            <div class="tdk-layout">
+
+                <!-- ===== LEFT ===== -->
+                <div>
+                    <!-- Hero search -->
+                    <div class="tdk-hero">
+                        <div class="tdk-hero-label"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu đơn hàng</div>
+                        <h1 class="tdk-hero-title">Kiểm tra trạng thái đơn hàng</h1>
+                        <p class="tdk-hero-sub">Nhập mã đơn hàng và số điện thoại để xem thông tin giao hàng của bạn</p>
+                        <div class="tdk-search-row">
+                            <input type="number" id="madonhang" class="tdk-search-input"
+                                placeholder="Mã đơn hàng (VD: 12345)">
+                            <input id="sodienthoai" class="tdk-search-input"
+                                placeholder="Số điện thoại đặt hàng">
+                            <button onclick="timKiemDonHang()" class="tdk-search-btn" id="btnTimDon">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tra cứu
+                            </button>
                         </div>
-                        <table class="table table-donhang" id="my-orders-table">
-                            <thead class="thead-default">
-                                <tr>
-                                    <th>Mã đơn hàng</th>
-                                    <th class="floatr">Ngày mua</th>
-                                    <th>Địa chỉ</th>
-                                    <th class="floatr">Giá trị<br>đơn hàng</th>
-                                    <th>Trạng thái thanh toán</th>
-                                    <th class="floatr">Trạng thái vận chuyển</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listinvoice">
-                                <!-- <tr>
-                                    <td><a class="yls pointer-event">#115871</a></td>
-                                    <td class="floatr">11:37 21/09/2023</td>
-                                    <td>gia lam, ha noi, viet nam, vietnam,Quận Đống Đa, Hà Nội, Vietnam</td>
-                                    <td class="floatr"><span class="yls">289.000đ</span></td>
-                                    <td><span class="span_pending">Chưa thu tiền</span></td>
-                                    <td class="floatr"><span class="span_">Chưa chuyển</span></td>
-                                    <td><i class="fa fa-trash-o huydon"></i></td>
-                                </tr> -->
-                            </tbody>
-                        </table>
                     </div>
-                    <div class="col-sm-4">
-                        <p class="tintuctieude">Sản phẩm nổi bật</p>
-                        <hr>
-                        <div id="listspnoibat" class="listspnoibat">
-                            <!-- <div class="row singlespnoibat">
-                                <div class="col-sm-3">
-                                    <img src="image/product1.webp" class="anhspnoibat">
-                                </div>
-                                <div class="col-sm-9 ndspnoibat">
-                                    <a href="" class="tenspnoibat">Iphone 15 promax bản giới hạn</a>
-                                    <div class="priceproductnoibat">
-                                        <strong class="newpricenoibat">9,690,000 ₫</strong>
-                                        <span class="oldpricenoibat">19,990,000 ₫</span>
-                                    </div>
-                                    <button class="btngiohangnb">Giỏ hàng</button>
-                                </div>
-                            </div> -->
+
+                    <!-- Results -->
+                    <div class="tdk-card" id="resultCard">
+                        <div class="tdk-card-header">
+                            <i class="fa-solid fa-receipt" style="color:#0d9488;font-size:16px"></i>
+                            <h2>Kết quả tra cứu</h2>
+                        </div>
+                        <div id="orderResultArea">
+                            <div class="tdk-empty">
+                                <div class="tdk-empty-icon"><i class="fa-solid fa-box-open"></i></div>
+                                <h3>Chưa có kết quả</h3>
+                                <p>Nhập mã đơn hàng và số điện thoại để bắt đầu tra cứu</p>
+                            </div>
+                        </div>
+                        <div style="overflow-x:auto">
+                            <table class="tdk-table" id="my-orders-table" style="display:none">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn hàng</th>
+                                        <th>Ngày mua</th>
+                                        <th>Địa chỉ</th>
+                                        <th style="text-align:right">Tổng tiền</th>
+                                        <th style="text-align:right">Phí ship</th>
+                                        <th>Thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listinvoice"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- ===== RIGHT: Sidebar ===== -->
+                <div class="tdk-sidebar">
+                    <div class="tdk-card">
+                        <div class="tdk-card-header">
+                            <i class="fa-solid fa-star" style="color:#f59e0b;font-size:15px"></i>
+                            <h2>Sản phẩm nổi bật</h2>
+                        </div>
+                        <div id="listspnoibat">
+                            <!-- JS rendered by loadSanPhamNoiBat() -->
+                        </div>
+                    </div>
+
+                    <!-- Quick links -->
+                    <div class="tdk-card">
+                        <div class="tdk-card-header">
+                            <i class="fa-solid fa-circle-question" style="color:#0d9488;font-size:15px"></i>
+                            <h2>Hỗ trợ</h2>
+                        </div>
+                        <div style="padding:16px">
+                            <a href="tel:0972374823" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--tx);font-size:13px;font-weight:500;transition:color .2s"
+                               onmouseover="this.style.color='#0d9488'" onmouseout="this.style.color='var(--tx)'">
+                                <i class="fa-solid fa-phone" style="color:#0d9488;width:16px"></i>
+                                Hotline: 0972 374 823
+                            </a>
+                            <a href="mailto:sellora@gmail.com" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--tx);font-size:13px;font-weight:500;transition:color .2s"
+                               onmouseover="this.style.color='#0d9488'" onmouseout="this.style.color='var(--tx)'">
+                                <i class="fa-solid fa-envelope" style="color:#0d9488;width:16px"></i>
+                                sellora@gmail.com
+                            </a>
+                            <a href="#" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:var(--tx);font-size:13px;font-weight:500;transition:color .2s"
+                               onmouseover="this.style.color='#0d9488'" onmouseout="this.style.color='var(--tx)'">
+                                <i class="fa-solid fa-clock" style="color:#0d9488;width:16px"></i>
+                                08:00 – 22:00 hàng ngày
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <div class="container" id="footer"></div>
-    
+    <script src="js/carousel.js"></script>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="js/carousel.js"></script>
+
 </html>

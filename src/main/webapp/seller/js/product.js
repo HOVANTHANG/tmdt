@@ -322,107 +322,121 @@ async function setImginput() {
     document.getElementById("btnupdatemausac").disabled = false
 }
 async function loadProduct(page, param = "") {
-    var category = document.getElementById("danhmuc").value;
+    var category  = document.getElementById("danhmuc").value;
     var trademark = document.getElementById("thuonghieu").value;
     var size = 10;
 
-    // seller: backend tự lấy shop theo user login
-    var url = 'http://localhost:8080/api/product/seller/my-shop-products?page=' + page
-        + '&size=' + size;
+    // Hiển thị trạng thái loading
+    document.getElementById("listproduct").innerHTML =
+        `<tr><td colspan="8" class="td-state"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải dữ liệu...</span></td></tr>`;
 
-    if (param != null && param.trim() !== "") {
-        url += '&search=' + encodeURIComponent(param);
-    }
-    if (category !== "" && category != null) {
-        url += '&category=' + category;
-    }
-    if (trademark !== "" && trademark != null) {
-        url += '&trademark=' + trademark;
-    }
+    var url = 'http://localhost:8080/api/product/seller/my-shop-products?page=' + page + '&size=' + size;
+    if (param != null && param.trim() !== "") url += '&search=' + encodeURIComponent(param);
+    if (category)  url += '&category='  + category;
+    if (trademark) url += '&trademark=' + trademark;
 
     try {
         const response = await fetch(url, {
-            headers: new Headers({
-                'Authorization': 'Bearer ' + token
-            })
+            headers: new Headers({ 'Authorization': 'Bearer ' + token })
         });
 
-        const result = await response.json();
-        const list = result.content || [];
-        const totalPage = result.totalPages || 0;
+        const result        = await response.json();
+        const list          = result.content   || [];
+        const totalPage     = result.totalPages || 0;
+        const totalElements = result.totalElements || list.length;
+
+        // Empty state
+        if (list.length === 0) {
+            document.getElementById("listproduct").innerHTML =
+                `<tr><td colspan="8" class="td-state">
+                    <i class="fa-solid fa-box-open"></i>
+                    <span>Chưa có sản phẩm nào. Nhấn "Thêm sản phẩm" để bắt đầu!</span>
+                </td></tr>`;
+            document.getElementById("pageable").innerHTML = '';
+            if (typeof updateStats === 'function') updateStats([], 0);
+            return;
+        }
 
         let main = '';
-
         for (let i = 0; i < list.length; i++) {
-            let stockDetail = "";
+            const p = list[i];
 
-            if (list[i].productVariants && list[i].productVariants.length > 0) {
-                list[i].productVariants.forEach(variant => {
-                    let variantName = "";
-
-                    if (variant.tier1value && variant.tier2value) {
-                        variantName = `${variant.tier1value} - ${variant.tier2value}`;
-                    } else if (variant.tier1value) {
-                        variantName = variant.tier1value;
-                    } else if (variant.tier2value) {
-                        variantName = variant.tier2value;
-                    } else {
-                        variantName = "Mặc định";
-                    }
-
-                    stockDetail += `${variantName} : ${variant.quantity}<br>`;
+            // Tồn kho chi tiết từng biến thể
+            let stockHtml = '';
+            const variants = p.productVariants || [];
+            if (variants.length > 0) {
+                variants.forEach(v => {
+                    const name = [v.tier1value, v.tier2value].filter(Boolean).join(' / ') || 'Mặc định';
+                    const qty  = v.quantity || 0;
+                    const color = qty > 0 ? 'var(--p)' : '#ef4444';
+                    stockHtml += `<div class="variant-stock-row">
+                        <span class="variant-stock-name">${name}</span>
+                        <span class="variant-stock-qty" style="color:${color};">${qty}</span>
+                    </div>`;
                 });
             } else {
-                stockDetail = 'Không có biến thể';
+                stockHtml = `<span style="font-size:11px;color:var(--tx3);">—</span>`;
             }
 
+            // Ảnh
+            const imgHtml = p.imageBanner
+                ? `<img src="${p.imageBanner}" class="product-thumb" alt="" loading="lazy" onerror="this.style.display='none'">`
+                : `<div class="product-thumb-placeholder"><i class="fa-solid fa-image"></i></div>`;
+
             main += `
-                <tr>
-                    <td>#${list[i].id}</td>
-                    <td><img src="${list[i].imageBanner || ''}" style="width: 100px;"></td>
-                    <td>${list[i].code || ''}</td>
-                    <td>${list[i].name || ''}</td>
-                    <td>${list[i].category ? list[i].category.name : ''}</td>
-                    <td>${list[i].tradeMark ? list[i].tradeMark.name : ''}</td>
-                    <td>${list[i].createdTime || ''}<br>${list[i].createdDate || ''}</td>
-                    <td>${stockDetail}</td>
-                    <td>${list[i].shop ? list[i].shop.shopName : ''}</td>
-                    <td class="sticky-col">
-                        <i onclick="deleteProduct(${list[i].id})" class="fa fa-trash-alt iconaction"></i>
-                        <a href="addproduct?id=${list[i].id}">
-                            <i class="fa fa-edit iconaction"></i>
+            <tr>
+                <td><span class="row-id">#${p.id}</span></td>
+                <td>${imgHtml}</td>
+                <td>
+                    <div class="p-name" title="${(p.name || '').replace(/"/g,'&quot;')}">${p.name || '—'}</div>
+                    <div class="p-code">${p.code || ''}</div>
+                </td>
+                <td><span class="badge-cat" title="${p.category ? p.category.name : ''}">${p.category ? p.category.name : '—'}</span></td>
+                <td><span class="badge-brand" title="${p.tradeMark ? p.tradeMark.name : ''}">${p.tradeMark ? p.tradeMark.name : '—'}</span></td>
+                <td><span class="col-date">${p.createdDate || ''}</span></td>
+                <td style="text-align:center;">${stockHtml}</td>
+                <td>
+                    <div class="tbl-actions">
+                        <button onclick="deleteProduct(${p.id})" class="btn-tbl btn-tbl-delete" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <a href="addproduct?id=${p.id}" class="btn-tbl btn-tbl-edit" title="Chỉnh sửa">
+                            <i class="fa-solid fa-pen"></i>
                         </a>
-                        <br>
-                        <i onclick="loadProductComment(${list[i].id})"
-                           data-bs-toggle="modal"
-                           data-bs-target="#modalcomment"
-                           class="fa fa-comments iconaction"></i>
-                    </td>
-                </tr>
-            `;
+                        <button onclick="loadProductComment(${p.id})"
+                                data-bs-toggle="modal" data-bs-target="#modalcomment"
+                                class="btn-tbl btn-tbl-comment" title="Bình luận">
+                            <i class="fa-solid fa-comments"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
         }
 
         document.getElementById("listproduct").innerHTML = main;
 
+        // Cập nhật stats
+        if (typeof updateStats === 'function') updateStats(list, totalElements);
+
+        // Phân trang
         let mainpage = '';
         for (let i = 0; i < totalPage; i++) {
-            mainpage += `
-                <li class="page-item ${i === page ? 'active' : ''}">
-                    <a class="page-link" href="javascript:void(0)" onclick="loadProduct(${i}, '${param.replace(/'/g, "\\'")}')">
-                        ${i + 1}
-                    </a>
-                </li>
-            `;
+            mainpage += `<li class="page-item ${i === page ? 'active' : ''}">
+                <a class="page-link" href="javascript:void(0)"
+                   onclick="loadProduct(${i}, '${param.replace(/'/g, "\\'")}')">
+                    ${i + 1}
+                </a>
+            </li>`;
         }
         document.getElementById("pageable").innerHTML = mainpage;
 
     } catch (error) {
         console.error(error);
-        document.getElementById("listproduct").innerHTML = `
-            <tr>
-                <td colspan="11">Không tải được danh sách sản phẩm</td>
-            </tr>
-        `;
+        document.getElementById("listproduct").innerHTML =
+            `<tr><td colspan="8" class="td-state">
+                <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i>
+                <span>Không tải được danh sách sản phẩm. Vui lòng thử lại.</span>
+            </td></tr>`;
     }
 }
 

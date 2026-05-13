@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tài khoản - Bảo Ngọc Mobile</title>
+    <title>Tài khoản của tôi — Sellora</title>
 
     <link rel="shortcut icon" href="image/logo.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
-    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
@@ -37,12 +37,22 @@
     <script src="js/invoice.js"></script>
 
     <style>
+        :root {
+            --p: #0d9488; --p-lt: #14b8a6;
+            --p-grad: linear-gradient(135deg, #0d9488 0%, #065f46 100%);
+            --bg: #f0f4f8; --card: #fff;
+            --tx: #1e293b; --tx2: #64748b; --tx3: #94a3b8;
+            --border: #e2e8f0; --r: 14px;
+            --sh: 0 2px 12px rgba(0,0,0,.07);
+        }
+        body { font-family: 'Inter', sans-serif; }
+
         .orders-table tbody tr {
             cursor: pointer;
         }
 
         .orders-table tbody tr:hover {
-            background: #fff7f2;
+            background: #f0fdf9;
         }
 
         .invoice-modal-content {
@@ -54,7 +64,7 @@
         .invoice-modal-header {
             border-bottom: 1px solid #eee;
             padding: 18px 24px;
-            background: linear-gradient(135deg, #ee4d2d, #ff8a65);
+            background: var(--p-grad);
             color: #fff;
         }
 
@@ -82,15 +92,16 @@
         .invoice-code-value {
             font-size: 25px;
             font-weight: 800;
-            color: #ee4d2d;
+            color: var(--p);
         }
 
         .invoice-status-badge {
-            background: #e8fff1;
-            color: #00a550;
+            background: #f0fdf9;
+            color: var(--p);
             padding: 9px 16px;
             border-radius: 999px;
             font-weight: 700;
+            border: 1px solid #99f6e4;
         }
 
         .invoice-address-box {
@@ -128,8 +139,8 @@
         }
 
         .timeline-step.active .timeline-dot {
-            background: #ee4d2d;
-            box-shadow: 0 0 0 5px rgba(238, 77, 45, .12);
+            background: var(--p);
+            box-shadow: 0 0 0 5px rgba(13, 148, 136, .15);
         }
 
         .timeline-text {
@@ -205,12 +216,12 @@
 
         .btn-view-shop-small {
             background: #fff;
-            color: #ee4d2d;
-            border: 1px solid #ee4d2d;
+            color: var(--p);
+            border: 1px solid var(--p);
         }
 
         .btn-review-shop-small {
-            background: #ee4d2d;
+            background: var(--p-grad);
             color: #fff;
         }
 
@@ -242,7 +253,7 @@
         }
 
         .invoice-product-price {
-            color: #ee4d2d;
+            color: var(--p);
             font-weight: 800;
             margin-top: 4px;
         }
@@ -250,7 +261,7 @@
         .invoice-review-btn {
             margin-top: 9px;
             border: none;
-            background: #ee4d2d;
+            background: var(--p-grad);
             color: #fff;
             padding: 8px 14px;
             border-radius: 10px;
@@ -280,7 +291,7 @@
         }
 
         .summary-row.total b {
-            color: #ee4d2d;
+            color: #ef4444;
             font-size: 24px;
         }
 
@@ -309,7 +320,7 @@
         .btn-submit-review {
             width: 100%;
             border: none;
-            background: #ee4d2d;
+            background: var(--p-grad);
             color: #fff;
             padding: 12px;
             border-radius: 12px;
@@ -376,17 +387,17 @@
                         <div class="account-nav">
                             <div onclick="changeLink(this,'address')" class="account-nav-item active"
                                 data-tab="address">
-                                <div class="nav-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="nav-icon"><i class="fa-solid fa-map-location-dot"></i></div>
                                 <span>Sổ địa chỉ</span>
                             </div>
 
                             <div onclick="changeLink(this,'invoice')" class="account-nav-item" data-tab="invoice">
-                                <div class="nav-icon"><i class="fas fa-shopping-bag"></i></div>
+                                <div class="nav-icon"><i class="fa-solid fa-bag-shopping"></i></div>
                                 <span>Đơn hàng của tôi</span>
                             </div>
 
                             <div onclick="changeLink(this,'changepass')" class="account-nav-item" data-tab="changepass">
-                                <div class="nav-icon"><i class="fas fa-key"></i></div>
+                                <div class="nav-icon"><i class="fa-solid fa-key"></i></div>
                                 <span>Đổi mật khẩu</span>
                             </div>
                         </div>
@@ -400,7 +411,7 @@
                                 <div class="account-content-card">
                                     <div class="account-content-header">
                                         <div>
-                                            <h3><i class="fas fa-map-marker-alt"></i> Địa chỉ của bạn</h3>
+                                            <h3><i class="fa-solid fa-map-location-dot"></i> Địa chỉ của bạn</h3>
                                         </div>
                                         <button onclick="clearData()" data-bs-toggle="modal" data-bs-target="#modaladd"
                                             class="btn-add-address">
@@ -415,7 +426,7 @@
                                 <div class="account-content-card">
                                     <div class="account-content-header">
                                         <div>
-                                            <h3><i class="fas fa-shopping-bag"></i> Đơn hàng của tôi</h3>
+                                            <h3><i class="fa-solid fa-bag-shopping"></i> Đơn hàng của tôi</h3>
                                             <div class="header-subtitle">Nhấp vào dòng đơn hàng để xem chi tiết và đánh
                                                 giá</div>
                                         </div>
@@ -449,14 +460,14 @@
                                 <div class="account-content-card">
                                     <div class="account-content-header">
                                         <div>
-                                            <h3><i class="fas fa-key"></i> Đổi mật khẩu</h3>
+                                            <h3><i class="fa-solid fa-key"></i> Đổi mật khẩu</h3>
                                         </div>
                                     </div>
 
                                     <div class="account-content-body">
                                         <div class="change-pass-form">
                                             <div class="security-note">
-                                                <i class="fas fa-shield-alt"></i>
+                                                <i class="fa-solid fa-shield-halved"></i>
                                                 <span>Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người
                                                     khác</span>
                                             </div>
@@ -477,7 +488,7 @@
                                                         placeholder="Nhập lại mật khẩu mới">
                                                 </div>
                                                 <button type="submit" class="btn-save-pass">
-                                                    <i class="fas fa-save"></i> Lưu thay đổi
+                                                    <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
                                                 </button>
                                             </form>
                                         </div>
@@ -583,7 +594,7 @@
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content invoice-modal-content">
                 <div class="modal-header invoice-modal-header">
-                    <h5 class="modal-title"><i class="fa fa-shopping-bag"></i> Chi tiết đơn hàng</h5>
+                    <h5 class="modal-title"><i class="fa-solid fa-receipt"></i> Chi tiết đơn hàng</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

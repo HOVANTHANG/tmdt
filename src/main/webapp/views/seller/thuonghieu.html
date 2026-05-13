@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
+    <title>Quản lý Thương hiệu - Seller Center</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="/seller/css/seller-modern.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -47,20 +49,26 @@
         <div id="layoutSidenav_nav"></div>
         <div id="layoutSidenav_content">
             <main class="main">
-                <div class="col-sm-12 header-sp">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a onclick="clearData()" data-bs-toggle="modal" data-bs-target="#addtk" href="#"
-                                class="btn btn-success"><i class="fa fa-plus"></i> Thêm thương hiệu</a>
-                        </div>
+
+                <div class="page-title-card">
+                    <div class="page-title-icon"><i class="fas fa-certificate"></i></div>
+                    <div>
+                        <h4>Quản lý Thương hiệu</h4>
+                        <p>Quản lý các thương hiệu sản phẩm của shop</p>
+                    </div>
+                    <div class="ptc-actions">
+                        <a onclick="clearData()" data-bs-toggle="modal" data-bs-target="#addtk" href="#"
+                            class="btn btn-light btn-sm fw-bold">
+                            <i class="fas fa-plus me-1"></i> Thêm thương hiệu
+                        </a>
                     </div>
                 </div>
                 <div class="col-sm-12">
                     <div class="wrapper">
                         <div class="headertable">
                             <div class="divsearchtb">
-                                <label>search: </label>
-                                <input onkeyup="loadTrademark(0,this.value)" id="searchtable" placeholder="tìm kiếm"
+                                <label>Tìm kiếm: </label>
+                                <input onkeyup="loadTrademark(0,this.value)" id="searchtable" placeholder="Tìm theo tên thương hiệu..."
                                     class="inputsearchtable">
                             </div>
                         </div>

@@ -47,12 +47,12 @@ public class ProductCommentApi {
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    // @GetMapping("/public/find-by-product")
-    // public ResponseEntity<?> findAll(@RequestParam("idproduct") Long idproduct){
-    // List<ProductCommentResponse> result =
-    // productCommentService.findByProductId(idproduct);
-    // return new ResponseEntity<>(result,HttpStatus.OK);
-    // }
+    @GetMapping("/public/find-by-product")
+    public ResponseEntity<?> findAll(@RequestParam("idproduct") Long idproduct) {
+        List<ProductCommentResponse> result = productCommentService.findByProductId(idproduct);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
     @GetMapping("/user/findById")
     public ResponseEntity<?> findById(@RequestParam("id") Long id) {

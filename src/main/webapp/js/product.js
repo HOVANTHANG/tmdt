@@ -131,27 +131,40 @@ async function loadSanPhamNoiBat() {
 
 async function loadSanPhamNoiBatCart() {
     var url = 'http://localhost:8080/api/product/public/best-saler?page=0&size=4&sort=quantitySold,desc';
-    const response = await fetch(url, {
-    });
+    const response = await fetch(url);
     var result = await response.json();
     var list = result.content;
     var main = '';
-    for (i = 0; i < list.length; i++) {
-        main += `<div class="col-md-3 col-sm-4 col-6">
-        <div class="singleproducts">
-            <a href="detail?id=${list[i].id}"><img src="${list[i].imageBanner}" class="productimg"></a>
-            <div class="contentsinglepro">
-                <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
-                <div class="priceproduct">
-                    <strong class="newpricelq">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
+    for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        var oldPriceHtml = (p.oldPrice != null && p.oldPrice > 0)
+            ? `<span class="oldprice">${formatmoney(p.oldPrice)}</span>` : '';
+        main += `
+        <div class="col-lg-3 col-md-3 col-sm-6 col-6" style="margin-bottom:14px">
+            <div class="singleproduct">
+                <a href="detail?id=${p.id}">
+                    <img src="${p.imageBanner}" class="productimg" alt="${p.name}"
+                         loading="lazy" onerror="this.src='image/product1.webp'">
+                </a>
+                <div class="contentsinglepro">
+                    <p class="productname">
+                        <a class="productname" href="detail?id=${p.id}">${p.name}</a>
+                    </p>
+                    <div class="priceproduct">
+                        <strong class="newprice">${formatmoney(p.price)}</strong>
+                        ${oldPriceHtml}
+                    </div>
+                    <div class="sp-meta">
+                        ${p.quantitySold > 0 ? `<span class="sp-sold">Đã bán ${p.quantitySold}</span>` : ''}
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>`
+        </div>`;
     }
-    document.getElementById("goiysanpham").innerHTML = main
+    var el = document.getElementById("goiysanpham");
+    if (el) el.innerHTML = main;
 }
+
 
 var listbonho = [];
 async function loadAProduct() {
@@ -324,160 +337,203 @@ async function clickImgdetail(e) {
 
 
 
+/* ── Tính điểm ưu tiên theo từ khoá ─────────────────
+   3 = tên trùng khớp hoàn toàn
+   2 = tên bắt đầu bằng từ khoá
+   1 = tên chứa từ khoá
+   0 = không khớp tên (chỉ khớp mô tả...)
+   +bonus theo lượng đã bán (sold)
+──────────────────────────────────────────────────── */
+function calcRelevanceScore(product, keyword) {
+    if (!keyword || keyword.trim() === '') return product.quantitySold || 0;
+    var kw = keyword.trim().toLowerCase();
+    var name = (product.name || '').toLowerCase();
+    var score = 0;
+    if (name === kw)                   score = 3000;
+    else if (name.startsWith(kw))      score = 2000;
+    else if (name.includes(kw))        score = 1000;
+    // bonus: từng từ trong keyword khớp riêng lẻ
+    kw.split(/\s+/).forEach(function(word) {
+        if (word.length > 1 && name.includes(word)) score += 100;
+    });
+    // bonus lượng bán
+    score += Math.min(product.quantitySold || 0, 500);
+    return score;
+}
+
+/* Highlight từ khoá trong tên sản phẩm */
+function highlightKeyword(text, keyword) {
+    if (!keyword || keyword.trim() === '') return text;
+    var escaped = keyword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp('(' + escaped + ')', 'gi');
+    return text.replace(regex, '<mark class="sp-highlight">$1</mark>');
+}
+
+/* Render một sản phẩm thành HTML card */
+function renderProductCard(p, keyword) {
+    var highlighted = highlightKeyword(p.name, keyword);
+    var oldPriceHtml = (p.oldPrice != null && p.oldPrice > 0)
+        ? `<span class="oldprice">${formatmoney(p.oldPrice)}</span>` : '';
+    // sp-meta luôn render (min-height giữ card đồng đều dù rỗng)
+    var starHtml = (p.avgStar > 0)
+        ? `<span class="sp-star">★ ${Number(p.avgStar).toFixed(1)}</span>` : '';
+    var soldHtml = (p.quantitySold > 0)
+        ? `<span class="sp-sold">Đã bán ${p.quantitySold}</span>` : '';
+    return `
+    <div class="col-lg-20p col-md-3 col-sm-6 col-6">
+        <div class="singleproduct">
+            <a href="detail?id=${p.id}">
+                <img src="${p.imageBanner}" class="productimg" alt="${p.name}" loading="lazy">
+            </a>
+            <div class="contentsinglepro">
+                <p class="productname">
+                    <a class="productname" href="detail?id=${p.id}">${highlighted}</a>
+                </p>
+                <div class="priceproduct">
+                    <strong class="newprice">${formatmoney(p.price)}</strong>
+                    ${oldPriceHtml}
+                </div>
+                <div class="sp-meta">${starHtml}${soldHtml}</div>
+            </div>
+        </div>
+    </div>`;
+}
+
+
 async function sanPhamByThuongHieuAndDanhMuc(page) {
     var uls = new URL(document.URL)
     var thuonghieu = uls.searchParams.get("thuonghieu");
-    var danhmuc = uls.searchParams.get("danhmuc");
-    var search = uls.searchParams.get("search");
+    var danhmuc    = uls.searchParams.get("danhmuc");
+    var search     = uls.searchParams.get("search");
 
-    var url = 'http://localhost:8080/api/product/public/loc-san-pham?page=' + page + '&size=' + size + '&sort=id,desc&small=0&large=1000000000';
-    if (thuonghieu != null) {
-        url += '&trademark=' + thuonghieu
-    }
-    if (danhmuc != null) {
-        url += '&idcategory=' + danhmuc
-    }
-    if (search != null) {
-        url += '&search=' + search
-    }
-    const response = await fetch(url, {
-    });
+    var fetchSize = search ? Math.max(size, 20) : size;
+
+    var url = 'http://localhost:8080/api/product/public/loc-san-pham?page=' + page
+            + '&size=' + fetchSize + '&sort=id,desc&small=0&large=1000000000';
+    if (thuonghieu != null) url += '&trademark=' + thuonghieu;
+    if (danhmuc    != null) url += '&idcategory=' + danhmuc;
+    if (search     != null) url += '&search=' + encodeURIComponent(search);
+
+    const response = await fetch(url);
     var result = await response.json();
     var list = result.content;
-    var main = '';
-    for (i = 0; i < list.length; i++) {
-        main += `<div class="col-lg-20p col-md-3 col-sm-6 col-6">
-        <div class="singleproduct">
-            <a href="detail?id=${list[i].id}"><img src="${list[i].imageBanner}" class="productimg"></a>
-            <div class="contentsinglepro">
-                <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
-                <div class="priceproduct">
-                    <strong class="newprice">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
-                </div>
-            </div>
-        </div>
-    </div>`
+
+    if (search) {
+        list.sort(function(a, b) {
+            return calcRelevanceScore(b, search) - calcRelevanceScore(a, search);
+        });
     }
-    document.getElementById("sanphamloc").innerHTML += main
+
+    var main = '';
+    if (list.length === 0 && page === 0) {
+        main = '<div class="col-12"><div class="pro-empty"><div class="pro-empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div><h3>Không tìm thấy sản phẩm</h3><p>Thử tìm với từ khoá khác</p></div></div>';
+    } else {
+        for (var i = 0; i < list.length; i++) {
+            main += renderProductCard(list[i], search);
+        }
+    }
+
+    var container = document.getElementById("sanphamloc");
+    if (container) {
+        if (page === 0) container.innerHTML = main;
+        else container.innerHTML += main;
+    }
+
+    var rc = document.getElementById("resultCount");
+    if (rc && result.totalElements != null) {
+        rc.innerHTML = 'Tìm thấy <strong>' + result.totalElements + '</strong> sản phẩm';
+    }
+
     if (result.last == false) {
         document.getElementById("btnlocsanpham").onclick = function () {
-            sanPhamByThuongHieuAndDanhMuc(Number(page) + Number(1));
-        }
-    }
-    else {
+            sanPhamByThuongHieuAndDanhMuc(Number(page) + 1);
+        };
+    } else {
         document.getElementById("btnlocsanpham").onclick = function () {
             toastr.warning("Đã hết kết quả tìm kiếm");
-        }
+        };
     }
 }
+
 
 
 async function locSanPham(page) {
+    var searchEl = document.getElementById("search");
+    var search   = searchEl ? searchEl.value.trim() : '';
+    var fetchSize = search ? Math.max(size, 30) : size;
 
-    var search = document.getElementById("search").value || "";
+    var sort = 'id,desc';
+    var sortEl = document.getElementById("sort");
+    if (sortEl && sortEl.value) sort = sortEl.value;
 
-    var url =
-        'http://localhost:8080/api/product/public/search-marketplace'
-        + '?keyword=' + encodeURIComponent(search)
-        + '&page=' + page
-        + '&size=' + size;
+    var mucgiaEl = document.getElementById("mucgia");
+    var mucgia   = mucgiaEl ? mucgiaEl.value : '0-1000000000';
+    var parts    = mucgia.split('-');
+    var small    = parts[0] || 0;
+    var large    = parts[1] || 1000000000;
+
+    var thuonghieuEl = document.getElementById("thuonghieu");
+    var thuonghieu   = thuonghieuEl ? thuonghieuEl.value : '';
+    var danhmucEl    = document.getElementById("danhmuc");
+    var danhmuc      = danhmucEl ? danhmucEl.value : '';
+
+    var url = 'http://localhost:8080/api/product/public/loc-san-pham'
+            + '?page=' + page
+            + '&size=' + fetchSize
+            + '&sort=' + sort
+            + '&small=' + small
+            + '&large=' + large;
+    if (search)     url += '&search=' + encodeURIComponent(search);
+    if (thuonghieu) url += '&trademark=' + encodeURIComponent(thuonghieu);
+    if (danhmuc)    url += '&idcategory=' + encodeURIComponent(danhmuc);
 
     const response = await fetch(url);
-
     var result = await response.json();
+    var list   = result.content;
 
-    var list = result.content;
+    if (search && sort === 'id,desc') {
+        list.sort(function(a, b) {
+            return calcRelevanceScore(b, search) - calcRelevanceScore(a, search);
+        });
+    }
 
     var main = '';
-
-    for (i = 0; i < list.length; i++) {
-
-        main += `
-        <div class="col-lg-20p col-md-3 col-sm-6 col-6">
-            <div class="singleproduct">
-
-                <a href="detail?id=${list[i].id}">
-                    <img src="${list[i].imageBanner}" class="productimg">
-                </a>
-
-                <div class="contentsinglepro">
-
-                    <p class="productname">
-                        <a class="productname"
-                           href="detail?id=${list[i].id}">
-                           ${list[i].name}
-                        </a>
-                    </p>
-
-                    <div class="priceproduct">
-                        <strong class="newprice">
-                            ${formatmoney(list[i].price)}
-                        </strong>
-
-                        <span class="oldprice">
-                            ${list[i].oldPrice != null &&
-                list[i].oldPrice > 0
-                ? formatmoney(list[i].oldPrice)
-                : ''
-            }
-                        </span>
-                    </div>
-
-                    <div class="mt-1">
-
-                        <span style="color:#ffb400">
-                            ★ ${Number(list[i].avgStar || 0).toFixed(1)}
-                        </span>
-
-                        <span style="font-size:13px;color:#777">
-                            (${list[i].reviewCount || 0} đánh giá)
-                        </span>
-
-                    </div>
-
-                    <div style="font-size:13px;color:#777">
-
-                        Đã bán:
-                        ${list[i].sold || 0}
-
-                    </div>
-
-                    <div style="font-size:13px;color:#ee4d2d">
-
-                        ${list[i].shop?.shopName || ''}
-
-                    </div>
-
-                </div>
-            </div>
-        </div>`;
+    if (list.length === 0 && page === 0) {
+        main = `<div class="col-12"><div class="pro-empty">
+            <div class="pro-empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <h3>Không tìm thấy sản phẩm</h3>
+            <p>Thử tìm với từ khoá khác hoặc bỏ bớt bộ lọc</p>
+        </div></div>`;
+    } else {
+        for (var i = 0; i < list.length; i++) {
+            main += renderProductCard(list[i], search);
+        }
     }
 
-    if (page == 0) {
+    if (page === 0) {
         document.getElementById("sanphamloc").innerHTML = main;
-    }
-    else {
+    } else {
         document.getElementById("sanphamloc").innerHTML += main;
     }
 
-    if (result.last == false) {
-
-        document.getElementById("btnlocsanpham").onclick = function () {
-
-            locSanPham(Number(page) + 1);
-        }
+    var rc = document.getElementById("resultCount");
+    if (rc && result.totalElements != null) {
+        rc.innerHTML = 'Tìm thấy <strong>' + result.totalElements + '</strong> sản phẩm';
     }
-    else {
 
+    if (result.last == false) {
         document.getElementById("btnlocsanpham").onclick = function () {
-
-            toastr.warning("Đã hết kết quả");
-        }
+            locSanPham(Number(page) + 1);
+        };
+    } else {
+        document.getElementById("btnlocsanpham").onclick = function () {
+            toastr.info("Đã hiển thị tất cả kết quả");
+        };
     }
 }
 
+
 function locSpAction() {
-    document.getElementById("sanphamloc").innerHTML = "";
+    document.getElementById("sanphamloc").innerHTML = '';
     locSanPham(0);
 }

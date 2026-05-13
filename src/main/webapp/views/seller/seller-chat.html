@@ -7,6 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="/seller/css/seller-modern.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -23,8 +24,8 @@
 
     <style>
         body {
-            background: #f4f6f8;
-            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
 
         .seller-chat-page {
@@ -32,13 +33,14 @@
         }
 
         .seller-chat-wrapper {
-            height: calc(100vh - 95px);
+            height: calc(100vh - 90px);
             background: #fff;
-            border-radius: 16px;
+            border-radius: 18px;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 340px 1fr;
             overflow: hidden;
-            box-shadow: 0 12px 35px rgba(15, 23, 42, .08);
+            box-shadow: 0 14px 40px rgba(15, 23, 42, .09);
+            border: 1px solid #e2e8f0;
         }
 
         .chat-left {
@@ -49,33 +51,43 @@
         }
 
         .chat-left-header {
-            padding: 18px;
+            padding: 18px 20px;
             border-bottom: 1px solid #edf0f2;
+            background: linear-gradient(135deg, #0d9488, #065f46);
+            color: #fff;
         }
 
         .chat-left-header h4 {
             margin: 0;
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.2px;
         }
 
         .chat-left-header span {
-            color: #8a8f98;
-            font-size: 13px;
+            color: rgba(255,255,255,.7);
+            font-size: 12px;
         }
 
         .chat-search-box {
-            padding: 14px 18px;
-            border-bottom: 1px solid #f1f1f1;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #f8fafc;
         }
 
         .chat-search-box input {
             width: 100%;
-            height: 40px;
-            border: 1px solid #e0e3e7;
+            height: 38px;
+            border: 1.5px solid #e2e8f0;
             border-radius: 999px;
             padding: 0 16px;
             outline: none;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color .2s;
+        }
+        .chat-search-box input:focus {
+            border-color: #14b8a6;
         }
 
         .room-list {
@@ -88,60 +100,77 @@
             gap: 12px;
             padding: 14px 18px;
             cursor: pointer;
-            border-bottom: 1px solid #f5f5f5;
+            border-bottom: 1px solid #f8fafc;
+            transition: background .2s;
         }
 
-        .room-item:hover,
+        .room-item:hover {
+            background: #f0fdfa;
+        }
         .room-item.active {
-            background: #fff4ef;
+            background: rgba(13,148,136,.08);
+            border-left: 3px solid #0d9488;
         }
 
         .room-avatar {
-            width: 46px;
-            height: 46px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #e2e8f0;
         }
 
         .room-name {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
+            color: #1e293b;
         }
 
         .room-last {
-            font-size: 13px;
-            color: #8a8f98;
-            margin-top: 4px;
+            font-size: 12.5px;
+            color: #94a3b8;
+            margin-top: 3px;
         }
 
         .chat-panel {
             display: flex;
             flex-direction: column;
-            background: #f7f8fa;
+            background: #f8fafc;
         }
 
         .chat-panel-header {
-            height: 72px;
+            height: 68px;
             background: #fff;
             border-bottom: 1px solid #edf0f2;
-            padding: 14px 20px;
+            padding: 14px 22px;
             display: flex;
             align-items: center;
+            gap: 12px;
         }
 
         .chat-panel-header h5 {
             margin: 0;
             font-weight: 700;
+            font-size: 15px;
+            color: #1e293b;
         }
 
         .chat-panel-header span {
-            color: #8a8f98;
-            font-size: 13px;
+            color: #64748b;
+            font-size: 12.5px;
+        }
+
+        .chat-panel-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(13,148,136,.15);
+            display: flex; align-items: center; justify-content: center;
+            color: #0d9488; font-size: 14px;
         }
 
         .seller-chat-body {
             flex: 1;
-            padding: 22px;
+            padding: 20px 24px;
             overflow-y: auto;
         }
 
@@ -151,17 +180,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #9ca3af;
+            color: #cbd5e1;
         }
 
         .empty-chat i {
-            font-size: 54px;
-            margin-bottom: 12px;
+            font-size: 56px;
+            margin-bottom: 14px;
+        }
+
+        .empty-chat p {
+            font-size: 14px;
+            color: #94a3b8;
         }
 
         .msg-row {
             display: flex;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .msg-row.mine {
@@ -170,43 +204,60 @@
 
         .msg-bubble {
             max-width: 62%;
-            padding: 11px 15px;
-            border-radius: 18px;
+            padding: 10px 15px;
+            border-radius: 16px 16px 16px 4px;
             background: #fff;
-            color: #111827;
-            font-size: 14px;
+            color: #1e293b;
+            font-size: 13.5px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+            line-height: 1.5;
         }
 
         .msg-row.mine .msg-bubble {
-            background: #ee4d2d;
+            background: linear-gradient(135deg, #0d9488, #065f46);
             color: #fff;
+            border-radius: 16px 16px 4px 16px;
         }
 
         .seller-chat-footer {
             background: #fff;
             border-top: 1px solid #edf0f2;
-            padding: 14px;
+            padding: 14px 16px;
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .seller-chat-footer input {
             flex: 1;
             height: 44px;
-            border: 1px solid #e0e3e7;
+            border: 1.5px solid #e2e8f0;
             border-radius: 999px;
-            padding: 0 18px;
+            padding: 0 20px;
             outline: none;
+            font-size: 13.5px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color .2s;
+        }
+        .seller-chat-footer input:focus {
+            border-color: #14b8a6;
         }
 
         .seller-chat-footer button {
             border: none;
-            background: #ee4d2d;
+            background: linear-gradient(135deg, #0d9488, #065f46);
             color: #fff;
-            padding: 0 24px;
+            padding: 0 22px;
+            height: 44px;
             border-radius: 999px;
             font-weight: 700;
+            font-size: 13.5px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+        .seller-chat-footer button:hover {
+            opacity: .88;
         }
     </style>
 </head>
@@ -236,6 +287,7 @@
 
                     <div class="chat-panel">
                         <div class="chat-panel-header">
+                            <div class="chat-panel-avatar"><i class="fas fa-user"></i></div>
                             <div>
                                 <h5 id="chatTitle">Chọn khách hàng để chat</h5>
                                 <span id="chatSubTitle">Tin nhắn với khách hàng sẽ hiển thị tại đây</span>

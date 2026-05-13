@@ -1,11 +1,14 @@
 var token = localStorage.getItem("token");
 var exceptionCode = 417;
 
-var total = 0;
-var giamgia = 0;
+var total = 0;           // Tạm tính (chưa gồm ship)
+var phiShip = 0;         // Phí vận chuyển hiện tại
+var discountVou = 0;     // Số tiền giảm từ voucher
 var voucherId = null;
 var voucherCode = null;
-var discountVou = 0;
+var soluongsp = 0;       // Tổng số lượng sản phẩm (dùng tính cân nặng)
+
+// ==================== UTILITIES ====================
 
 /**
  * Kiểm tra user đã đăng nhập
@@ -51,16 +54,9 @@ function getVariantDisplayName(variant) {
     const tier1 = variant.tier1value || "";
     const tier2 = variant.tier2value || "";
 
-    if (tier1 && tier2) {
-        return `${tier1} / ${tier2}`;
-    }
-    if (tier1) {
-        return tier1;
-    }
-    if (tier2) {
-        return tier2;
-    }
-
+    if (tier1 && tier2) return `${tier1} / ${tier2}`;
+    if (tier1) return tier1;
+    if (tier2) return tier2;
     return "Mặc định";
 }
 
@@ -77,6 +73,23 @@ function getCheckoutImage(product, variant) {
     return "image/product1.webp";
 }
 
+// ==================== TÍNH TỔNG ====================
+
+/**
+ * Cập nhật hiển thị tổng tiền cuối cùng
+ * Công thức: Tạm tính + Phí ship - Giảm giá voucher
+ */
+function capNhatTongTien() {
+    var tongCuoi = Number(total) + Number(phiShip) - Number(discountVou);
+    if (tongCuoi < 0) tongCuoi = 0;
+
+    document.getElementById("totalAmount").innerHTML = formatmoneyCheck(total);
+    document.getElementById("moneyDiscount").innerHTML = formatmoneyCheck(discountVou);
+    document.getElementById("totalfi").innerHTML = formatmoneyCheck(tongCuoi);
+}
+
+// ==================== CART ====================
+
 /**
  * Load cart cho trang thanh toán
  */
@@ -87,13 +100,11 @@ async function loadCartCheckOut() {
     }
 
     try {
-        // kiểm tra số lượng cart
+        // Kiểm tra số lượng cart
         var urlCount = 'http://localhost:8080/api/cart/user/count-cart';
         const resCount = await fetch(urlCount, {
             method: 'GET',
-            headers: new Headers({
-                'Authorization': 'Bearer ' + token
-            })
+            headers: new Headers({ 'Authorization': 'Bearer ' + token })
         });
 
         var count = await resCount.text();
@@ -103,23 +114,19 @@ async function loadCartCheckOut() {
             return;
         }
 
-        // load cart detail
+        // Load danh sách cart
         var url = 'http://localhost:8080/api/cart/user/my-cart';
         const response = await fetch(url, {
             method: 'GET',
-            headers: new Headers({
-                'Authorization': 'Bearer ' + token
-            })
+            headers: new Headers({ 'Authorization': 'Bearer ' + token })
         });
 
-        if (!response.ok) {
-            throw new Error("Không tải được giỏ hàng checkout");
-        }
+        if (!response.ok) throw new Error("Không tải được giỏ hàng checkout");
 
         var list = await response.json();
         var main = '';
         total = 0;
-        var soluongsp = 0;
+        soluongsp = 0;
 
         for (let i = 0; i < list.length; i++) {
             const item = list[i];
@@ -154,8 +161,7 @@ async function loadCartCheckOut() {
         }
 
         document.getElementById("listproductcheck").innerHTML = main;
-        document.getElementById("totalAmount").innerHTML = formatmoneyCheck(total);
-        document.getElementById("totalfi").innerHTML = formatmoneyCheck(total + phiShip);
+        capNhatTongTien();
 
     } catch (error) {
         console.error("Lỗi loadCartCheckOut:", error);
@@ -163,15 +169,187 @@ async function loadCartCheckOut() {
     }
 }
 
+// ==================== PHÍ VẬN CHUYỂN ====================
+
+/**
+ * Lấy thông tin tỉnh/thành phố từ GHN theo tên
+ * @param {string} tenTinh - Tên tỉnh/thành phố
+ * @returns {Object|null} - Đối tượng tỉnh từ GHN hoặc null nếu không tìm thấy
+ */
+async function layTinhShip(tenTinh) {
+    try {
+        const res = await fetch('http://localhost:8080/api/shipping/public/province', {});
+        const data = await res.json();
+        const provinces = data.data || [];
+
+        // Tìm kiếm linh hoạt: tên tỉnh chứa hoặc bằng tên GHN
+        const found = provinces.find(p =>
+            tenTinh.toLowerCase().includes(p.ProvinceName.toLowerCase()) ||
+            p.ProvinceName.toLowerCase().includes(tenTinh.toLowerCase())
+        );
+
+        if (!found) console.warn(`[Ship] Không tìm thấy tỉnh: "${tenTinh}"`);
+        return found || null;
+    } catch (error) {
+        console.error("[Ship] Lỗi lấy danh sách tỉnh:", error);
+        return null;
+    }
+}
+
+/**
+ * Lấy thông tin quận/huyện từ GHN theo tên
+ * @param {string} tenHuyen - Tên quận/huyện
+ * @param {number} provinceId - ProvinceID từ GHN
+ * @returns {Object|null}
+ */
+async function layHuyenShip(tenHuyen, provinceId) {
+    try {
+        const res = await fetch(`http://localhost:8080/api/shipping/public/district?provinceId=${provinceId}`, {});
+        const data = await res.json();
+        const districts = data.data || [];
+
+        const found = districts.find(d =>
+            tenHuyen.toLowerCase().includes(d.DistrictName.toLowerCase()) ||
+            d.DistrictName.toLowerCase().includes(tenHuyen.toLowerCase())
+        );
+
+        if (!found) console.warn(`[Ship] Không tìm thấy huyện: "${tenHuyen}"`);
+        return found || null;
+    } catch (error) {
+        console.error("[Ship] Lỗi lấy danh sách huyện:", error);
+        return null;
+    }
+}
+
+/**
+ * Lấy thông tin xã/phường từ GHN theo tên
+ * @param {string} tenXa - Tên xã/phường
+ * @param {number} districtId - DistrictID từ GHN
+ * @returns {Object|null}
+ */
+async function layXaShip(tenXa, districtId) {
+    try {
+        const res = await fetch(`http://localhost:8080/api/shipping/public/wards?districtId=${districtId}`, {});
+        const data = await res.json();
+        const wards = data.data || [];
+
+        const found = wards.find(w =>
+            tenXa.toLowerCase().includes(w.WardName.toLowerCase()) ||
+            w.WardName.toLowerCase().includes(tenXa.toLowerCase())
+        );
+
+        if (!found) console.warn(`[Ship] Không tìm thấy xã: "${tenXa}"`);
+        return found || null;
+    } catch (error) {
+        console.error("[Ship] Lỗi lấy danh sách xã:", error);
+        return null;
+    }
+}
+
+/**
+ * Tính phí vận chuyển dựa trên địa chỉ giao hàng
+ * Gọi GHN API tuần tự: Tỉnh → Huyện → Xã → Tính phí
+ *
+ * @param {Object} address - Đối tượng địa chỉ user (có wards, districts, province)
+ * @returns {number} - Phí vận chuyển (VNĐ), trả 0 nếu lỗi
+ */
+async function tinhPhiVanChuyen(address) {
+    // Hiển thị trạng thái đang tính
+    var elPhiShip = document.getElementById("phiship");
+    if (elPhiShip) elPhiShip.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tính...';
+
+    try {
+        var tenTinh = address.wards.districts.province.name;
+        var tenHuyen = address.wards.districts.name;
+        var tenXa = address.wards.name;
+
+        // Bước 1: Lấy ProvinceID
+        var tinh = await layTinhShip(tenTinh);
+        if (!tinh) {
+            throw new Error(`Không tìm thấy tỉnh "${tenTinh}" trong hệ thống GHN`);
+        }
+
+        // Bước 2: Lấy DistrictID
+        var huyen = await layHuyenShip(tenHuyen, tinh.ProvinceID);
+        if (!huyen) {
+            throw new Error(`Không tìm thấy huyện "${tenHuyen}" trong hệ thống GHN`);
+        }
+
+        // Bước 3: Lấy WardCode
+        var xa = await layXaShip(tenXa, huyen.DistrictID);
+        if (!xa) {
+            throw new Error(`Không tìm thấy xã "${tenXa}" trong hệ thống GHN`);
+        }
+
+        // Bước 4: Tính phí - cân nặng ước tính: mỗi sản phẩm ~0.5kg (min 100g)
+        var weight = Math.max(100, Math.ceil(soluongsp * 500)); // đơn vị gram
+        var urlPhi = `/api/shipping/tinh-phi?toDistrictId=${huyen.DistrictID}&toWardCode=${xa.WardCode}&weight=${weight}`;
+
+        const resPhi = await fetch(urlPhi, {});
+        if (!resPhi.ok) {
+            throw new Error(`GHN API trả lỗi: ${resPhi.status}`);
+        }
+
+        const dataPhi = await resPhi.json();
+        var phi = Number(dataPhi?.data?.total || 0);
+
+        console.log(`[Ship] Phí vận chuyển đến ${tenXa}, ${tenHuyen}, ${tenTinh}: ${phi.toLocaleString('vi-VN')}đ`);
+        return phi;
+
+    } catch (error) {
+        console.error("[Ship] Lỗi tính phí vận chuyển:", error);
+        toastr.warning("Không tính được phí vận chuyển, áp dụng phí mặc định 30.000đ");
+        return 30000; // Phí mặc định khi lỗi
+    }
+}
+
+/**
+ * Cập nhật phí vận chuyển khi user chọn địa chỉ
+ * Được gọi từ addressuser.js khi địa chỉ thay đổi
+ *
+ * @param {Object} address - Đối tượng địa chỉ đã chọn
+ */
+async function capNhatPhiShip(address) {
+    if (!address) return;
+
+    // Tính phí mới
+    var phiMoi = await tinhPhiVanChuyen(address);
+
+    // Cập nhật biến toàn cục
+    phiShip = phiMoi;
+
+    // Hiển thị lên UI
+    var elPhiShip = document.getElementById("phiship");
+    if (elPhiShip) {
+        elPhiShip.innerHTML = formatmoneyCheck(phiShip);
+    }
+
+    // Cập nhật tổng tiền
+    capNhatTongTien();
+}
+
+// ==================== VOUCHER ====================
+
 /**
  * Áp mã giảm giá
  */
 async function loadVoucher() {
-    var code = document.getElementById("codevoucher").value;
+    var code = document.getElementById("codevoucher").value.trim();
+
+    // Không gọi API nếu ô voucher trống
+    if (!code) {
+        document.getElementById("blockmessErr").style.display = 'none';
+        document.getElementById("blockmess").style.display = 'none';
+        voucherCode = null;
+        voucherId = null;
+        discountVou = 0;
+        capNhatTongTien();
+        return;
+    }
 
     try {
         var url = 'http://localhost:8080/api/voucher/public/findByCode?code='
-            + code + '&amount=' + (total - Number(20000));
+            + code + '&amount=' + (total + phiShip);
 
         const response = await fetch(url, {});
         var result = await response.json();
@@ -185,9 +363,7 @@ async function loadVoucher() {
             voucherCode = null;
             voucherId = null;
             discountVou = 0;
-
-            document.getElementById("moneyDiscount").innerHTML = formatmoneyCheck(0);
-            document.getElementById("totalfi").innerHTML = formatmoneyCheck(total);
+            capNhatTongTien();
             return;
         }
 
@@ -198,8 +374,7 @@ async function loadVoucher() {
 
             document.getElementById("blockmessErr").style.display = 'none';
             document.getElementById("blockmess").style.display = 'block';
-            document.getElementById("moneyDiscount").innerHTML = formatmoneyCheck(discountVou);
-            document.getElementById("totalfi").innerHTML = formatmoneyCheck(total - discountVou);
+            capNhatTongTien();
         }
     } catch (error) {
         console.error("Lỗi loadVoucher:", error);
@@ -207,35 +382,32 @@ async function loadVoucher() {
     }
 }
 
+// ==================== CHECKOUT ====================
+
 /**
  * Chọn phương thức checkout
  */
 function checkout() {
     var con = confirm("Xác nhận đặt hàng!");
-    if (con == false) {
-        return;
-    }
+    if (con == false) return;
 
     var paytype = $('input[name=paytype]:checked').val();
 
-    if (paytype == "momo") {
-        requestPayMentMomo();
-    }
-
-    if (paytype == "cod") {
-        paymentCod();
-    }
+    if (paytype == "momo") requestPayMentMomo();
+    if (paytype == "cod") paymentCod();
 }
 
 /**
- * Tạo link thanh toán momo
+ * Tạo link thanh toán MoMo
  */
 async function requestPayMentMomo() {
     try {
         var ghichu = document.getElementById("ghichudonhang").value;
+        // Chuẩn hóa: nếu không có voucher thì lưu chuỗi rỗng thay vì "null"
+        var maVoucher = voucherCode || "";
 
         window.localStorage.setItem('ghichudonhang', ghichu);
-        window.localStorage.setItem('voucherCode', voucherCode);
+        window.localStorage.setItem('voucherCode', maVoucher);
         window.localStorage.setItem('shipCost', phiShip);
         window.localStorage.setItem('sodiachi', document.getElementById("sodiachi").value);
 
@@ -246,7 +418,7 @@ async function requestPayMentMomo() {
             "content": "Sellora - Thanh toán đơn hàng",
             "returnUrl": returnurl,
             "notifyUrl": returnurl,
-            "codeVoucher": voucherCode,
+            "codeVoucher": maVoucher,   // "" khi không dùng voucher
             "shipCost": phiShip
         };
 
@@ -270,12 +442,12 @@ async function requestPayMentMomo() {
         }
     } catch (error) {
         console.error("Lỗi requestPayMentMomo:", error);
-        toastr.error("Không tạo được link thanh toán momo");
+        toastr.error("Không tạo được link thanh toán MoMo");
     }
 }
 
 /**
- * Callback thanh toán momo thành công
+ * Callback thanh toán MoMo thành công
  */
 async function paymentMomo() {
     try {
@@ -284,10 +456,13 @@ async function paymentMomo() {
         var requestId = uls.searchParams.get("requestId");
         var note = window.localStorage.getItem("ghichudonhang");
 
+        // Lấy từ localStorage — đã được chuẩn hóa thành "" khi không có voucher
+        var savedVoucher = window.localStorage.getItem("voucherCode") || "";
+
         var orderDto = {
             "payType": "MOMO",
             "userAddressId": window.localStorage.getItem("sodiachi"),
-            "voucherCode": window.localStorage.getItem("voucherCode"),
+            "voucherCode": savedVoucher,
             "note": note,
             "requestIdMomo": requestId,
             "orderIdMomo": orderId,
@@ -318,29 +493,21 @@ async function paymentMomo() {
         if (res.status < 300) {
             document.getElementById("thanhcong").style.display = 'block';
             document.getElementById("thatbai").style.display = 'none';
-            toastr.success("Thanh toán momo thành công");
-            return;
-        }
-
-        if (res.status == exceptionCode) {
-            document.getElementById("thatbai").style.display = 'block';
-            document.getElementById("thanhcong").style.display = 'none';
-            document.getElementById("errormess").innerHTML =
-                result?.defaultMessage || "Thanh toán thất bại";
+            toastr.success("Thanh toán MoMo thành công");
             return;
         }
 
         document.getElementById("thatbai").style.display = 'block';
         document.getElementById("thanhcong").style.display = 'none';
         document.getElementById("errormess").innerHTML =
-            result?.defaultMessage || ("Có lỗi xảy ra, mã lỗi: " + res.status);
+            result?.defaultMessage || (res.status == exceptionCode ? "Thanh toán thất bại" : `Có lỗi xảy ra, mã lỗi: ${res.status}`);
 
     } catch (error) {
         console.error("Lỗi paymentMomo:", error);
         document.getElementById("thatbai").style.display = 'block';
         document.getElementById("thanhcong").style.display = 'none';
         document.getElementById("errormess").innerHTML = "Không thể kết nối tới server";
-        toastr.error("Thanh toán momo thất bại");
+        toastr.error("Thanh toán MoMo thất bại");
     }
 }
 
@@ -350,11 +517,13 @@ async function paymentMomo() {
 async function paymentCod() {
     try {
         var note = document.getElementById("ghichudonhang").value;
+        // Chuẩn hóa: nếu không có voucher thì gửi chuỗi rỗng thay vì null
+        var maVoucher = voucherCode || "";
 
         var orderDto = {
             "payType": "COD",
             "userAddressId": document.getElementById("sodiachi").value,
-            "voucherCode": voucherCode,
+            "voucherCode": maVoucher,
             "note": note,
             "shipCost": phiShip
         };
@@ -392,10 +561,3 @@ async function paymentCod() {
         toastr.error("Không thể đặt hàng");
     }
 }
-
-
-
-
-
-
-

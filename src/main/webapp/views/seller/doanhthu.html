@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
+    <title>Báo cáo Doanh thu - Seller Center</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="/seller/css/seller-modern.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -45,30 +47,42 @@
         <div id="layoutSidenav_nav"></div>
         <div id="layoutSidenav_content">
             <main class="main">
-                <div class="col-sm-12 header-sp row ">
-                    <div class="col-md-3">
-                        <p class="loctheongay">Chọn năm cần xem</p>
-                        <select id="nams" class="form-control">
-                            <option id="2023">2023</option>
-                            <option id="2024">2024</option>
-                            <option id="2025">2025</option>
-                            <option id="2026">2026</option>
-                            <option id="2027">2027</option>
-                            <option id="2028">2028</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2"><br>
-                        <button onclick="loadByNam()" class="btn btn-primary form-control" style="margin-top: 10px;"><i
-                                class="fa fa-filter"></i> Lọc</button>
+
+                <div class="page-title-card">
+                    <div class="page-title-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div>
+                        <h4>Báo cáo Doanh thu</h4>
+                        <p>Thống kê doanh thu theo năm của shop</p>
                     </div>
                 </div>
-                <div class="col-sm-12 divtale">
-                    <div class="card chart-container divtale">
-                        <div id="bieudo">
 
+                <div class="filter-card">
+                    <div class="filter-title"><i class="fas fa-calendar-alt"></i> Chọn năm</div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="lb-form">Năm</label>
+                            <select id="nams" class="form-control">
+                                <option id="2023">2023</option>
+                                <option id="2024">2024</option>
+                                <option id="2025">2025</option>
+                                <option id="2026">2026</option>
+                                <option id="2027">2027</option>
+                                <option id="2028">2028</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button onclick="loadByNam()" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Xem
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                <div class="box-card">
+                    <div class="box-title mb-3"><i class="fas fa-chart-area me-2" style="color:var(--p)"></i>Biểu đồ Doanh thu</div>
+                    <div id="bieudo"></div>
+                </div>
+
             </main>
         </div>
     </div>

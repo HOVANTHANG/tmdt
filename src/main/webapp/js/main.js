@@ -240,243 +240,190 @@ async function loadThuongHieuAndPhuKien() {
 
 
 function loadFooter() {
-    var footer =
-        `<footer class="footer-premium">
+    var footer = `
+<footer class="ft-root">
 
-    <!-- TOP NEWSLETTER -->
-    <div class="footer-newsletter">
-
-        <div class="container newsletter-container">
-
-            <div class="newsletter-left">
-
-                <h3>
-                    Đăng ký nhận ưu đãi mới nhất
-                </h3>
-
-                <p>
-                    Nhận voucher và thông tin sản phẩm mới mỗi tuần
-                </p>
-
+    <!-- ── TRUST BADGES ── -->
+    <div class="ft-trust">
+        <div class="container">
+            <div class="ft-trust-grid">
+                <div class="ft-trust-item">
+                    <div class="ft-trust-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="ft-trust-text">
+                        <strong>Miễn phí vận chuyển</strong>
+                        <span>Tất cả đơn hàng trên toàn quốc</span>
+                    </div>
+                </div>
+                <div class="ft-trust-item">
+                    <div class="ft-trust-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="ft-trust-text">
+                        <strong>Đổi trả dễ dàng</strong>
+                        <span>Hoàn hàng trong vòng 7 ngày</span>
+                    </div>
+                </div>
+                <div class="ft-trust-item">
+                    <div class="ft-trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="ft-trust-text">
+                        <strong>Thanh toán bảo mật</strong>
+                        <span>Mã hóa SSL 256-bit</span>
+                    </div>
+                </div>
+                <div class="ft-trust-item">
+                    <div class="ft-trust-icon"><i class="fa-solid fa-headset"></i></div>
+                    <div class="ft-trust-text">
+                        <strong>Hỗ trợ 24/7</strong>
+                        <span>Đội ngũ tư vấn luôn sẵn sàng</span>
+                    </div>
+                </div>
             </div>
-
-            <div class="newsletter-right">
-
-                <input type="text"
-                       placeholder="Nhập email của bạn">
-
-                <button>
-                    Đăng ký
-                </button>
-
-            </div>
-
         </div>
-
     </div>
 
-
-    <!-- MAIN FOOTER -->
-    <div class="footer-main-premium">
-
+    <!-- ── NEWSLETTER ── -->
+    <div class="ft-newsletter">
         <div class="container">
+            <div class="ft-nl-inner">
+                <div class="ft-nl-left">
+                    <div class="ft-nl-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div>
+                        <h3 class="ft-nl-title">Đăng ký nhận ưu đãi</h3>
+                        <p class="ft-nl-sub">Nhận voucher độc quyền và thông tin sản phẩm mới mỗi tuần</p>
+                    </div>
+                </div>
+                <div class="ft-nl-form">
+                    <input type="email" placeholder="Nhập địa chỉ email của bạn..." class="ft-nl-input" id="nlEmail">
+                    <button class="ft-nl-btn" onclick="subscribeNewsletter()">
+                        <i class="fa-solid fa-paper-plane"></i> Đăng ký
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- ── MAIN BODY ── -->
+    <div class="ft-body">
+        <div class="container">
             <div class="row gy-5">
 
-                <!-- BRAND -->
+                <!-- Brand -->
                 <div class="col-lg-4 col-md-6">
-
-                    <div class="footer-brand-box">
-
-                        <div class="footer-logo-wrap">
-
-                            <img src="image/logo.png"
-                                 class="footer-logo-img">
-
+                    <div class="ft-brand">
+                        <div class="ft-logo-row">
+                            <img src="image/logo.png" alt="Sellora" class="ft-logo">
+                           
                         </div>
-
-                        <p class="footer-desc-premium">
-
-                            Sellora là sàn thương mại điện tử hiện đại
-                            chuyên cung cấp điện thoại, laptop,
-                            phụ kiện công nghệ chính hãng với giá tốt,
-                            giao hàng nhanh và hỗ trợ tận tâm.
-
+                        <p class="ft-brand-desc">
+                            Sàn thương mại điện tử hiện đại — nơi kết nối người mua và người bán
+                            với hàng nghìn sản phẩm công nghệ chính hãng, giao hàng siêu tốc
+                            và dịch vụ hậu mãi tận tâm.
                         </p>
-
-                        <div class="footer-social-premium">
-
-                            <a href="">
+                        <div class="ft-social">
+                            <a href="#" class="ft-social-btn fb" aria-label="Facebook">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-
-                            <a href="">
+                            <a href="#" class="ft-social-btn ig" aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
-
-                            <a href="">
+                            <a href="#" class="ft-social-btn tt" aria-label="TikTok">
                                 <i class="fab fa-tiktok"></i>
                             </a>
-
-                            <a href="">
+                            <a href="#" class="ft-social-btn yt" aria-label="YouTube">
                                 <i class="fab fa-youtube"></i>
                             </a>
-
-                            <a href="">
+                            <a href="#" class="ft-social-btn gh" aria-label="GitHub">
                                 <i class="fab fa-github"></i>
                             </a>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- ABOUT -->
-                <div class="col-lg-2 col-md-6">
-
-                    <div class="footer-menu-box">
-
-                        <h5>
-                            Về chúng tôi
-                        </h5>
-
-                        <a href="">
-                            Giới thiệu
-                        </a>
-
-                        <a href="">
-                            Tuyển dụng
-                        </a>
-
-                        <a href="">
-                            Tin tức
-                        </a>
-
-                        <a href="">
-                            Liên hệ
-                        </a>
-
+                <!-- About -->
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="ft-col">
+                        <h4 class="ft-col-title">Về Sellora</h4>
+                        <ul class="ft-col-list">
+                            <li><a href="#">Giới thiệu</a></li>
+                            <li><a href="#">Tuyển dụng</a></li>
+                            <li><a href="#">Tin tức công nghệ</a></li>
+                            <li><a href="#">Đối tác</a></li>
+                            <li><a href="#">Liên hệ</a></li>
+                        </ul>
                     </div>
-
                 </div>
 
+                <!-- Policy -->
+                <div class="col-lg-3 col-md-3 col-6">
+                    <div class="ft-col">
+                        <h4 class="ft-col-title">Chính sách</h4>
+                        <ul class="ft-col-list">
+                            <li><a href="#">Chính sách bảo hành</a></li>
+                            <li><a href="#">Chính sách vận chuyển</a></li>
+                            <li><a href="#">Chính sách đổi trả</a></li>
+                            <li><a href="#">Bảo mật thông tin</a></li>
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                        </ul>
+                    </div>
+                </div>
 
-                <!-- POLICY -->
+                <!-- Contact -->
                 <div class="col-lg-3 col-md-6">
+                    <div class="ft-col">
+                        <h4 class="ft-col-title">Liên hệ</h4>
+                        <ul class="ft-contact-list">
+                            <li>
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>123 Nguyễn Trãi, Hà Nội, Việt Nam</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-phone"></i>
+                                <span>0972 374 823</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>sellora@gmail.com</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-clock"></i>
+                                <span>Hỗ trợ: 08:00 – 22:00 hàng ngày</span>
+                            </li>
+                        </ul>
 
-                    <div class="footer-menu-box">
-
-                        <h5>
-                            Chính sách
-                        </h5>
-
-                        <a href="">
-                            Chính sách bảo hành
-                        </a>
-
-                        <a href="">
-                            Chính sách vận chuyển
-                        </a>
-
-                        <a href="">
-                            Chính sách đổi trả
-                        </a>
-
-                        <a href="">
-                            Điều khoản sử dụng
-                        </a>
-
+                        <div class="ft-app-badges">
+                            <a href="#" class="ft-app-btn">
+                                <i class="fab fa-apple"></i> App Store
+                            </a>
+                            <a href="#" class="ft-app-btn">
+                                <i class="fab fa-google-play"></i> Google Play
+                            </a>
+                        </div>
                     </div>
-
-                </div>
-
-
-                <!-- CONTACT -->
-                <div class="col-lg-3 col-md-6">
-
-                    <div class="footer-menu-box">
-
-                        <h5>
-                            Liên hệ
-                        </h5>
-
-                        <div class="footer-contact-item">
-
-                            <i class="fa fa-map-marker"></i>
-
-                            <span>
-                                Hà Nội, Việt Nam
-                            </span>
-
-                        </div>
-
-                        <div class="footer-contact-item">
-
-                            <i class="fa fa-phone"></i>
-
-                            <span>
-                                0972 374 823
-                            </span>
-
-                        </div>
-
-                        <div class="footer-contact-item">
-
-                            <i class="fa fa-envelope"></i>
-
-                            <span>
-                                sellora@gmail.com
-                            </span>
-
-                        </div>
-
-                        <div class="footer-contact-item">
-
-                            <i class="fa fa-clock-o"></i>
-
-                            <span>
-                                08:00 - 22:00
-                            </span>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
             </div>
-
         </div>
-
     </div>
 
-
-    <!-- BOTTOM -->
-    <div class="footer-bottom-premium">
-
-        <div class="container footer-bottom-container">
-
-            <div class="footer-copy">
-
-                © 2026 Sellora. All rights reserved.
-
+    <!-- ── BOTTOM BAR ── -->
+    <div class="ft-bottom">
+        <div class="container ft-bottom-inner">
+            <div class="ft-copy">
+                © 2026 <strong>Sellora</strong>. Bảo lưu mọi quyền.
+                <span class="ft-copy-heart"><i class="fa-solid fa-heart"></i></span>
+                Made in Vietnam
             </div>
-
-            <div class="footer-payment">
-
-                <img src="image/payment.png">
-
+            <div class="ft-payment-icons">
+                <span class="ft-pay-badge"><i class="fab fa-cc-visa"></i></span>
+                <span class="ft-pay-badge"><i class="fab fa-cc-mastercard"></i></span>
+                <span class="ft-pay-badge"><i class="fab fa-cc-paypal"></i></span>
+                <span class="ft-pay-badge"><i class="fab fa-cc-apple-pay"></i></span>
+                <span class="ft-pay-badge ft-pay-momo">MoMo</span>
             </div>
-
         </div>
-
     </div>
 
 </footer>
-`
-    document.getElementById("footer").innerHTML = footer
+`;
+    document.getElementById("footer").innerHTML = footer;
     try {
         loadMyChat();
     }
@@ -486,6 +433,17 @@ function loadFooter() {
 }
 
 
+function subscribeNewsletter() {
+    var email = document.getElementById('nlEmail');
+    if (!email) return;
+    var val = email.value.trim();
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        toastr.warning('Vui lòng nhập địa chỉ email hợp lệ!');
+        return;
+    }
+    toastr.success('Đăng ký thành công! Cảm ơn bạn đã đăng ký nhận ưu đãi từ Sellora 🎉');
+    email.value = '';
+}
 
 
 var stompClient = null;

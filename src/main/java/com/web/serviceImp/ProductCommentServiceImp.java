@@ -120,12 +120,11 @@ public class ProductCommentServiceImp implements ProductCommentService {
         return productCommentMapper.productCmtToProductCommentRes(optional.get());
     }
 
-    // @Override
-    // public List<ProductCommentResponse> findByProductId(Long productId) {
-    // List<ProductComment> list =
-    // productCommentRepository.findByProductId(productId);
-    // List<ProductCommentResponse> responses =
-    // productCommentMapper.listProductCmtToProCommentResponse(list);
-    // return responses;
-    // }
+    @Override
+    public List<ProductCommentResponse> findByProductId(Long productId) {
+        List<ProductComment> list = productCommentRepository.findByProductIdOrderByIdDesc(productId);
+        List<ProductCommentResponse> responses = productCommentMapper.listProductCmtToProCommentResponse(list);
+        return responses;
+    }
 }
+

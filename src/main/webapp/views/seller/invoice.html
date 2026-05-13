@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
+    <title>Quản lý Đơn hàng - Seller Center</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="/seller/css/seller-modern.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -49,18 +51,28 @@
         <div id="layoutSidenav_nav"></div>
         <div id="layoutSidenav_content">
             <main class="main">
-                <div class="col-sm-12 header-sp">
-                    <div class="row filterdonhang">
-                        <div class="col-md-2">
-                            <label>Từ ngày</label>
+
+                <div class="page-title-card">
+                    <div class="page-title-icon"><i class="fas fa-receipt"></i></div>
+                    <div>
+                        <h4>Quản lý đơn hàng</h4>
+                        <p>Xem và cập nhật trạng thái các đơn hàng trong shop</p>
+                    </div>
+                </div>
+
+                <div class="filter-card">
+                    <div class="filter-title"><i class="fas fa-filter"></i> Bộ lọc đơn hàng</div>
+                    <div class="row g-3 align-items-end filterdonhang">
+                        <div class="col-md-2 col-sm-6">
+                            <label class="lb-form">Từ ngày</label>
                             <input id="start" type="date" class="form-control">
                         </div>
-                        <div class="col-md-2">
-                            <label>Đến ngày</label>
+                        <div class="col-md-2 col-sm-6">
+                            <label class="lb-form">Đến ngày</label>
                             <input id="end" type="date" class="form-control">
                         </div>
                         <div class="col-md-3">
-                            <label>Loại thanh toán</label>
+                            <label class="lb-form">Loại thanh toán</label>
                             <select id="type" class="form-control">
                                 <option value="-1">--- Tất cả ---</option>
                                 <option value="MOMO">Thanh toán bằng momo</option>
@@ -68,33 +80,32 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label>Trạng thái đơn hàng</label>
+                            <label class="lb-form">Trạng thái đơn hàng</label>
                             <select class="form-control" id="trangthai">
                                 <option value="-1">--- Tất cả ---</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <br>
-                            <button onclick="loadInvoice(0)" class="btn btn-danger form-control"><i
-                                    class="fa fa-filter"></i> Lọc</button>
+                            <button onclick="loadInvoice(0)" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Lọc
+                            </button>
                         </div>
-
                     </div>
                 </div>
                 <div class="col-sm-12">
                     <div class="wrapper">
                         <div class="headertable">
                             <div class="divsearchtb">
-                                <label>Sắp xếp theo: </label>
-                                <select onchange="loadInvoice(0)" id="sort">
+                                <label>Sắp xếp: </label>
+                                <select onchange="loadInvoice(0)" id="sort" class="form-control" style="width:auto;display:inline-block">
                                     <option value="id,asc">Cũ nhất</option>
                                     <option value="id,desc">Mới nhất</option>
                                 </select>
-                                <input id="search" class="form-control"
-                                    placeholder="Tìm theo IMEI / SĐT / Tên khách hàng"
-                                    style="width:300px; display:inline-block">
-                                <button onclick="searchInvoice(0)" class="btn btn-primary">
-                                    <i class="fa fa-search"></i>
+                                <input id="search" class="inputsearchtable"
+                                    placeholder="Tìm IMEI / SĐT / Tên khách hàng"
+                                    style="width:280px">
+                                <button onclick="searchInvoice(0)" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </div>

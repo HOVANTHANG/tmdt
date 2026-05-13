@@ -1,170 +1,404 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
+    <title>Quản lý Sản phẩm - Seller Center</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
-        integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-        integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <meta name="description" content="Quản lý toàn bộ sản phẩm trong shop của bạn" />
 
-    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js"></script>
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="/seller/css/seller-modern.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
-        rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <script src="/seller/js/menu1.js"></script>
-    <script src="/seller/js/category.js"></script>
-    <script src="/seller/js/product.js"></script>
-    <script src="/seller/js/thuonghieu.js"></script>
-    <script src="/seller/js/comment.js"></script>
-    <script>
-        window.onload = function () {
-            loadCategoryProduct();
-            loadTrademarkProduct();
-            loadProduct(0, "", null);
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+
+    <style>
+        /* ─────────────────────────────────────────────
+           PRODUCT PAGE — PREMIUM STYLES
+        ───────────────────────────────────────────── */
+
+        /* Label trên filter */
+        .lb-form {
+            font-size: 11.5px; font-weight: 700;
+            color: var(--tx2); text-transform: uppercase;
+            letter-spacing: .5px; margin-bottom: 6px; display: block;
         }
-    </script>
+
+        /* ── Add product CTA button ── */
+        .btn-add-product {
+            background: var(--p-grad); color: #fff !important;
+            border: none; border-radius: 10px;
+            font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13.5px;
+            padding: 10px 20px; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all .25s; white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(13,148,136,.3);
+        }
+        .btn-add-product:hover {
+            opacity: .9; transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(13,148,136,.4);
+        }
+
+        /* ── Stat cards ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px; margin-bottom: 20px;
+        }
+        @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 500px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+
+        .stat-card {
+            background: var(--card); border-radius: 14px;
+            border: 1px solid var(--border); box-shadow: var(--sh);
+            padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+        .stat-icon {
+            width: 46px; height: 46px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 19px; flex-shrink: 0;
+        }
+        .stat-icon.teal   { background: rgba(13,148,136,.12); color: var(--p); }
+        .stat-icon.blue   { background: rgba(59,130,246,.12);  color: #3b82f6; }
+        .stat-icon.amber  { background: rgba(245,158,11,.12);  color: #f59e0b; }
+        .stat-icon.purple { background: rgba(139,92,246,.12);  color: #8b5cf6; }
+        .stat-value { font-size: 24px; font-weight: 800; color: var(--tx); line-height: 1; }
+        .stat-label { font-size: 11px; color: var(--tx2); font-weight: 600; margin-top: 3px;
+            text-transform: uppercase; letter-spacing: .4px; }
+
+        /* ── Search input icon ── */
+        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .search-wrap .fa-magnifying-glass {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--tx3); font-size: 13px; pointer-events: none;
+        }
+        .inputsearchtable { padding-left: 34px !important; width: 100%; }
+
+        /* ── Table fixed layout (no horizontal scroll) ── */
+        #productTable {
+            table-layout: fixed;
+            width: 100%;
+        }
+        #productTable th:nth-child(1) { width: 50px; }
+        #productTable th:nth-child(2) { width: 68px; }
+        #productTable th:nth-child(3) { width: 160px; }  /* Tên — cố định hẹp */
+        #productTable th:nth-child(4) { width: 110px; }
+        #productTable th:nth-child(5) { width: 100px; }
+        #productTable th:nth-child(6) { width: 88px; }
+        #productTable th:nth-child(7) { width: 120px; text-align: center; }  /* Tồn kho rộng hơn */
+        #productTable th:nth-child(8) { width: 130px; }  /* Hành động rộng hơn */
+
+        /* ── Product thumbnail ── */
+        .product-thumb {
+            width: 56px; height: 56px; border-radius: 10px;
+            object-fit: cover; border: 1.5px solid var(--border); display: block;
+        }
+        .product-thumb-placeholder {
+            width: 56px; height: 56px; border-radius: 10px;
+            border: 1.5px dashed var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--tx3); font-size: 17px; background: #f8fafc;
+        }
+
+        /* ── Product name / code ── */
+        .p-name {
+            font-weight: 600; color: var(--tx); font-size: 13.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        .p-code {
+            font-size: 11px; color: var(--tx3);
+            font-family: 'Courier New', monospace; margin-top: 2px;
+        }
+
+        /* ── Category / brand badges ── */
+        .badge-cat {
+            background: rgba(59,130,246,.1); color: #3b82f6;
+            font-size: 11px; font-weight: 700; padding: 3px 9px;
+            border-radius: 20px; white-space: nowrap;
+            display: inline-block; max-width: 110px;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .badge-brand {
+            background: rgba(139,92,246,.1); color: #8b5cf6;
+            font-size: 11px; font-weight: 700; padding: 3px 9px;
+            border-radius: 20px; white-space: nowrap;
+            display: inline-block; max-width: 100px;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* ── Stock badge (cũ, giữ lại phòng dùng) ── */
+        .stock-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(13,148,136,.1); color: var(--p);
+            font-size: 13px; font-weight: 700;
+            padding: 5px 11px; border-radius: 8px;
+            cursor: default; white-space: nowrap;
+        }
+        .stock-badge-zero { background: #f1f5f9; color: var(--tx3); }
+
+        /* ── Tồn kho chi tiết từng biến thể ── */
+        .variant-stock-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 2px 0;
+            border-bottom: 1px dashed #f1f5f9;
+            font-size: 11px;
+        }
+        .variant-stock-row:last-child { border-bottom: none; }
+        .variant-stock-name {
+            color: var(--tx2);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70px;
+        }
+        .variant-stock-qty {
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* ── Row ID ── */
+        .row-id { font-size: 12px; color: var(--tx3); font-weight: 700; }
+
+        /* ── Date cell ── */
+        .col-date { font-size: 12px; color: var(--tx2); white-space: nowrap; }
+
+        /* ── Action icon buttons ── */
+        .tbl-actions { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
+        .btn-tbl {
+            width: 32px; height: 32px; border-radius: 8px; border: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 13px; cursor: pointer; transition: all .18s;
+            text-decoration: none; flex-shrink: 0;
+        }
+        .btn-tbl:hover { transform: scale(1.14); }
+        .btn-tbl-edit    { background: rgba(13,148,136,.1);  color: var(--p); }
+        .btn-tbl-delete  { background: rgba(239,68,68,.1);   color: #ef4444; }
+        .btn-tbl-comment { background: rgba(59,130,246,.1);  color: #3b82f6; }
+
+        /* ── Empty / error / loading state ── */
+        .td-state {
+            text-align: center; padding: 52px 20px !important; color: var(--tx3);
+        }
+        .td-state i   { font-size: 40px; display: block; margin-bottom: 12px; opacity: .35; }
+        .td-state span { font-size: 14px; }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
+
     <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav"></div>
+
         <div id="layoutSidenav_content">
             <main class="main">
-                <div class="col-sm-12 header-sp">
-                    <div class="row">
-                        <div class="col-md-3 col-sm-12">
-                            <label class="lb-form">&ThickSpace;</label><br>
-                            <a href="addproduct" class="btn btn-primary"><i class="fa fa-plus"></i> Thêm sản phẩm</a>
+
+                <!-- ── Page title ── -->
+                <div class="page-title-card">
+                    <div class="page-title-icon"><i class="fa-solid fa-box-open"></i></div>
+                    <div>
+                        <h4>Quản lý sản phẩm</h4>
+                        <p>Thêm, chỉnh sửa và quản lý sản phẩm trong shop của bạn</p>
+                    </div>
+                    <div class="ptc-actions ms-auto">
+                        <a href="addproduct" class="btn-add-product" id="btnAddProduct">
+                            <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ── Stats row ── -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><i class="fa-solid fa-box"></i></div>
+                        <div>
+                            <div class="stat-value" id="statTotal">—</div>
+                            <div class="stat-label">Tổng sản phẩm</div>
                         </div>
-                        <div class="col-md-3 col-sm-6 col-6">
-                            <label class="lb-form">Chọn danh mục</label>
-                            <select id="danhmuc" class="form-control" style="width: 100%;">
-                                <option value=""></option>
-                            </select>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fa-solid fa-layer-group"></i></div>
+                        <div>
+                            <div class="stat-value" id="statCategories">—</div>
+                            <div class="stat-label">Danh mục</div>
                         </div>
-                        <div class="col-md-3 col-sm-6 col-6">
-                            <label class="lb-form">Chọn thương hiệu</label>
-                            <select id="thuonghieu" class="form-control" style="width: 100%;">
-                                <option value=""></option>
-                            </select>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><i class="fa-solid fa-certificate"></i></div>
+                        <div>
+                            <div class="stat-value" id="statBrands">—</div>
+                            <div class="stat-label">Thương hiệu</div>
                         </div>
-                        <div class="col-md-3 col-sm-6 col-6">
-                            <label class="lb-form" style="display: block;">&ThinSpace;</label>
-                            <button onclick="loadProduct(0,null)" class="btn btn-primary"><i class="fa fa-filter"></i>
-                                Lọc</button>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fa-solid fa-cubes"></i></div>
+                        <div>
+                            <div class="stat-value" id="statVariants">—</div>
+                            <div class="stat-label">Biến thể</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12">
-                    <div class="wrapper">
-                        <div class="headertable">
-                            <div class="divsearchtb">
-                                <label>search: </label>
-                                <input onkeyup="loadProduct(0,this.value)" id="searchtable" placeholder="tìm kiếm"
-                                    class="inputsearchtable">
+
+                <!-- ── Filter bar ── -->
+                <div class="filter-card">
+                    <div class="filter-title">
+                        <i class="fa-solid fa-sliders"></i> Bộ lọc &amp; tìm kiếm
+                    </div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="lb-form" for="danhmuc">Danh mục</label>
+                            <select id="danhmuc" class="form-control" style="width:100%;">
+                                <option value="">Tất cả danh mục</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="lb-form" for="thuonghieu">Thương hiệu</label>
+                            <select id="thuonghieu" class="form-control" style="width:100%;">
+                                <option value="">Tất cả thương hiệu</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="lb-form" for="searchtable">Tìm kiếm</label>
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input id="searchtable"
+                                       onkeyup="loadProduct(0, this.value)"
+                                       placeholder="Tìm theo tên sản phẩm..."
+                                       class="inputsearchtable form-control" />
                             </div>
                         </div>
-                        <table class="table table-striped tablefix">
-                            <thead class="thead-tablefix">
-                                <tr>
-                                    <th>id</th>
-                                    <th>Ảnh</th>
-                                    <th>Mã</th>
-                                    <th>Tên</th>
-                                    <th>Danh mục</th>
-                                    <th>Thương hiệu</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Số lượng</th>
-                                    <th>Shop</th>
-                                    <th class="sticky-col">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listproduct">
-                                <tr>
-                                    <td>#2342</td>
-                                    <td><img src="" style="width: 100px;"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="sticky-col">
-                                        <i class="fa fa-trash-alt iconaction"></i>
-                                        <i class="fa fa-edit iconaction"></i><br>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="col-md-auto col-sm-6 d-flex gap-2">
+                            <button onclick="applyFilter()" class="btn btn-primary">
+                                <i class="fa-solid fa-filter me-1"></i> Lọc
+                            </button>
+                            <button onclick="resetFilter()" class="btn btn-secondary">
+                                <i class="fa-solid fa-rotate-left me-1"></i> Đặt lại
+                            </button>
+                        </div>
                     </div>
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="pageable">
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        </ul>
-                    </nav>
                 </div>
+
+                <!-- ── Product table ── -->
+                <div class="wrapper">
+                    <div class="headertable">
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--tx);">
+                            <i class="fa-solid fa-list" style="color:var(--p);"></i>
+                            Danh sách sản phẩm
+                            <span id="resultCount"
+                                  style="background:rgba(13,148,136,.12);color:var(--p);font-size:11.5px;padding:3px 11px;border-radius:20px;font-weight:700;"></span>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped" id="productTable">
+                        <thead class="thead-tablefix">
+                            <tr>
+                                <th>#</th>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Thương hiệu</th>
+                                <th>Ngày tạo</th>
+                                <th style="text-align:center;">Kho</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listproduct">
+                            <tr>
+                                <td colspan="8" class="td-state">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                    <span>Đang tải dữ liệu...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <div style="padding:10px 16px;border-top:1px solid var(--border);background:#fafbfc;">
+                        <nav aria-label="Phân trang sản phẩm">
+                            <ul class="pagination mb-0" id="pageable"></ul>
+                        </nav>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
 
-</body>
-<div class="modal fade" id="modalcomment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Danh sách bình luận</h5> <button type="button"
-                    class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="listcautlct" id="listcautlct">
-                    <div class="singlectlct">
-                        <div class="row">
-                            <div class="col-11">
-                                <div class="d-flex nguoidangctl">
-                                    <img class="avtuserdangctl" src="../image/avatar.png">
-                                    <span class="usernamedangctl">Username</span>
-                                    <span class="ngaytraloi">16-07-2023</span>
-                                </div>
-                                <div class="contentctlct">Mua với giá dùng thử 2tr6 thấy sản phẩm năm nay chất lượng đã
-                                    cải tiến hơn nhiều, giao hàng cũng nhanh hơn. đặt ở web nên yên tâm không gặp lừa
-                                    đảo hàng nhái vì mình bị gặp mấy lần rồi. cảm ơn shop!</div>
-                                <div class="listimgcontent">
-                                    <img src="image/product1.webp">
-                                    <img src="image/product1.webp">
-                                    <img src="image/product1.webp">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- ── Comment modal ── -->
+    <div class="modal fade" id="modalcomment" tabindex="-1" aria-labelledby="modalCommentLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCommentLabel">
+                        <i class="fa-solid fa-comments me-2"></i>Danh sách bình luận
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
+                <div class="modal-body">
+                    <div id="listcautlct"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- ── Scripts ── -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
+    <script src="/seller/js/menu1.js"></script>
+    <script src="/seller/js/category.js"></script>
+    <script src="/seller/js/thuonghieu.js"></script>
+    <script src="/seller/js/comment.js"></script>
+    <script src="/seller/js/product.js"></script>
+
+    <script>
+        window.onload = async function () {
+            await loadCategoryProduct();
+            await loadTrademarkProduct();
+            await loadProduct(0, "");
+        };
+
+        function applyFilter() {
+            loadProduct(0, document.getElementById("searchtable").value);
+        }
+
+        function resetFilter() {
+            document.getElementById("searchtable").value = "";
+            document.getElementById("danhmuc").value = "";
+            document.getElementById("thuonghieu").value = "";
+            loadProduct(0, "");
+        }
+
+        function updateStats(list, totalElements) {
+            document.getElementById("statTotal").textContent = totalElements ?? list.length;
+            document.getElementById("statCategories").textContent =
+                new Set(list.map(p => p.category?.id).filter(Boolean)).size;
+            document.getElementById("statBrands").textContent =
+                new Set(list.map(p => p.tradeMark?.id).filter(Boolean)).size;
+            document.getElementById("statVariants").textContent =
+                list.reduce((a, p) => a + (p.productVariants?.length || 0), 0);
+            document.getElementById("resultCount").textContent =
+                (totalElements ?? list.length) + " sản phẩm";
+        }
+    </script>
+</body>
 </html>

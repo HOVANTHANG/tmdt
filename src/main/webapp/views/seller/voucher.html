@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
+    <title>Quản lý Voucher - Seller Center</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="/seller/css/seller-modern.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -47,23 +49,35 @@
         <div id="layoutSidenav_nav"></div>
         <div id="layoutSidenav_content">
             <main class="main">
-                <div class="col-sm-12 header-sp">
-                    <div class="row">
-                        <div class="col-md-2 col-sm-4 col-4">
+
+                <div class="page-title-card">
+                    <div class="page-title-icon"><i class="fas fa-tags"></i></div>
+                    <div>
+                        <h4>Quản lý Voucher</h4>
+                        <p>Tạo và quản lý các mã giảm giá cho shop của bạn</p>
+                    </div>
+                    <div class="ptc-actions">
+                        <a href="addvoucher" class="btn btn-light btn-sm fw-bold">
+                            <i class="fas fa-plus me-1"></i> Thêm voucher
+                        </a>
+                    </div>
+                </div>
+
+                <div class="filter-card">
+                    <div class="filter-title"><i class="fas fa-filter"></i> Bộ lọc</div>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3 col-sm-6">
                             <label class="lb-form">Từ ngày</label>
                             <input id="start" type="date" class="form-control">
                         </div>
-                        <div class="col-md-2 col-sm-4 col-4">
+                        <div class="col-md-3 col-sm-6">
                             <label class="lb-form">Đến ngày</label>
                             <input id="end" type="date" class="form-control">
                         </div>
-                        <div class="col-md-2 col-sm-4 col-4">
-                            <label class="lb-form" style="display: block;">&ThickSpace;</label>
-                            <button onclick="filter()" class="btn btn-success"><i class="fa fa-filter"></i> Lọc</button>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="lb-form" style="display: block;">&ThickSpace;</label>
-                            <a href="addvoucher" class="btn btn-success"><i class="fa fa-plus"></i> Thêm voucher</a>
+                        <div class="col-md-2">
+                            <button onclick="filter()" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Lọc
+                            </button>
                         </div>
                     </div>
                 </div>

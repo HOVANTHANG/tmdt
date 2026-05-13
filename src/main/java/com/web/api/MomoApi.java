@@ -33,7 +33,7 @@ public class MomoApi {
         LogUtils.init();
         Double totalAmount = cartService.totalAmountCart();
         totalAmount += paymentDto.getShipCost();
-        if(paymentDto.getCodeVoucher() != null){
+        if(paymentDto.getCodeVoucher() != null && !paymentDto.getCodeVoucher().isEmpty()){
             Optional<Voucher> voucher = voucherService.findByCode(paymentDto.getCodeVoucher(), totalAmount);
             if(voucher.isPresent()){
                 totalAmount = totalAmount - voucher.get().getDiscount();
