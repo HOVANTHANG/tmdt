@@ -1,71 +1,189 @@
 var token = localStorage.getItem("token");
 var exceptionCode = 417;
 function loadMenu() {
-    var dn = '<li><a id="login-modal" href="dangnhap">Đăng nhập</a></li>';
+    var dn = '<a id="login-modal" href="dangnhap">Đăng nhập</a>';
     var bh = '';
     if (token != null) {
-        dn = `<li><a id="login-modal" href="taikhoan">Tài khoản</a></li>
-        <li onclick="dangxuat()"><a id="login-modal" href="#">Đăng xuất</a></li>
+        dn = `<a id="login-modal" href="taikhoan">Tài khoản</a>
+        <span class="topbar-divider"></span>
+        <span onclick="dangxuat()"><a id="login-modal" href="#">Đăng xuất</a></span>
         `;
-        bh = '<li><a href="/bao-hanh">Tra cứu bảo hành</a></li>'
+        bh = '<a href="/bao-hanh">Tra cứu bảo hành</a>' +
+            '<span class="topbar-divider"></span>'
     }
     var menu =
-        ` <div class="subheader">
-    <div class="container subcontainerheader">
-        <ul>
-            <li>
-                <a href="javascript:void(0)"
-                   id="btnSellerRegister"
-                   onclick="goSellerRegister()">
-                   Đăng ký trở thành nhà bán hàng
-                </a>
-            </li>
-            <li><a href="/baiviet">Tin tức công nghệ</a></li>
-            <li><a href="/diachi">Địa chỉ cửa hàng</a></li>
-            <li><a href="timdonhang">Tra cứu đơn hàng</a></li>
+        ` <!-- TOP BAR -->
+<div class="topbar-modern">
+
+    <div class="container topbar-container">
+
+        <div class="topbar-left">
+
+            <a href="javascript:void(0)"
+               id="btnSellerRegister"
+               onclick="goSellerRegister()">
+
+                <i class="fas fa-store iconmenu"></i>
+                Trở thành người bán
+
+            </a>
+
+            <span class="topbar-divider"></span>
+
+            <a href="/baiviet">
+                <i class="fa fa-newspaper-o"></i>
+                Tin công nghệ
+            </a>
+
+            <span class="topbar-divider"></span>
+
+            <a href="/diachi">
+                <i class="fa fa-map-marker"></i>
+                Hệ thống cửa hàng
+            </a>
+
+        </div>
+
+        <div class="topbar-right">
+
+            <a href="timdonhang">
+                <i class="fa fa-truck"></i>
+                Tra cứu đơn hàng
+            </a>
+            <span class="topbar-divider"></span>
+
             ${bh}
-            ${dn}
-        </ul>
-    </div>
-</div>
-<div class="container">
-    <div class="headertop">
-        <div class="row">
-            <div class="col-sm-3">
-                <a href="index"><img src="image/logo.png" class="logoheader"></a>
-            </div>
-            <div class="col-sm-6">
-                <form action="product" class="searchheader">
-                    <input name="search" placeholder="Hôm nay bạn cần tìm gì?" class="inputsearchheader">
-                    <button class="btnsearchheader"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-            <div class="col-sm-3">
-                <div class="row">
-                    <div class="col-7">
-                        <a class="btnkiemtradh" href="timdonhang">
-                            <span class="icon"><i class="fa fa-truck"></i></span>
-                            <span class="text">Kiểm tra đơn hàng</span>
-                        </a>
-                    </div>
-                    <div class="col-5">
-                        <div class="shoppingcartheader">
-                            <div class="shopingcontentcart">
-                                <a href="giohang"><img src="image/cartheader.png" class="imgcartheader"></a>
-                                <span class="cart-total" id="totalcartheader">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="headercategory">
-        <div id="listthuonghieuheader" class="listdmindex owl-2-style">
             
+
+            ${dn}
+          
+
         </div>
+
     </div>
-</div>`
+
+</div>
+
+
+<!-- HEADER -->
+<header class="header-modern">
+
+    <div class="container">
+
+        <div class="header-main">
+
+            <!-- LOGO -->
+            <div class="header-logo">
+
+                <a href="index">
+                    <img src="image/logo.png" class="logoheader">
+                </a>
+
+            </div>
+
+
+            <!-- SEARCH -->
+            <div class="header-search">
+
+                <form action="product" class="search-form-modern">
+
+                    <div class="search-box-modern">
+
+                        <i class="fa fa-search search-icon-modern"></i>
+
+                        <input
+                                type="text"
+                                name="search"
+                                placeholder="Bạn cần tìm gì hôm nay?"
+                                class="input-search-modern"
+                        >
+
+                        <button class="btn-search-modern">
+                            Tìm kiếm
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- HOT KEYWORD -->
+                <div class="hot-keyword">
+
+                    <a href="product?search=iphone">
+                        iPhone
+                    </a>
+
+                    <a href="product?search=samsung">
+                        Samsung
+                    </a>
+
+                    <a href="product?search=macbook">
+                        Macbook
+                    </a>
+
+                    <a href="product?search=airpods">
+                        AirPods
+                    </a>
+
+                    <a href="product?search=ipad">
+                        iPad
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION -->
+            <div class="header-action">
+
+                <!-- ORDER -->
+                <a class="header-action-item"
+                   href="timdonhang">
+
+                    <div class="header-action-icon">
+                        <i class="fa fa-truck"></i>
+                    </div>
+
+                    <div class="header-action-text">
+                        <span>Theo dõi</span>
+                        <strong>Đơn hàng</strong>
+                    </div>
+
+                </a>
+
+
+                <!-- CART -->
+                <a class="header-action-item cart-item-header"
+                   href="giohang">
+
+                    <div class="header-action-icon">
+
+                        <img src="image/cartheader.png"
+                             class="imgcartheader">
+
+                        <span class="cart-total"
+                              id="totalcartheader">
+                              0
+                        </span>
+
+                    </div>
+
+                    <div class="header-action-text">
+                        <span>Giỏ hàng</span>
+                        <strong>Mua ngay</strong>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+`
     document.getElementById("headerweb").innerHTML = menu;
     checkSellerStatus();
     // loadThuongHieuAndPhuKien();
@@ -123,52 +241,240 @@ async function loadThuongHieuAndPhuKien() {
 
 function loadFooter() {
     var footer =
-        `<footer class="text-center text-lg-start text-muted">
-    <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
-      <div class="me-5 d-none d-lg-block"><span>Theo dõi chúng tôi tại:</span></div>
-      <div>
-        <a href="" class="me-4 text-reset"><i class="fab fa-facebook-f"></i></a>
-        <a href="" class="me-4 text-reset"><i class="fab fa-twitter"></i></a>
-        <a href="" class="me-4 text-reset"><i class="fab fa-google"></i></a>
-        <a href="" class="me-4 text-reset"><i class="fab fa-instagram"></i></a>
-        <a href="" class="me-4 text-reset"><i class="fab fa-linkedin"></i></a>
-        <a href="" class="me-4 text-reset"><i class="fab fa-github"></i></a>
-      </div>
-    </section>
-    <section class="">
-      <div class=" text-center text-md-start mt-5">
-        <div class="row mt-3">
-          <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-            <h6 class="text-uppercase fw-bold mb-4"><i class="fa fa-mobile" style="font-size: 25px;"></i> PhoneStore</h6>
-            <p>
-              Chúng tôi cung cấp các sản phẩm điện thoại, phụ kiện chính hãng, chất lượng cao đến người tiêu dùng
-            </p>
-          </div>
-          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-            <h6 class="text-uppercase fw-bold mb-4">Về chúng tôi</h6>
-            <p><a href="#!" class="text-reset">Hotline: 09723748234</a></p>
-            <p><a href="#!" class="text-reset">Email: phonestore@gmail.com</a></p>
-            <p><a href="#!" class="text-reset">Địa chỉ cs1: Số 1, đại cồ việt, Hai Bà Trưng, Hà nội</a></p>
-            <p><a href="#!" class="text-reset">Địa chỉ cs2: Số 1, đại cồ việt, Hai Bà Trưng, Hà nội</a></p>
-          </div>
-          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-            <h6 class="text-uppercase fw-bold mb-4">Hỗ trợ khách hàng</h6>
-            <p><a href="#!" class="text-reset">Uy tín</a></p>
-            <p><a href="#!" class="text-reset">Chất lượng</a></p>
-            <p><a href="#!" class="text-reset">Nguồn gốc rõ ràng</a></p>
-            <p><a href="#!" class="text-reset">Giá rẻ</a></p>
-          </div>
-          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-            <h6 class="text-uppercase fw-bold mb-4">Liên hệ</h6>
-            <p><i class="fas fa-home me-3"></i> Hà nội, Việt Nam</p>
-            <p><i class="fas fa-envelope me-3"></i> shop@gmail.com</p>
-            <p><i class="fas fa-phone me-3"></i> + 01 234 567 88</p>
-            <p><i class="fas fa-print me-3"></i> + 01 234 567 89</p>
-          </div>
+        `<footer class="footer-premium">
+
+    <!-- TOP NEWSLETTER -->
+    <div class="footer-newsletter">
+
+        <div class="container newsletter-container">
+
+            <div class="newsletter-left">
+
+                <h3>
+                    Đăng ký nhận ưu đãi mới nhất
+                </h3>
+
+                <p>
+                    Nhận voucher và thông tin sản phẩm mới mỗi tuần
+                </p>
+
+            </div>
+
+            <div class="newsletter-right">
+
+                <input type="text"
+                       placeholder="Nhập email của bạn">
+
+                <button>
+                    Đăng ký
+                </button>
+
+            </div>
+
         </div>
-      </div>
-    </section>
-  </footer>
+
+    </div>
+
+
+    <!-- MAIN FOOTER -->
+    <div class="footer-main-premium">
+
+        <div class="container">
+
+            <div class="row gy-5">
+
+                <!-- BRAND -->
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="footer-brand-box">
+
+                        <div class="footer-logo-wrap">
+
+                            <img src="image/logo.png"
+                                 class="footer-logo-img">
+
+                        </div>
+
+                        <p class="footer-desc-premium">
+
+                            Sellora là sàn thương mại điện tử hiện đại
+                            chuyên cung cấp điện thoại, laptop,
+                            phụ kiện công nghệ chính hãng với giá tốt,
+                            giao hàng nhanh và hỗ trợ tận tâm.
+
+                        </p>
+
+                        <div class="footer-social-premium">
+
+                            <a href="">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+
+                            <a href="">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+
+                            <a href="">
+                                <i class="fab fa-tiktok"></i>
+                            </a>
+
+                            <a href="">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+
+                            <a href="">
+                                <i class="fab fa-github"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ABOUT -->
+                <div class="col-lg-2 col-md-6">
+
+                    <div class="footer-menu-box">
+
+                        <h5>
+                            Về chúng tôi
+                        </h5>
+
+                        <a href="">
+                            Giới thiệu
+                        </a>
+
+                        <a href="">
+                            Tuyển dụng
+                        </a>
+
+                        <a href="">
+                            Tin tức
+                        </a>
+
+                        <a href="">
+                            Liên hệ
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- POLICY -->
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="footer-menu-box">
+
+                        <h5>
+                            Chính sách
+                        </h5>
+
+                        <a href="">
+                            Chính sách bảo hành
+                        </a>
+
+                        <a href="">
+                            Chính sách vận chuyển
+                        </a>
+
+                        <a href="">
+                            Chính sách đổi trả
+                        </a>
+
+                        <a href="">
+                            Điều khoản sử dụng
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONTACT -->
+                <div class="col-lg-3 col-md-6">
+
+                    <div class="footer-menu-box">
+
+                        <h5>
+                            Liên hệ
+                        </h5>
+
+                        <div class="footer-contact-item">
+
+                            <i class="fa fa-map-marker"></i>
+
+                            <span>
+                                Hà Nội, Việt Nam
+                            </span>
+
+                        </div>
+
+                        <div class="footer-contact-item">
+
+                            <i class="fa fa-phone"></i>
+
+                            <span>
+                                0972 374 823
+                            </span>
+
+                        </div>
+
+                        <div class="footer-contact-item">
+
+                            <i class="fa fa-envelope"></i>
+
+                            <span>
+                                sellora@gmail.com
+                            </span>
+
+                        </div>
+
+                        <div class="footer-contact-item">
+
+                            <i class="fa fa-clock-o"></i>
+
+                            <span>
+                                08:00 - 22:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOTTOM -->
+    <div class="footer-bottom-premium">
+
+        <div class="container footer-bottom-container">
+
+            <div class="footer-copy">
+
+                © 2026 Sellora. All rights reserved.
+
+            </div>
+
+            <div class="footer-payment">
+
+                <img src="image/payment.png">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
 `
     document.getElementById("footer").innerHTML = footer
     try {
@@ -403,4 +709,8 @@ async function checkSellerStatus() {
     } catch (e) {
         console.error(e);
     }
+}
+
+function goSellerRegister() {
+    window.location.href = "/sellerregister";
 }

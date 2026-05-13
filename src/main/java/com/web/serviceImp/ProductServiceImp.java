@@ -432,4 +432,15 @@ public class ProductServiceImp implements ProductService {
         });
     }
 
+    @Override
+    public Page<Product> searchMarketplace(String keyword, Pageable pageable) {
+        if (keyword == null) {
+            keyword = "";
+        }
+        Page<Product> result = productRepository.searchMarketplace(keyword, pageable);
+
+        System.out.println(result.getContent());
+
+        return result;
+    }
 }

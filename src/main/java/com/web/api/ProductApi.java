@@ -186,4 +186,11 @@ public class ProductApi {
         Page<ProductShopResponse> response = productService.findByCategory(categoryId, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/public/search-marketplace")
+    public ResponseEntity<?> searchMarketplace(
+            @RequestParam(required = false) String keyword,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.searchMarketplace(keyword, pageable));
+    }
 }

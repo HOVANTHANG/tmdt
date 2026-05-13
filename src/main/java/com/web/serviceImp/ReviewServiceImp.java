@@ -42,6 +42,9 @@ public class ReviewServiceImp implements ReviewService {
     @Autowired
     private ShopRepository shopRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
     @Transactional
     public ProductComment reviewProduct(ProductCommentRequest request) {
@@ -88,7 +91,8 @@ public class ReviewServiceImp implements ReviewService {
         comment.setCreatedTime(new Time(System.currentTimeMillis()));
 
         ProductComment saved = productCommentRepository.save(comment);
-
+        updateProductReviewScore(
+                detail.getProductVariant().getProduct());
         if (request.getImages() != null) {
             for (String img : request.getImages()) {
                 if (img == null || img.trim().isEmpty()) {
@@ -157,7 +161,11 @@ public class ReviewServiceImp implements ReviewService {
         comment.setCreatedDate(new Date(System.currentTimeMillis()));
         comment.setCreatedTime(new Time(System.currentTimeMillis()));
 
-        return shopCommentRepository.save(comment);
+        ShopComment saved = shopCommentRepository.save(comment);
+
+        updateShopReviewScore(shop);
+
+        return saved;
     }
 
     @Override
@@ -265,7 +273,11 @@ public class ReviewServiceImp implements ReviewService {
         review.setCreatedDate(new Date(System.currentTimeMillis()));
         review.setCreatedTime(new Time(System.currentTimeMillis()));
 
-        return productCommentRepository.save(review);
+        ProductComment saved = productCommentRepository.save(review);
+
+        updateProductReviewScore(review.getProduct());
+
+        return saved;
     }
 
     @Override
@@ -289,6 +301,58 @@ public class ReviewServiceImp implements ReviewService {
         review.setCreatedDate(new Date(System.currentTimeMillis()));
         review.setCreatedTime(new Time(System.currentTimeMillis()));
 
-        return shopCommentRepository.save(review);
+        ShopComment saved = shopCommentRepository.save(review);
+
+        updateShopReviewScore(review.getShop());
+
+        return saved;
+    }
+
+    private void updateProductReviewScore(Product product) {
+
+        List<ProductComment> comments = productCommentRepository.findByProductIdOrderByIdDesc(product.getId());
+
+        double total = 0D;
+
+        for (ProductComment c : comments) {
+
+            if (c.getStar() != null) {
+                total += c.getStar();
+            }
+        }
+
+        product.setReviewCount((long) comments.size());
+
+        if (comments.isEmpty()) {
+            product.setAvgStar(0D);
+        } else {
+            product.setAvgStar(total / comments.size());
+        }
+
+        productRepository.save(product);
+    }
+
+    private void updateShopReviewScore(Shop shop) {
+
+        List<ShopComment> comments = shopCommentRepository.findByShopIdOrderByIdDesc(shop.getId());
+
+        double total = 0D;
+
+        for (ShopComment c : comments) {
+
+            if (c.getStar() != null) {
+                total += c.getStar();
+            }
+        }
+
+        shop.setReviewCount((long) comments.size());
+
+        if (comments.isEmpty()) {
+            shop.setAvgStar(0D);
+        } else {
+            shop.setAvgStar(total / comments.size());
+        }
+
+        shopRepository.save(shop);
     }
 }

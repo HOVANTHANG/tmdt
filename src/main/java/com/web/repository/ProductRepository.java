@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -104,5 +105,45 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         Page<Product> findByCategoryIdAndDeletedFalse(Long categoryId, Pageable pageable);
 
         Long countByShopId(Long shopId);
+
+        @Query(value = """
+                            select p
+                            from Product p
+                            where p.deleted = false
+                            and p.shop is not null
+                            and p.shop.status = com.web.enums.ShopStatus.APPROVED
+                            and (
+                                lower(p.name) like lower(concat('%', :keyword, '%'))
+                                or lower(p.code) like lower(concat('%', :keyword, '%'))
+                                or lower(p.category.name) like lower(concat('%', :keyword, '%'))
+                                or lower(p.tradeMark.name) like lower(concat('%', :keyword, '%'))
+                            )
+                            order by
+                            case
+                                when lower(p.name) = lower(:keyword) then 100
+                                when lower(p.name) like lower(concat(:keyword, '%')) then 80
+                                when lower(p.name) like lower(concat('%', :keyword, '%')) then 60
+                                else 40
+                            end desc,
+                            p.avgStar desc,
+                            p.reviewCount desc,
+                            p.sold desc,
+                            p.shop.avgStar desc,
+                            p.shop.reviewCount desc,
+                            p.price asc
+                        """, countQuery = """
+                            select count(p)
+                            from Product p
+                            where p.deleted = false
+                            and p.shop is not null
+                            and p.shop.status = com.web.enums.ShopStatus.APPROVED
+                            and (
+                                lower(p.name) like lower(concat('%', :keyword, '%'))
+                                or lower(p.code) like lower(concat('%', :keyword, '%'))
+                                or lower(p.category.name) like lower(concat('%', :keyword, '%'))
+                                or lower(p.tradeMark.name) like lower(concat('%', :keyword, '%'))
+                            )
+                        """)
+        Page<Product> searchMarketplace(@Param("keyword") String keyword, Pageable pageable);
 
 }

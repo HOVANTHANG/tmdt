@@ -76,6 +76,9 @@ public class InvoiceServiceImp implements InvoiceService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private ShopRepository shopRepository;
+
     @Override
     @Transactional
     public InvoiceResponse create(InvoiceRequest invoiceRequest) {
@@ -166,9 +169,17 @@ public class InvoiceServiceImp implements InvoiceService {
                 throw new MessageException("Không tìm thấy biến thể sản phẩm");
             }
 
+            if (variant.getProduct() == null) {
+                throw new MessageException("Không tìm thấy sản phẩm");
+            }
+
+            Integer cartQty = c.getQuantity() == null ? 0 : c.getQuantity();
+            Integer currentQty = variant.getQuantity() == null ? 0 : variant.getQuantity();
+
             // check tồn kho
-            if (variant.getQuantity() < c.getQuantity()) {
-                throw new MessageException("Sản phẩm " + variant.getProduct().getName() + " không đủ hàng");
+            if (currentQty < cartQty) {
+                throw new MessageException(
+                        "Sản phẩm " + variant.getProduct().getName() + " không đủ hàng");
             }
 
             // tạo detail
@@ -176,20 +187,17 @@ public class InvoiceServiceImp implements InvoiceService {
             detail.setInvoice(savedInvoice);
             detail.setPrice(variant.getPrice());
             detail.setImportPrice(variant.getImportPrice());
-            detail.setQuantity(c.getQuantity());
+            detail.setQuantity(cartQty);
             detail.setProductVariant(variant);
 
             invoiceDetailRepository.save(detail);
 
             // trừ kho
-            variant.setQuantity(variant.getQuantity() - c.getQuantity());
+            variant.setQuantity(currentQty - cartQty);
             productVariantRepository.save(variant);
 
-            // tăng sold
-            Product product = variant.getProduct();
-            Integer sold = product.getQuantitySold() == null ? 0 : product.getQuantitySold();
-            product.setQuantitySold(sold + c.getQuantity());
-            productRepository.save(product);
+            // KHÔNG tăng sold ở đây
+            // sold chỉ tăng khi đơn chuyển sang DA_NHAN
         }
 
         // ================= MOMO SAVE =================
@@ -449,18 +457,66 @@ public class InvoiceServiceImp implements InvoiceService {
     @Override
     @Transactional
     public void updateStatusForSeller(Long idInvoice, StatusInvoice status) {
+
         Long shopId = getCurrentSellerShopId();
 
         Invoice invoice = invoiceRepository.findById(idInvoice)
                 .orElseThrow(() -> new MessageException("Không tìm thấy hóa đơn"));
 
-        boolean hasShopProduct = invoiceDetailRepository.existsByInvoiceIdAndShopId(idInvoice, shopId);
+        boolean hasShopProduct = invoiceDetailRepository.existsByInvoiceIdAndShopId(
+                idInvoice,
+                shopId);
+
         if (!hasShopProduct) {
             throw new MessageException("Bạn không có quyền cập nhật hóa đơn này");
         }
 
+        // trạng thái cũ
+        StatusInvoice oldStatus = invoice.getStatusInvoice();
+
+        // update trạng thái mới
         invoice.setStatusInvoice(status);
+
         invoiceRepository.save(invoice);
+
+        // chỉ cộng sold khi chuyển sang DA_NHAN lần đầu
+        if (oldStatus != StatusInvoice.DA_NHAN
+                && status == StatusInvoice.DA_NHAN) {
+
+            List<InvoiceDetail> details = invoiceDetailRepository.findByInvoiceId(idInvoice);
+
+            for (InvoiceDetail detail : details) {
+
+                Product product = detail.getProductVariant().getProduct();
+
+                Shop shop = product.getShop();
+
+                // ===== PRODUCT SOLD =====
+                if (product.getSold() == null) {
+                    product.setSold(0L);
+                }
+
+                product.setSold(
+                        product.getSold()
+                                + detail.getQuantity());
+
+                productRepository.save(product);
+
+                // ===== SHOP SOLD =====
+                if (shop != null) {
+
+                    if (shop.getTotalSold() == null) {
+                        shop.setTotalSold(0L);
+                    }
+
+                    shop.setTotalSold(
+                            shop.getTotalSold()
+                                    + detail.getQuantity());
+
+                    shopRepository.save(shop);
+                }
+            }
+        }
     }
 
     @Override

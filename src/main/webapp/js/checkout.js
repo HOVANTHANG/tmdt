@@ -155,7 +155,7 @@ async function loadCartCheckOut() {
 
         document.getElementById("listproductcheck").innerHTML = main;
         document.getElementById("totalAmount").innerHTML = formatmoneyCheck(total);
-        document.getElementById("totalfi").innerHTML = formatmoneyCheck(total);
+        document.getElementById("totalfi").innerHTML = formatmoneyCheck(total + phiShip);
 
     } catch (error) {
         console.error("Lỗi loadCartCheckOut:", error);
@@ -243,7 +243,7 @@ async function requestPayMentMomo() {
         var urlinit = 'http://localhost:8080/api/urlpayment';
 
         var paymentDto = {
-            "content": "Bảo ngọc mobile",
+            "content": "Sellora - Thanh toán đơn hàng",
             "returnUrl": returnurl,
             "notifyUrl": returnurl,
             "codeVoucher": voucherCode,
@@ -392,3 +392,10 @@ async function paymentCod() {
         toastr.error("Không thể đặt hàng");
     }
 }
+
+
+
+
+
+
+

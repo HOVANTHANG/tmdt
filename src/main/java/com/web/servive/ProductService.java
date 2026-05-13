@@ -46,4 +46,5 @@ public interface ProductService {
 
     Page<ProductShopResponse> findByCategory(Long categoryId, Pageable pageable);
 
+    Page<Product> searchMarketplace(String keyword, Pageable pageable);
 }

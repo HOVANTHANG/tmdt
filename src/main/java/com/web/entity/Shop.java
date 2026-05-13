@@ -31,6 +31,10 @@ public class Shop {
 
     private String email;
 
+    private Double avgStar = 0D;
+    private Long reviewCount = 0L;
+    private Long totalSold = 0L;
+
     @Column(columnDefinition = "TEXT")
     private String description;
     @Column(name = "avatar")

@@ -1,7 +1,7 @@
 var size = 5;
 
 async function loadSanPhamBanChay(page) {
-    var url = 'http://localhost:8080/api/product/public/best-saler?page=' + page + '&size=' + size+'&sort=quantitySold,desc';
+    var url = 'http://localhost:8080/api/product/public/best-saler?page=' + page + '&size=' + size + '&sort=quantitySold,desc';
     const response = await fetch(url, {
     });
     var result = await response.json();
@@ -15,27 +15,27 @@ async function loadSanPhamBanChay(page) {
                 <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
                 <div class="priceproduct">
                     <strong class="newprice">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
                 </div>
             </div>
         </div>
     </div>`
     }
     document.getElementById("sanphambanchay").innerHTML += main
-    if(result.last == false){
-        document.getElementById("btnsanphambanchay").onclick=function(){
+    if (result.last == false) {
+        document.getElementById("btnsanphambanchay").onclick = function () {
             loadSanPhamBanChay(Number(page) + Number(1));
         }
     }
-    else{
-        document.getElementById("btnsanphambanchay").onclick=function(){
+    else {
+        document.getElementById("btnsanphambanchay").onclick = function () {
             toastr.warning("Đã hết kết quả tìm kiếm");
         }
     }
 }
 
 async function loadSanPhamMoiNhat(page) {
-    var url = 'http://localhost:8080/api/product/public/new-product?page=' + page + '&size=' + size+'&sort=id,desc';
+    var url = 'http://localhost:8080/api/product/public/new-product?page=' + page + '&size=' + size + '&sort=id,desc';
     const response = await fetch(url, {
     });
     var result = await response.json();
@@ -49,20 +49,20 @@ async function loadSanPhamMoiNhat(page) {
                 <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
                 <div class="priceproduct">
                     <strong class="newprice">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
                 </div>
             </div>
         </div>
     </div>`
     }
     document.getElementById("sanphammoinhat").innerHTML += main
-    if(result.last == false){
-        document.getElementById("btnsanphammoi").onclick=function(){
+    if (result.last == false) {
+        document.getElementById("btnsanphammoi").onclick = function () {
             loadSanPhamMoiNhat(Number(page) + Number(1));
         }
     }
-    else{
-        document.getElementById("btnsanphammoi").onclick=function(){
+    else {
+        document.getElementById("btnsanphammoi").onclick = function () {
             toastr.warning("Đã hết kết quả tìm kiếm");
         }
     }
@@ -70,7 +70,7 @@ async function loadSanPhamMoiNhat(page) {
 
 
 async function loadPhuKien(page) {
-    var url = 'http://localhost:8080/api/product/public/phu-kien?page=' + page + '&size=' + size+'&sort=id,desc';
+    var url = 'http://localhost:8080/api/product/public/phu-kien?page=' + page + '&size=' + size + '&sort=id,desc';
     const response = await fetch(url, {
     });
     var result = await response.json();
@@ -84,20 +84,20 @@ async function loadPhuKien(page) {
                 <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
                 <div class="priceproduct">
                     <strong class="newprice">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
                 </div>
             </div>
         </div>
     </div>`
     }
     document.getElementById("listphukien").innerHTML += main
-    if(result.last == false){
-        document.getElementById("btnphukien").onclick=function(){
+    if (result.last == false) {
+        document.getElementById("btnphukien").onclick = function () {
             loadPhuKien(Number(page) + Number(1));
         }
     }
-    else{
-        document.getElementById("btnphukien").onclick=function(){
+    else {
+        document.getElementById("btnphukien").onclick = function () {
             toastr.warning("Đã hết kết quả tìm kiếm");
         }
     }
@@ -120,7 +120,7 @@ async function loadSanPhamNoiBat() {
             <a href="detail?id=${list[i].id}" class="tenspnoibat">${list[i].name}</a>
             <div class="priceproductnoibat">
                 <strong class="newpricenoibat">${formatmoney(list[i].price)}</strong>
-                <span class="oldpricenoibat">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                <span class="oldpricenoibat">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
             </div>
         </div>
     </div>`
@@ -144,7 +144,7 @@ async function loadSanPhamNoiBatCart() {
                 <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
                 <div class="priceproduct">
                     <strong class="newpricelq">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@ async function loadAProduct() {
     document.getElementById("detailnamepro").innerHTML = result.name
     document.getElementById("codepro").innerHTML = result.code
     document.getElementById("pricedetail").innerHTML = formatmoney(result.price)
-    document.getElementById("oldpricestr").innerHTML = result.oldPrice == null || result.oldPrice==0?"": formatmoney(result.oldPrice)
+    document.getElementById("oldpricestr").innerHTML = result.oldPrice == null || result.oldPrice == 0 ? "" : formatmoney(result.oldPrice)
     document.getElementById("imgdetailpro").src = result.imageBanner
     document.getElementById("descriptiondetail").innerHTML = result.description
     document.getElementById("tenspkythuat").innerHTML = result.name
@@ -172,17 +172,17 @@ async function loadAProduct() {
     document.getElementById("imganhkythuat").innerHTML = result.imageBanner
     document.getElementById("phukiendikem").innerHTML = result.accessory
     var main = ''
-    result.screen == null || result.screen == ""? main += "":main+= `<span class="congnghect">Công nghệ màn hình: <span class="chitietcongnghe">${result.screen}</span></span>`
-    result.operaSystem == null || result.operaSystem == ""? main += "":main+= `<span class="congnghect">Hệ điều hành: <span class="chitietcongnghe">${result.operaSystem}</span></span>`
-    result.cpu == null || result.cpu == ""? main += "":main+= `<span class="congnghect">Vi xử lý: <span class="chitietcongnghe">${result.cpu}</span></span>`
-    result.mobileNetwork == null || result.mobileNetwork == ""? main += "":main+= `<span class="congnghect">Mạng di động: <span class="chitietcongnghe">${result.mobileNetwork}</span></span>`
-    result.sim == null || result.sim == ""? main += "":main+= `<span class="congnghect">Số khe SIM: <span class="chitietcongnghe">${result.sim}</span></span>`
-    result.specialFeature == null || result.specialFeature == ""? main += "":main+= `<span class="congnghect">Tính năng đặc biệt: <span class="chitietcongnghe">${result.specialFeature}</span></span>`
-    result.securityInfor == null || result.securityInfor == ""? main += "":main+= `<span class="congnghect">Bảo mật: <span class="chitietcongnghe">${result.securityInfor}</span></span>`
-    result.securityInfor == null || result.securityInfor == ""? main += "":main+= `<span class="congnghect">Bảo mật: <span class="chitietcongnghe">${result.securityInfor}</span></span>`
-    result.material == null || result.material == ""? main += "":main+= `<span class="congnghect">Chất liệu: <span class="chitietcongnghe">${result.material}</span></span>`
-    result.frontCamera == null || result.frontCamera == ""? main += "":main+= `<span class="congnghect">Camera trước: <span class="chitietcongnghe">${result.frontCamera}</span></span>`
-    result.backCamera == null || result.backCamera == ""? main += "":main+= `<span class="congnghect">Camera sau: <span class="chitietcongnghe">${result.backCamera}</span></span>`
+    result.screen == null || result.screen == "" ? main += "" : main += `<span class="congnghect">Công nghệ màn hình: <span class="chitietcongnghe">${result.screen}</span></span>`
+    result.operaSystem == null || result.operaSystem == "" ? main += "" : main += `<span class="congnghect">Hệ điều hành: <span class="chitietcongnghe">${result.operaSystem}</span></span>`
+    result.cpu == null || result.cpu == "" ? main += "" : main += `<span class="congnghect">Vi xử lý: <span class="chitietcongnghe">${result.cpu}</span></span>`
+    result.mobileNetwork == null || result.mobileNetwork == "" ? main += "" : main += `<span class="congnghect">Mạng di động: <span class="chitietcongnghe">${result.mobileNetwork}</span></span>`
+    result.sim == null || result.sim == "" ? main += "" : main += `<span class="congnghect">Số khe SIM: <span class="chitietcongnghe">${result.sim}</span></span>`
+    result.specialFeature == null || result.specialFeature == "" ? main += "" : main += `<span class="congnghect">Tính năng đặc biệt: <span class="chitietcongnghe">${result.specialFeature}</span></span>`
+    result.securityInfor == null || result.securityInfor == "" ? main += "" : main += `<span class="congnghect">Bảo mật: <span class="chitietcongnghe">${result.securityInfor}</span></span>`
+    result.securityInfor == null || result.securityInfor == "" ? main += "" : main += `<span class="congnghect">Bảo mật: <span class="chitietcongnghe">${result.securityInfor}</span></span>`
+    result.material == null || result.material == "" ? main += "" : main += `<span class="congnghect">Chất liệu: <span class="chitietcongnghe">${result.material}</span></span>`
+    result.frontCamera == null || result.frontCamera == "" ? main += "" : main += `<span class="congnghect">Camera trước: <span class="chitietcongnghe">${result.frontCamera}</span></span>`
+    result.backCamera == null || result.backCamera == "" ? main += "" : main += `<span class="congnghect">Camera sau: <span class="chitietcongnghe">${result.backCamera}</span></span>`
     document.getElementById("thongtincauhinh").innerHTML = main;
     listbonho = result.productStorages;
     loadBoNho(result.category.categoryType)
@@ -196,15 +196,15 @@ async function loadAProduct() {
     }
     document.getElementById("listimgdetail").innerHTML = main
 
-    result.category.categoryType == "DIEN_THOAI"?loadSanPhamLienQuan(result.tradeMark.id, null,id) : loadSanPhamLienQuan(null, result.category.id, id);
+    result.category.categoryType == "DIEN_THOAI" ? loadSanPhamLienQuan(result.tradeMark.id, null, id) : loadSanPhamLienQuan(null, result.category.id, id);
 }
 
-function loadBoNho(categoryType){
-    if(categoryType == "DIEN_THOAI"){
+function loadBoNho(categoryType) {
+    if (categoryType == "DIEN_THOAI") {
         var main = '';
-        for(k=0; k<listbonho.length; k++){
-            var act =''
-            if(k==0){
+        for (k = 0; k < listbonho.length; k++) {
+            var act = ''
+            if (k == 0) {
                 act = 'activecolor'
                 loadMauSac(listbonho[k].id, null)
             }
@@ -216,17 +216,17 @@ function loadBoNho(categoryType){
         }
         document.getElementById("listbonho").innerHTML = main;
     }
-    if(categoryType == "PHU_KIEN"){
+    if (categoryType == "PHU_KIEN") {
         document.getElementById("storagedetaillable").style.display = "none";
         var main = '';
-        for(i=0; i<listbonho.length; i++){
-            for(j=0; j<listbonho[i].productColors.length; j++){
+        for (i = 0; i < listbonho.length; i++) {
+            for (j = 0; j < listbonho[i].productColors.length; j++) {
                 var cls = 'hetsp';
                 var oncl = ``;
                 var mausac = listbonho[i].productColors[j];
 
-                if(mausac.quantity > 0){
-                    cls=''
+                if (mausac.quantity > 0) {
+                    cls = ''
                     oncl = `onclick="chonMauSac(${mausac.id}, this, ${mausac.price})"`;
                 }
                 main += `<div class="col-lg-3 col-md-3 col-sm-6 col-6">
@@ -242,18 +242,18 @@ function loadBoNho(categoryType){
 }
 
 
-async function loadMauSac(idbonho,e){
+async function loadMauSac(idbonho, e) {
     var url = 'http://localhost:8080/api/product-color/public/find-by-storage?id=' + idbonho;
     const response = await fetch(url, {
     });
     var listmausac = await response.json();
     console.log(listmausac);
     var main = ''
-    for(j=0; j<listmausac.length; j++){
+    for (j = 0; j < listmausac.length; j++) {
         var cls = 'hetsp';
         var oncl = ``;
-        if(listmausac[j].quantity > 0){
-            cls=''
+        if (listmausac[j].quantity > 0) {
+            cls = ''
             oncl = `onclick="chonMauSac(${listmausac[j].id}, this, ${listmausac[j].price})"`;
         }
         main += `<div class="col-lg-3 col-md-3 col-sm-6 col-6">
@@ -266,7 +266,7 @@ async function loadMauSac(idbonho,e){
             </div>`
     }
     document.getElementById("listcolor").innerHTML = main;
-    if(e != null){
+    if (e != null) {
         var img = document.getElementsByClassName("storagediv");
         for (k = 0; k < img.length; k++) {
             document.getElementsByClassName("storagediv")[k].classList.remove('activecolor');
@@ -275,7 +275,7 @@ async function loadMauSac(idbonho,e){
     }
 }
 
-function chonMauSac(idmausac, e, price){
+function chonMauSac(idmausac, e, price) {
     idColorCart = idmausac;
     var img = document.getElementsByClassName("colorcdiv");
     for (k = 0; k < img.length; k++) {
@@ -286,9 +286,9 @@ function chonMauSac(idmausac, e, price){
 }
 
 async function loadSanPhamLienQuan(idtrademark, idcategory, idproduct) {
-    var url = 'http://localhost:8080/api/product/public/san-pham-lienquan?page=0&size=4&sort=id,desc&id='+idproduct;
-    idcategory != null? url += '&idcategory='+idcategory : url+= ''
-    idtrademark != null? url += '&idtrademark='+idtrademark : url+= ''
+    var url = 'http://localhost:8080/api/product/public/san-pham-lienquan?page=0&size=4&sort=id,desc&id=' + idproduct;
+    idcategory != null ? url += '&idcategory=' + idcategory : url += ''
+    idtrademark != null ? url += '&idtrademark=' + idtrademark : url += ''
     const response = await fetch(url, {
     });
     var result = await response.json();
@@ -302,7 +302,7 @@ async function loadSanPhamLienQuan(idtrademark, idcategory, idproduct) {
                 <p class="productname"><a class="productname" href="">${list[i].name}</a></p>
                 <div class="priceproduct">
                     <strong class="newpricelq">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
                 </div>
             </div>
         </div>
@@ -329,16 +329,16 @@ async function sanPhamByThuongHieuAndDanhMuc(page) {
     var thuonghieu = uls.searchParams.get("thuonghieu");
     var danhmuc = uls.searchParams.get("danhmuc");
     var search = uls.searchParams.get("search");
-    
-    var url = 'http://localhost:8080/api/product/public/loc-san-pham?page=' + page + '&size=' + size+'&sort=id,desc&small=0&large=1000000000';
-    if(thuonghieu != null){
-        url += '&trademark='+thuonghieu
+
+    var url = 'http://localhost:8080/api/product/public/loc-san-pham?page=' + page + '&size=' + size + '&sort=id,desc&small=0&large=1000000000';
+    if (thuonghieu != null) {
+        url += '&trademark=' + thuonghieu
     }
-    if(danhmuc != null){
-        url += '&idcategory='+danhmuc
+    if (danhmuc != null) {
+        url += '&idcategory=' + danhmuc
     }
-    if(search != null){
-        url += '&search='+search
+    if (search != null) {
+        url += '&search=' + search
     }
     const response = await fetch(url, {
     });
@@ -353,20 +353,20 @@ async function sanPhamByThuongHieuAndDanhMuc(page) {
                 <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
                 <div class="priceproduct">
                     <strong class="newprice">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+                    <span class="oldprice">${list[i].oldPrice != null && list[i].oldPrice > 0 ? formatmoney(list[i].oldPrice) : ''}</span>
                 </div>
             </div>
         </div>
     </div>`
     }
     document.getElementById("sanphamloc").innerHTML += main
-    if(result.last == false){
-        document.getElementById("btnlocsanpham").onclick=function(){
+    if (result.last == false) {
+        document.getElementById("btnlocsanpham").onclick = function () {
             sanPhamByThuongHieuAndDanhMuc(Number(page) + Number(1));
         }
     }
-    else{
-        document.getElementById("btnlocsanpham").onclick=function(){
+    else {
+        document.getElementById("btnlocsanpham").onclick = function () {
             toastr.warning("Đã hết kết quả tìm kiếm");
         }
     }
@@ -374,55 +374,110 @@ async function sanPhamByThuongHieuAndDanhMuc(page) {
 
 
 async function locSanPham(page) {
-    var search = document.getElementById("search").value
-    var thuonghieu = document.getElementById("thuonghieu").value
-    var danhmuc = document.getElementById("danhmuc").value
-    var mucgia = document.getElementById("mucgia").value
-    var sort = document.getElementById("sort").value
-    
-    var url = 'http://localhost:8080/api/product/public/loc-san-pham?page=' + page + '&size=' + size+'&sort='+sort+'&large='+mucgia.split("-")[1]+'&small='+mucgia.split("-")[0]+'&search='+search;
 
-    if(thuonghieu != null && thuonghieu != ""){
-        url += '&trademark='+thuonghieu
-    }
-    if(danhmuc != null && danhmuc != ""){
-        url += '&idcategory='+danhmuc
-    }
-    console.log(url);
-    const response = await fetch(url, {
-    });
+    var search = document.getElementById("search").value || "";
+
+    var url =
+        'http://localhost:8080/api/product/public/search-marketplace'
+        + '?keyword=' + encodeURIComponent(search)
+        + '&page=' + page
+        + '&size=' + size;
+
+    const response = await fetch(url);
+
     var result = await response.json();
+
     var list = result.content;
+
     var main = '';
+
     for (i = 0; i < list.length; i++) {
-        main += `<div class="col-lg-20p col-md-3 col-sm-6 col-6">
-        <div class="singleproduct">
-            <a href="detail?id=${list[i].id}"><img src="${list[i].imageBanner}" class="productimg"></a>
-            <div class="contentsinglepro">
-                <p class="productname"><a class="productname" href="detail?id=${list[i].id}">${list[i].name}</a></p>
-                <div class="priceproduct">
-                    <strong class="newprice">${formatmoney(list[i].price)}</strong>
-                    <span class="oldprice">${list[i].oldPrice!=null && list[i].oldPrice > 0?formatmoney(list[i].oldPrice):''}</span>
+
+        main += `
+        <div class="col-lg-20p col-md-3 col-sm-6 col-6">
+            <div class="singleproduct">
+
+                <a href="detail?id=${list[i].id}">
+                    <img src="${list[i].imageBanner}" class="productimg">
+                </a>
+
+                <div class="contentsinglepro">
+
+                    <p class="productname">
+                        <a class="productname"
+                           href="detail?id=${list[i].id}">
+                           ${list[i].name}
+                        </a>
+                    </p>
+
+                    <div class="priceproduct">
+                        <strong class="newprice">
+                            ${formatmoney(list[i].price)}
+                        </strong>
+
+                        <span class="oldprice">
+                            ${list[i].oldPrice != null &&
+                list[i].oldPrice > 0
+                ? formatmoney(list[i].oldPrice)
+                : ''
+            }
+                        </span>
+                    </div>
+
+                    <div class="mt-1">
+
+                        <span style="color:#ffb400">
+                            ★ ${Number(list[i].avgStar || 0).toFixed(1)}
+                        </span>
+
+                        <span style="font-size:13px;color:#777">
+                            (${list[i].reviewCount || 0} đánh giá)
+                        </span>
+
+                    </div>
+
+                    <div style="font-size:13px;color:#777">
+
+                        Đã bán:
+                        ${list[i].sold || 0}
+
+                    </div>
+
+                    <div style="font-size:13px;color:#ee4d2d">
+
+                        ${list[i].shop?.shopName || ''}
+
+                    </div>
+
                 </div>
             </div>
-        </div>
-    </div>`
+        </div>`;
     }
-    document.getElementById("sanphamloc").innerHTML += main
-    if(result.last == false){
-        document.getElementById("btnlocsanpham").onclick=function(){
-            sanPhamByThuongHieuAndDanhMuc(Number(page) + Number(1));
+
+    if (page == 0) {
+        document.getElementById("sanphamloc").innerHTML = main;
+    }
+    else {
+        document.getElementById("sanphamloc").innerHTML += main;
+    }
+
+    if (result.last == false) {
+
+        document.getElementById("btnlocsanpham").onclick = function () {
+
+            locSanPham(Number(page) + 1);
         }
     }
-    else{
-        document.getElementById("btnlocsanpham").onclick=function(){
-            toastr.warning("Đã hết kết quả tìm kiếm");
+    else {
+
+        document.getElementById("btnlocsanpham").onclick = function () {
+
+            toastr.warning("Đã hết kết quả");
         }
     }
 }
 
-
-function locSpAction(){
+function locSpAction() {
     document.getElementById("sanphamloc").innerHTML = "";
     locSanPham(0);
 }
