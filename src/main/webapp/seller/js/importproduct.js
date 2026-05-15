@@ -94,8 +94,11 @@ async function loadImportP(page, idproduct, from, to) {
                     <td>${list[i].importTime}<br>${list[i].importDate}</td>
                     <td>${list[i].description}</td>
                     <td class="sticky-col">
-                        <i onclick="deleteData(${list[i].id})" class="fa fa-trash-alt iconaction"></i>
-                        <i class="fa fa-edit iconaction"></i><br>
+                        <div class="act-group">
+                            <button onclick="deleteData(${list[i].id})" class="btn-act btn-act-red" data-tip="Xóa">
+                                <i class="fa fa-trash-alt"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>`
     }

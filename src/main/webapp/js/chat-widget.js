@@ -1,15 +1,63 @@
 const CHAT_BASE_URL = "http://localhost:8080";
 
-let chatRooms = [];
-let selectedChatShopId = null;
-let selectedChatShopName = null;
-let chatReloadInterval = null;
+let chatRooms            = [];
+let selectedChatRoom     = null; // { shopId, shopName, sellerUserId, roomId }
+let chatStompClient      = null;
+let chatMyId             = null;
 
+/* ── Init ── */
 document.addEventListener("DOMContentLoaded", function () {
     createChatWidgetHtml();
-    loadChatRooms();
+    initChatWidget();
 });
 
+async function initChatWidget() {
+    const token = getChatToken();
+    if (!token) return;
+
+    try {
+        const res = await fetch(CHAT_BASE_URL + "/api/chat/user/current-info", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (!res.ok) return;
+        const info = await res.json();
+        chatMyId = info.id;
+        connectChatStomp();
+        loadChatRooms();
+    } catch (e) {
+        console.error("[Chat Widget] Init error:", e);
+    }
+}
+
+/* ── STOMP ── */
+function connectChatStomp() {
+    if (!chatMyId) return;
+    const sock = new SockJS(CHAT_BASE_URL + "/hello");
+    chatStompClient = Stomp.over(sock);
+    chatStompClient.debug = null;
+    chatStompClient.connect({}, function () {
+        const topic = "/topic/chat/" + chatMyId;
+        console.log("[Chat Widget] STOMP subscribed:", topic);
+        chatStompClient.subscribe(topic, function (frame) {
+            const msg = JSON.parse(frame.body);
+            console.log("[Chat Widget] WS received:", msg);
+            const incomingRoomId = Number(msg.roomId);
+            const currentRoomId  = selectedChatRoom ? Number(selectedChatRoom.roomId) : null;
+            if (currentRoomId && incomingRoomId === currentRoomId) {
+                appendChatBubble(msg.content, false);
+            } else {
+                // Highlight badge + room
+                highlightChatRoom(incomingRoomId);
+                const badge = document.getElementById("chatRoomCount");
+                if (badge) badge.style.background = "#ee4d2d";
+            }
+        });
+    }, function (err) {
+        console.error("[Chat Widget] STOMP error:", err);
+    });
+}
+
+/* ── HTML Template ── */
 function createChatWidgetHtml() {
     if (document.getElementById("chatPopup")) return;
 
@@ -29,7 +77,7 @@ function createChatWidgetHtml() {
                 <div class="chat-search">
                     <input id="chatSearchInput"
                            onkeyup="filterChatRooms()"
-                           placeholder="Tìm theo tên shop">
+                           placeholder="Tim theo ten shop">
                 </div>
 
                 <div class="chat-room-list" id="chatRoomList"></div>
@@ -37,14 +85,12 @@ function createChatWidgetHtml() {
 
             <div class="chat-main">
                 <div class="chat-main-header">
-                    <div>
-                        <div class="chat-main-title" id="chatMainTitle">Shop Chat</div>
-                    </div>
-                    <button class="chat-main-close" onclick="toggleChatPopup()">×</button>
+                    <div class="chat-main-title" id="chatMainTitle">Shop Chat</div>
+                    <button class="chat-main-close" onclick="toggleChatPopup()">&times;</button>
                 </div>
 
                 <div class="chat-empty" id="chatEmpty">
-                    Chọn một shop để bắt đầu trò chuyện
+                    Chon mot shop de bat dau tro chuyen
                 </div>
 
                 <div class="chat-message-area" id="chatMessageArea"></div>
@@ -52,8 +98,8 @@ function createChatWidgetHtml() {
                 <div class="chat-input-area" id="chatInputArea">
                     <input id="chatInput"
                            onkeydown="handleChatEnter(event)"
-                           placeholder="Nhập tin nhắn...">
-                    <button onclick="sendChatMessage()">Gửi</button>
+                           placeholder="Nhap tin nhan...">
+                    <button onclick="sendChatMessage()">Gui</button>
                 </div>
             </div>
         </div>
@@ -66,55 +112,42 @@ function getChatToken() {
     return localStorage.getItem("token");
 }
 
+/* ── Toggle popup ── */
 function toggleChatPopup() {
     const box = document.getElementById("chatPopup");
+    if (!box) return;
 
     if (box.style.display === "grid") {
         box.style.display = "none";
-        stopChatAutoReload();
     } else {
         box.style.display = "grid";
         loadChatRooms();
-
-        if (selectedChatShopId) {
-            startChatAutoReload();
-        }
     }
 }
 
+/* ── Rooms ── */
 async function loadChatRooms() {
     const token = getChatToken();
-
-    if (!token) {
-        updateChatCount(0);
-        return;
-    }
+    if (!token) { updateChatCount(0); return; }
 
     try {
-        const res = await fetch(`${CHAT_BASE_URL}/api/chat/user/rooms`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
+        const res = await fetch(CHAT_BASE_URL + "/api/chat/user/rooms", {
+            headers: { "Authorization": "Bearer " + token }
         });
-
         if (!res.ok) return;
-
         chatRooms = await res.json();
-
         updateChatCount(chatRooms.length);
         renderChatRooms(chatRooms);
-
     } catch (e) {
-        console.error("Không tải được phòng chat:", e);
+        console.error("[Chat Widget] Load rooms error:", e);
     }
 }
 
 function updateChatCount(count) {
     const badge = document.getElementById("chatRoomCount");
-    const text = document.getElementById("chatTotalText");
-
+    const text  = document.getElementById("chatTotalText");
     if (badge) badge.innerText = count;
-    if (text) text.innerText = `(${count})`;
+    if (text)  text.innerText  = "(" + count + ")";
 }
 
 function renderChatRooms(rooms) {
@@ -122,196 +155,180 @@ function renderChatRooms(rooms) {
     if (!box) return;
 
     if (!rooms || rooms.length === 0) {
-        box.innerHTML = `
-            <div style="padding:14px;color:#777;">
-                Bạn chưa nhắn tin với shop nào
-            </div>
-        `;
+        box.innerHTML = `<div style="padding:14px;color:#777;">Ban chua nhan tin voi shop nao</div>`;
         return;
     }
 
     let html = "";
-
-    rooms.forEach(room => {
+    rooms.forEach(function (room) {
         html += `
             <div class="chat-room-item"
-                 id="chat-room-${room.shopId}"
-                 onclick="selectChatRoom(${room.shopId}, '${escapeJs(room.shopName || "Shop")}')">
-
+                 id="chat-room-${room.roomId}"
+                 onclick="selectChatRoom(${room.roomId})">
                 <img class="chat-room-avatar"
                      src="${room.shopAvatar || 'image/logo.ico'}"
                      onerror="this.src='image/logo.ico'">
-
                 <div class="chat-room-info">
                     <div class="chat-room-name">${escapeHtml(room.shopName || "Shop")}</div>
-                    <div class="chat-room-last">Nhấn để xem tin nhắn...</div>
+                    <div class="chat-room-last" id="chat-last-${room.roomId}">Nhan de xem tin nhan...</div>
                 </div>
             </div>
         `;
     });
-
     box.innerHTML = html;
 }
 
 function filterChatRooms() {
-    const input = document.getElementById("chatSearchInput");
-    const keyword = input.value.toLowerCase();
-
-    const filtered = chatRooms.filter(room =>
-        String(room.shopName || "").toLowerCase().includes(keyword)
-    );
-
+    const keyword = (document.getElementById("chatSearchInput").value || "").toLowerCase();
+    const filtered = chatRooms.filter(function (r) {
+        return String(r.shopName || "").toLowerCase().includes(keyword);
+    });
     renderChatRooms(filtered);
 }
 
-async function selectChatRoom(shopId, shopName) {
-    selectedChatShopId = shopId;
-    selectedChatShopName = shopName;
-
-    document.querySelectorAll(".chat-room-item").forEach(item => {
-        item.classList.remove("active");
-    });
-
-    const active = document.getElementById("chat-room-" + shopId);
-    if (active) active.classList.add("active");
-
-    document.getElementById("chatMainTitle").innerText = shopName || "Shop";
-    document.getElementById("chatEmpty").style.display = "none";
-    document.getElementById("chatMessageArea").style.display = "block";
-    document.getElementById("chatInputArea").style.display = "flex";
-
-    await loadChatMessages();
-    startChatAutoReload();
+function highlightChatRoom(roomId) {
+    const el = document.getElementById("chat-room-" + roomId);
+    if (el) el.style.borderLeft = "3px solid #ee4d2d";
+    const last = document.getElementById("chat-last-" + roomId);
+    if (last) { last.style.fontWeight = "700"; last.style.color = "#ee4d2d"; }
+    if (!el) loadChatRooms();
 }
 
-async function loadChatMessages() {
-    if (!selectedChatShopId) return;
+/* ── Select room ── */
+async function selectChatRoom(roomId) {
+    selectedChatRoom = chatRooms.find(function (r) { return r.roomId === roomId; });
+    if (!selectedChatRoom) return;
 
+    document.querySelectorAll(".chat-room-item").forEach(function (item) {
+        item.classList.remove("active");
+        item.style.borderLeft = "";
+    });
+    const el = document.getElementById("chat-room-" + roomId);
+    if (el) el.classList.add("active");
+
+    const last = document.getElementById("chat-last-" + roomId);
+    if (last) { last.style.fontWeight = ""; last.style.color = ""; }
+
+    document.getElementById("chatMainTitle").innerText = selectedChatRoom.shopName || "Shop";
+    document.getElementById("chatEmpty").style.display        = "none";
+    document.getElementById("chatMessageArea").style.display  = "block";
+    document.getElementById("chatInputArea").style.display    = "flex";
+
+    await loadChatMessages();
+}
+
+/* ── Messages ── */
+async function loadChatMessages() {
+    if (!selectedChatRoom) return;
     const token = getChatToken();
     if (!token) return;
 
     try {
-        const res = await fetch(`${CHAT_BASE_URL}/api/chat/user/messages?shopId=${selectedChatShopId}`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
+        const res = await fetch(
+            CHAT_BASE_URL + "/api/chat/user/messages?shopId=" + selectedChatRoom.shopId, {
+            headers: { "Authorization": "Bearer " + token }
         });
-
         if (!res.ok) return;
-
         const messages = await res.json();
         renderChatMessages(messages);
-
     } catch (e) {
-        console.error("Không tải được tin nhắn:", e);
+        console.error("[Chat Widget] Load messages error:", e);
     }
 }
 
 function renderChatMessages(messages) {
     const box = document.getElementById("chatMessageArea");
     if (!box) return;
-
-    let html = "";
-
-    messages.forEach(msg => {
-        html += `
-            <div class="chat-msg-row ${msg.mine ? "mine" : ""}">
-                <div class="chat-msg-bubble">
-                    ${escapeHtml(msg.content)}
-                </div>
-            </div>
-        `;
+    box.innerHTML = "";
+    messages.forEach(function (msg) {
+        appendChatBubble(msg.content, msg.mine, false);
     });
-
-    box.innerHTML = html;
     box.scrollTop = box.scrollHeight;
 }
 
-async function sendChatMessage() {
-    const input = document.getElementById("chatInput");
-    const content = input.value.trim();
+function appendChatBubble(content, mine, scroll) {
+    if (scroll === undefined) scroll = true;
+    const box = document.getElementById("chatMessageArea");
+    if (!box) return;
+    const row = document.createElement("div");
+    row.className = "chat-msg-row" + (mine ? " mine" : "");
+    const bubble = document.createElement("div");
+    bubble.className = "chat-msg-bubble";
+    bubble.textContent = content;
+    row.appendChild(bubble);
+    box.appendChild(row);
+    if (scroll) box.scrollTop = box.scrollHeight;
+}
 
-    if (!content || !selectedChatShopId) return;
+/* ── Send ── */
+async function sendChatMessage() {
+    const input   = document.getElementById("chatInput");
+    const content = (input.value || "").trim();
+    if (!content || !selectedChatRoom) return;
 
     const token = getChatToken();
-
     if (!token) {
-        alert("Bạn cần đăng nhập");
+        alert("Ban can dang nhap");
         window.location.href = "/dangnhap";
         return;
     }
 
+    const body = {
+        shopId:       selectedChatRoom.shopId,
+        content:      content,
+        sellerUserId: selectedChatRoom.sellerUserId  // push WS to seller
+    };
+
     try {
-        const res = await fetch(`${CHAT_BASE_URL}/api/chat/user/send`, {
-            method: "POST",
+        const res = await fetch(CHAT_BASE_URL + "/api/chat/user/send", {
+            method:  "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type":  "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({
-                shopId: selectedChatShopId,
-                content: content
-            })
+            body: JSON.stringify(body)
         });
 
         if (res.ok) {
+            appendChatBubble(content, true);
             input.value = "";
-            await loadChatMessages();
+            const last = document.getElementById("chat-last-" + selectedChatRoom.roomId);
+            if (last) { last.textContent = content; last.style.fontWeight = ""; }
             await loadChatRooms();
         }
-
     } catch (e) {
-        console.error("Không gửi được tin nhắn:", e);
-    }
-}
-
-function startChatAutoReload() {
-    stopChatAutoReload();
-    chatReloadInterval = setInterval(loadChatMessages, 3000);
-}
-
-function stopChatAutoReload() {
-    if (chatReloadInterval) {
-        clearInterval(chatReloadInterval);
-        chatReloadInterval = null;
+        console.error("[Chat Widget] Send error:", e);
     }
 }
 
 function handleChatEnter(event) {
-    if (event.key === "Enter") {
-        sendChatMessage();
-    }
+    if (event.key === "Enter") sendChatMessage();
 }
 
+/* ── Open from shop page ── */
 function openChatWithShop(shop) {
     const token = getChatToken();
-
     if (!token) {
-        alert("Bạn cần đăng nhập");
+        alert("Ban can dang nhap");
         window.location.href = "/dangnhap";
         return;
     }
-
-    if (!shop || !shop.id) {
-        alert("Không tìm thấy shop");
-        return;
-    }
+    if (!shop || !shop.id) { alert("Khong tim thay shop"); return; }
 
     const box = document.getElementById("chatPopup");
-    box.style.display = "grid";
+    if (box) box.style.display = "grid";
 
-    loadChatRooms().then(() => {
-        selectChatRoom(shop.id, shop.shopName || shop.name || "Shop");
+    loadChatRooms().then(function () {
+        // Find room by shopId
+        const room = chatRooms.find(function (r) { return r.shopId === shop.id; });
+        if (room) selectChatRoom(room.roomId);
     });
 }
 
+/* ── Helpers ── */
 function escapeHtml(text) {
     return String(text || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
-}
-
-function escapeJs(text) {
-    return String(text || "").replace(/'/g, "\\'");
 }

@@ -2,6 +2,150 @@ var token = localStorage.getItem("token");
 var size = 10;
 
 /* =========================
+   NEW ORDER POLLING SYSTEM
+========================= */
+let lastKnownMaxId = 0;
+let newOrderCount = 0;
+let pollingTimer = null;
+const POLL_INTERVAL = 15000; // 15 giây
+
+async function initPolling() {
+    try {
+        const data = await fetchLatestId();
+        lastKnownMaxId = data.latestId || 0;
+        setNotifStatus('active');
+        pollingTimer = setInterval(checkNewOrders, POLL_INTERVAL);
+    } catch (e) {
+        setNotifStatus('error');
+        // Retry sau 30s nếu lỗi lần đầu
+        setTimeout(initPolling, 30000);
+    }
+}
+
+async function fetchLatestId() {
+    const res = await fetch('http://localhost:8080/api/invoice/seller/latest-id', {
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('fetch failed');
+    return await res.json();
+}
+
+async function checkNewOrders() {
+    try {
+        const data = await fetchLatestId();
+        const newId = data.latestId || 0;
+
+        if (newId > lastKnownMaxId) {
+            const delta = newId - lastKnownMaxId;
+            lastKnownMaxId = newId;
+            newOrderCount += delta;
+
+            // Cập nhật badge
+            updateNotifBadge(newOrderCount);
+
+            // Rung chuông
+            ringBell();
+
+            // Âm thanh thông báo
+            playNotifSound();
+
+            // Toast
+            toastr.success(
+                `Bạn có <strong>${delta}</strong> đơn hàng mới! Mã đơn mới nhất: <strong>#${newId}</strong>`,
+                '🔔 Đơn hàng mới',
+                { timeOut: 8000, closeButton: true, enableHtml: true, positionClass: 'toast-top-right' }
+            );
+
+            // Chuyển sort sang mới nhất và reload
+            const sortEl = document.getElementById('sort');
+            if (sortEl) sortEl.value = sortEl.querySelector('option[value$=",desc"]') ? 'id,desc' : 'desc';
+
+            await loadInvoice(0);
+
+            // Highlight dòng mới nhất
+            highlightNewOrderRow(newId);
+        }
+    } catch (e) {
+        console.warn('[Polling] checkNewOrders error:', e);
+    }
+}
+
+function updateNotifBadge(count) {
+    const badge = document.getElementById('notifBadge');
+    if (!badge) return;
+    if (count > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = count > 99 ? '99+' : count;
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function ringBell() {
+    const bell = document.getElementById('notifBell');
+    if (!bell) return;
+    bell.classList.add('ringing');
+    setTimeout(() => bell.classList.remove('ringing'), 4000);
+}
+
+function playNotifSound() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [880, 1100, 880, 1320]; // ding-dong pattern
+        notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+            gain.gain.setValueAtTime(0.22, ctx.currentTime + i * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.1);
+            osc.start(ctx.currentTime + i * 0.12);
+            osc.stop(ctx.currentTime + i * 0.12 + 0.12);
+        });
+    } catch (e) { /* âm thanh không bắt buộc */ }
+}
+
+function highlightNewOrderRow(newId) {
+    setTimeout(() => {
+        const rows = document.querySelectorAll('#listinvoice tr');
+        for (const row of rows) {
+            const firstCell = row.querySelector('td:first-child');
+            if (firstCell && Number(firstCell.textContent.trim()) === Number(newId)) {
+                row.classList.add('new-order-row');
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Xóa class sau 5s
+                setTimeout(() => row.classList.remove('new-order-row'), 5000);
+                break;
+            }
+        }
+    }, 600);
+}
+
+function setNotifStatus(state) {
+    const el = document.getElementById('notifStatus');
+    if (!el) return;
+    if (state === 'active') {
+        el.innerHTML = '<i class="fas fa-circle me-1" style="font-size:8px;color:#4ade80"></i>Đang theo dõi đơn hàng...';
+    } else if (state === 'error') {
+        el.innerHTML = '<i class="fas fa-circle me-1" style="font-size:8px;color:#f87171"></i>Mất kết nối, đang thử lại...';
+    }
+}
+
+/* Reset badge khi click chuông */
+document.addEventListener('DOMContentLoaded', () => {
+    const bell = document.getElementById('notifBell');
+    if (bell) {
+        bell.closest('.notif-bell-wrap')?.addEventListener('click', () => {
+            newOrderCount = 0;
+            updateNotifBadge(0);
+        });
+    }
+});
+
+/* =========================
    HELPERS
 ========================= */
 function getVariantDisplayName(variant) {
@@ -77,20 +221,24 @@ async function loadInvoice(page) {
                     </td>
                     <td>${list[i].statusInvoice || ''}</td>
                     <td class="sticky-col">
-                        <i onclick="loadDetailInvoice(${list[i].id})"
-                           data-bs-toggle="modal"
-                           data-bs-target="#modaldeail"
-                           class="fa fa-eye iconaction"></i>
-
-                        <i onclick="openStatus(${list[i].id},'${list[i].statusInvoice}')"
-                           data-bs-toggle="modal"
-                           data-bs-target="#capnhatdonhang"
-                           class="fa fa-edit iconaction"></i>
-                        <br>
-
-                        <a target="_blank" href="/seller/in-don?id=${list[i].id}">
-                            <i class="fa fa-print iconaction"></i>
-                        </a>
+                        <div class="act-group">
+                            <button onclick="loadDetailInvoice(${list[i].id})"
+                               data-bs-toggle="modal"
+                               data-bs-target="#modaldeail"
+                               class="btn-act btn-act-blue" data-tip="Xem chi tiết">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <button onclick="openStatus(${list[i].id},'${list[i].statusInvoice}')"
+                               data-bs-toggle="modal"
+                               data-bs-target="#capnhatdonhang"
+                               class="btn-act btn-act-teal" data-tip="Cập nhật">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <a target="_blank" href="/seller/in-don?id=${list[i].id}"
+                               class="btn-act btn-act-purple" data-tip="In đơn">
+                                <i class="fa fa-print"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -154,12 +302,6 @@ async function loadDetailInvoice(id) {
                     <td>${formatmoney(price)}</td>
                     <td class="sldetailacc">${quantity}</td>
                     <td class="pricedetailacc yls">${formatmoney(price * quantity)}</td>
-                    <td class="d-flex">
-                        <input id="imei${item.id}" style="max-width: 150px" value="${item.imei == null ? '' : item.imei}">
-                        <button onclick="updateImei(${item.id})" class="btn btn-primary btn-sm">
-                            <i class="fa fa-check"></i>
-                        </button>
-                    </td>
                 </tr>
             `;
         }
@@ -423,10 +565,14 @@ function searchInvoice(page = 0) {
                     </td>
                     <td>${list[i].statusInvoice || ''}</td>
                     <td class="sticky-col">
-                        <i onclick="loadDetailInvoice(${list[i].id})"
-                           data-bs-toggle="modal"
-                           data-bs-target="#modaldeail"
-                           class="fa fa-eye iconaction"></i>
+                        <div class="act-group">
+                            <button onclick="loadDetailInvoice(${list[i].id})"
+                               data-bs-toggle="modal"
+                               data-bs-target="#modaldeail"
+                               class="btn-act btn-act-blue" data-tip="Xem chi tiết">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;

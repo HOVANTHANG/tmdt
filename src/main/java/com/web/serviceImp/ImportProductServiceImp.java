@@ -1,7 +1,6 @@
 package com.web.serviceImp;
 
 import com.web.entity.ImportProduct;
-import com.web.entity.ProductColor;
 import com.web.entity.ProductVariant;
 import com.web.exception.MessageException;
 import com.web.repository.ImportProductRepository;

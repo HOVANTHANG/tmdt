@@ -41,4 +41,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query("select u from User u where u.email like ?1 or u.fullname like ?1 or u.username like ?1")
     Set<User> searchByParam(String s);
+
+    /** Tìm seller user theo shop.id (dùng cho chat routing) */
+    @Query("select u from User u where u.shop.id = ?1")
+    Optional<User> findByShopId(Long shopId);
 }

@@ -21,5 +21,19 @@ public interface ChatRepository extends JpaRepository<Chatting,Long> {
 
     @Query(value = "select c.* from chatting c where (c.sender = ?1 or c.receiver = ?1 ) order by id desc limit 1 offset  0", nativeQuery = true)
     public Chatting findLastChatting(Long idUser);
+
+    // ── Seller ↔ User chat ──
+
+    @Query("SELECT c FROM Chatting c WHERE (c.sender.id = ?1 AND c.receiver.id = ?2) OR (c.sender.id = ?2 AND c.receiver.id = ?1) ORDER BY c.createdDate ASC")
+    List<Chatting> getMessagesBetween(Long id1, Long id2);
+
+    @Query("SELECT DISTINCT c.receiver FROM Chatting c WHERE c.sender.id = ?1 AND c.receiver IS NOT NULL")
+    Set<User> getReceiversOf(Long senderId);
+
+    @Query("SELECT DISTINCT c.sender FROM Chatting c WHERE c.receiver.id = ?1")
+    Set<User> getSendersTo(Long receiverId);
+
+    @Query(value = "SELECT * FROM chatting WHERE (sender = ?1 AND receiver = ?2) OR (sender = ?2 AND receiver = ?1) ORDER BY id DESC LIMIT 1", nativeQuery = true)
+    Chatting findLastChattingBetween(Long id1, Long id2);
 }
 

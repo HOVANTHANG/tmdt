@@ -4,9 +4,7 @@ import com.web.dto.response.ChatDto;
 import com.web.entity.Chatting;
 import com.web.entity.User;
 import com.web.repository.ChatRepository;
-import com.web.repository.UserRepository;
 import com.web.servive.ChatService;
-import com.web.servive.UserService;
 import com.web.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,21 +24,15 @@ public class ChatApi {
     private ChatRepository chatRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private UserUtils userUtils;
 
     @Autowired
     private ChatService chatService;
 
+    /* ── Gemini AI Chat ── */
     @PostMapping
     public ResponseEntity<Map<String, String>> chat(@RequestBody Map<String, String> request, HttpSession session) {
         String userMessage = request.get("message");
-        System.out.println(userMessage);
         try {
             String reply = chatService.chatWithGemini(userMessage, session);
             return ResponseEntity.ok(Map.of("reply", reply));
@@ -51,67 +43,63 @@ public class ChatApi {
         }
     }
 
+    /* ── Current user info (cho cả user và seller để lấy username kết nối STOMP) ── */
+    @GetMapping("/user/current-info")
+    public ResponseEntity<?> currentUserInfo() {
+        User u = userUtils.getUserWithAuthority();
+        return ResponseEntity.ok(Map.of(
+                "id", u.getId(),
+                "username", u.getUsername(),
+                "fullname", u.getFullname() != null ? u.getFullname() : u.getUsername()
+        ));
+    }
+
+    @GetMapping("/seller/current-info")
+    public ResponseEntity<?> currentSellerInfo() {
+        User u = userUtils.getUserWithAuthority();
+        return ResponseEntity.ok(Map.of(
+                "id", u.getId(),
+                "username", u.getUsername(),
+                "fullname", u.getFullname() != null ? u.getFullname() : u.getUsername()
+        ));
+    }
+
+    /* ── Admin legacy ── */
     @GetMapping("/user/my-chat")
-    public ResponseEntity<?> myChat(){
+    public ResponseEntity<?> myChat() {
         List<Chatting> result = chatRepository.myChat(userUtils.getUserWithAuthority().getId());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/admin/getAllUserChat")
-    public ResponseEntity<?> getAllUserChat(@RequestParam(value = "search", required = false) String search){
-        if(search == null){
+    public ResponseEntity<?> getAllUserChat(@RequestParam(value = "search", required = false) String search) {
+        if (search == null)
             search = "";
-        }
-        search = "%"+search +"%";
+        search = "%" + search + "%";
         Set<User> list = chatRepository.getAllUserChat(search);
-        Set<ChatDto> chatDtoList = new HashSet<>();
-        for(User u : list){
-            Chatting chatting = chatRepository.findLastChatting(u.getId());
-            if(chatting != null){
-                ChatDto chatDto = new ChatDto(u,chatting.getContent(),calculateTime(chatting.getCreatedDate()), chatting.getCreatedDate()," ");
-                chatDtoList.add(chatDto);
-            }
-            else{
-                ChatDto chatDto = new ChatDto(u,"","0 min", new Timestamp(System.currentTimeMillis())," ");
-                chatDtoList.add(chatDto);
-            }
+        Set<ChatDto> dtoList = new HashSet<>();
+        for (User u : list) {
+            Chatting c = chatRepository.findLastChatting(u.getId());
+            dtoList.add(c != null
+                    ? new ChatDto(u, c.getContent(), calculateTime(c.getCreatedDate()), c.getCreatedDate(), " ")
+                    : new ChatDto(u, "", "0 min", new Timestamp(System.currentTimeMillis()), " "));
         }
-        return new ResponseEntity<>(chatDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
     @GetMapping("/admin/getListChat")
-    public List<Chatting> getListChat(@RequestParam("idreciver") Long idreciver){
+    public List<Chatting> getListChat(@RequestParam("idreciver") Long idreciver) {
         return chatRepository.findByUser(idreciver);
     }
 
-
-    public void sort(ArrayList<ChatDto> sub) {
-        Collections.sort(sub, new Comparator<ChatDto>() {
-            @Override
-            public int compare(ChatDto o1, ChatDto o2) {
-                return o2.getTimestamp().compareTo(o1.getTimestamp());
-            }
-        });
-    }
-
-    public String calculateTime(Timestamp t){
-        Long now = System.currentTimeMillis();
-        Long end = now - t.getTime();
-        if(end/1000/60 < 1){
+    private String calculateTime(Timestamp t) {
+        long end = System.currentTimeMillis() - t.getTime();
+        if (end / 60000 < 1)
             return "1 min";
-        }
-        else if(end/1000/60 >= 1 && end/1000/60 < 60){
-            Integer x = Math.toIntExact(end / 1000 / 60);
-            return x.toString()+" min";
-        }
-        else if(end/1000/60/60 >= 1 && end/1000/60/60 < 24){
-            Integer x = Math.toIntExact(end / 1000 / 60 / 60);
-            return x.toString() + " hour";
-        }
-        else if(end/1000/60/60/24 >= 1){
-            Integer x = Math.toIntExact(end / 1000 / 60 / 60 / 24);
-            return x.toString() + " day";
-        }
-        return "0 min";
+        if (end / 60000 < 60)
+            return (end / 60000) + " min";
+        if (end / 3600000 < 24)
+            return (end / 3600000) + " hour";
+        return (end / 86400000) + " day";
     }
 }

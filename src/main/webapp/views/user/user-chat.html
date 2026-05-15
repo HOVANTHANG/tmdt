@@ -259,14 +259,18 @@
 
         .chat-message-area {
             flex: 1;
-            padding: 18px;
+            padding: 16px 20px;
             overflow-y: auto;
+            overflow-x: hidden;
             display: none;
+            background: #f7f7f7;
         }
 
         .msg-row {
             display: flex;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            align-items: flex-end;
+            gap: 8px;
         }
 
         .msg-row.mine {
@@ -274,18 +278,22 @@
         }
 
         .msg-bubble {
-            max-width: 70%;
-            padding: 9px 13px;
+            max-width: 60%;
+            padding: 9px 14px;
             background: #fff;
-            border-radius: 14px;
+            border-radius: 18px 18px 18px 4px;
             color: #222;
             font-size: 14px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            line-height: 1.5;
+            word-break: break-word;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,.07);
         }
 
         .msg-row.mine .msg-bubble {
             background: #ee4d2d;
             color: #fff;
+            border-radius: 18px 18px 4px 18px;
         }
 
         .chat-input-area {
@@ -333,8 +341,8 @@
 
                 <div class="chat-search-box">
                     <input id="searchRoomInput" onkeyup="filterRooms()" class="chat-search"
-                        placeholder="Tìm theo tên shop">
-                    <button class="chat-filter">Tất cả <i class="fa fa-angle-down"></i></button>
+                        placeholder="TÃ¬m theo tÃªn shop">
+                    <button class="chat-filter">Táº¥t cáº£ <i class="fa fa-angle-down"></i></button>
                 </div>
 
                 <div class="room-list" id="roomList"></div>
@@ -344,7 +352,7 @@
                 <div class="chat-main-header">
                     <div>
                         <div class="chat-shop-name" id="chatShopName">Shopee Chat</div>
-                        <div class="chat-shop-status" id="chatShopStatus">Chọn shop để bắt đầu nhắn tin</div>
+                        <div class="chat-shop-status" id="chatShopStatus">Chá»n shop Ä‘á»ƒ báº¯t Ä‘áº§u nháº¯n tin</div>
                     </div>
 
                     <div class="chat-actions">
@@ -355,218 +363,186 @@
 
                 <div class="chat-empty" id="chatEmpty">
                     <div class="chat-empty-icon"></div>
-                    <h4>Chào mừng bạn đến với Shop Chat</h4>
-                    <p>Hãy chọn một shop để bắt đầu trò chuyện</p>
+                    <h4>ChÃ o má»«ng báº¡n Ä‘áº¿n vá»›i Shop Chat</h4>
+                    <p>HÃ£y chá»n má»™t shop Ä‘á»ƒ báº¯t Ä‘áº§u trÃ² chuyá»‡n</p>
                 </div>
 
                 <div class="chat-message-area" id="chatMessages"></div>
 
                 <div class="chat-input-area" id="chatInputArea">
-                    <input id="chatInput" onkeydown="handleEnterSend(event)" placeholder="Nhập tin nhắn...">
-                    <button onclick="sendMessage()">Gửi</button>
+                    <input id="chatInput" onkeydown="handleEnterSend(event)" placeholder="Nháº­p tin nháº¯n...">
+                    <button onclick="sendMessage()">Gá»­i</button>
                 </div>
             </div>
 
         </div>
     </div>
 
+    <!-- SockJS + STOMP (webjars) -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script>
         const BASE_URL = "http://localhost:8080";
+        const token    = localStorage.getItem("token");
 
-        let allRooms = [];
-        let selectedShopId = null;
-        let chatInterval = null;
+        let stompClient    = null;
+        let myId           = null;
+        let allRooms       = [];
+        let selectedRoom   = null; // { roomId, shopId, shopName, sellerUserId }
 
-        window.onload = function () {
+        /* â”€â”€ Init â”€â”€ */
+        window.onload = async function () {
+            if (!token) { alert("Báº¡n cáº§n Ä‘Äƒng nháº­p"); window.location.href = "/dangnhap"; return; }
+            const info = await apiFetch("/api/chat/user/current-info");
+            if (!info) return;
+            myId = info.id;
+            connectStomp();
             loadUserRooms();
         };
 
-        function getToken() {
-            return localStorage.getItem("token");
+        /* â”€â”€ STOMP: subscribe /topic/chat/{myId} â”€â”€ */
+        function connectStomp() {
+            const sock  = new SockJS(BASE_URL + "/hello");
+            stompClient = Stomp.over(sock);
+            stompClient.debug = null;
+            stompClient.connect({}, function () {
+                stompClient.subscribe("/topic/chat/" + myId, function (frame) {
+                    const msg = JSON.parse(frame.body);
+                    if (selectedRoom && msg.roomId === selectedRoom.roomId) {
+                        appendMsg(msg.content, false);
+                    } else {
+                        highlightRoom(msg.roomId);
+                        if (typeof toastr !== "undefined") toastr.info("ðŸ’¬ Shop vá»«a gá»­i tin nháº¯n!");
+                    }
+                });
+            });
         }
 
+        /* â”€â”€ Rooms â”€â”€ */
         async function loadUserRooms() {
-            const token = getToken();
-
-            if (!token) {
-                alert("Bạn cần đăng nhập");
-                window.location.href = "/dangnhap";
-                return;
-            }
-
-            const res = await fetch(`${BASE_URL}/api/chat/user/rooms`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-
-            if (!res.ok) {
-                document.getElementById("roomList").innerHTML = `
-                    <div style="padding:16px;color:#777;">Không tải được danh sách chat</div>
-                `;
-                return;
-            }
-
-            allRooms = await res.json();
-
+            allRooms = await apiFetch("/api/chat/user/rooms") || [];
             document.getElementById("chatCount").innerText = `(${allRooms.length})`;
-
             renderRoomList(allRooms);
         }
 
         function renderRoomList(rooms) {
             const box = document.getElementById("roomList");
-
             if (!rooms || rooms.length === 0) {
-                box.innerHTML = `
-                    <div style="padding:16px;color:#777;">Bạn chưa nhắn tin với shop nào</div>
-                `;
+                box.innerHTML = `<div style="padding:16px;color:#777;">Báº¡n chÆ°a nháº¯n tin vá»›i shop nÃ o</div>`;
                 return;
             }
-
             let html = "";
-
-            rooms.forEach(room => {
-                html += `
-                    <div class="room-item" id="room-${room.shopId}" onclick="selectRoom(${room.shopId}, '${escapeJs(room.shopName)}')">
-                        <img class="room-avatar"
-                             src="${room.shopAvatar || 'image/logo.ico'}"
-                             onerror="this.src='image/logo.ico'">
-
-                        <div class="room-info">
-                            <div class="room-top">
-                                <div class="room-name">${escapeHtml(room.shopName || "Shop")}</div>
-                                <div class="room-date">Hôm nay</div>
-                            </div>
-                            <div class="room-last">Nhấn để xem tin nhắn...</div>
+            rooms.forEach(r => {
+                html += `<div class="room-item" id="room-${r.roomId}" onclick="selectRoom(${r.roomId})">
+                    <img class="room-avatar" src="${r.shopAvatar || 'image/logo.ico'}" onerror="this.src='image/logo.ico'">
+                    <div class="room-info">
+                        <div class="room-top">
+                            <div class="room-name">${escHtml(r.shopName || "Shop")}</div>
                         </div>
+                        <div class="room-last" id="last-${r.roomId}">Nháº¥n Ä‘á»ƒ xem tin nháº¯n...</div>
                     </div>
-                `;
+                </div>`;
             });
-
             box.innerHTML = html;
         }
 
         function filterRooms() {
-            const keyword = document.getElementById("searchRoomInput").value.toLowerCase();
-
-            const filtered = allRooms.filter(room =>
-                String(room.shopName || "").toLowerCase().includes(keyword)
-            );
-
+            const kw = document.getElementById("searchRoomInput").value.toLowerCase();
+            const filtered = allRooms.filter(r => (r.shopName || "").toLowerCase().includes(kw));
             renderRoomList(filtered);
         }
 
-        async function selectRoom(shopId, shopName) {
-            selectedShopId = shopId;
+        function highlightRoom(roomId) {
+            const last = document.getElementById("last-" + roomId);
+            if (last) { last.style.fontWeight = "700"; last.style.color = "#ee4d2d"; }
+            if (!document.getElementById("room-" + roomId)) loadUserRooms();
+        }
 
-            document.querySelectorAll(".room-item").forEach(item => {
-                item.classList.remove("active");
-            });
+        /* â”€â”€ Select room â”€â”€ */
+        async function selectRoom(roomId) {
+            selectedRoom = allRooms.find(r => r.roomId === roomId);
+            if (!selectedRoom) return;
 
-            const active = document.getElementById("room-" + shopId);
-            if (active) active.classList.add("active");
+            document.querySelectorAll(".room-item").forEach(e => e.classList.remove("active"));
+            const el = document.getElementById("room-" + roomId);
+            if (el) el.classList.add("active");
 
-            document.getElementById("chatShopName").innerText = shopName || "Shop";
-            document.getElementById("chatShopStatus").innerText = "Đang hoạt động";
-
-            document.getElementById("chatEmpty").style.display = "none";
-            document.getElementById("chatMessages").style.display = "block";
+            document.getElementById("chatShopName").innerText = selectedRoom.shopName || "Shop";
+            document.getElementById("chatShopStatus").innerText = "Äang hoáº¡t Ä‘á»™ng";
+            document.getElementById("chatEmpty").style.display     = "none";
+            document.getElementById("chatMessages").style.display  = "block";
             document.getElementById("chatInputArea").style.display = "flex";
 
+            const last = document.getElementById("last-" + roomId);
+            if (last) { last.style.fontWeight = ""; last.style.color = ""; }
+
             await loadMessages();
-
-            if (chatInterval) clearInterval(chatInterval);
-            chatInterval = setInterval(loadMessages, 3000);
         }
 
+        /* â”€â”€ Messages â”€â”€ */
         async function loadMessages() {
-            if (!selectedShopId) return;
-
-            const token = getToken();
-
-            const res = await fetch(`${BASE_URL}/api/chat/user/messages?shopId=${selectedShopId}`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-
-            if (!res.ok) return;
-
-            const messages = await res.json();
-
-            renderMessages(messages);
-        }
-
-        function renderMessages(messages) {
-            const box = document.getElementById("chatMessages");
-
-            let html = "";
-
-            messages.forEach(msg => {
-                html += `
-                    <div class="msg-row ${msg.mine ? 'mine' : ''}">
-                        <div class="msg-bubble">${escapeHtml(msg.content)}</div>
-                    </div>
-                `;
-            });
-
-            box.innerHTML = html;
+            if (!selectedRoom) return;
+            const msgs = await apiFetch(`/api/chat/user/messages?shopId=${selectedRoom.shopId}`) || [];
+            const box  = document.getElementById("chatMessages");
+            box.innerHTML = "";
+            msgs.forEach(m => appendMsg(m.content, m.mine, false));
             box.scrollTop = box.scrollHeight;
         }
 
+        function appendMsg(content, mine, scroll = true) {
+            const box = document.getElementById("chatMessages");
+            const row = document.createElement("div");
+            row.className = "msg-row" + (mine ? " mine" : "");
+            row.innerHTML = `<div class="msg-bubble">${escHtml(content)}</div>`;
+            box.appendChild(row);
+            if (scroll) box.scrollTop = box.scrollHeight;
+        }
+
+        /* â”€â”€ Send (REST POST + server push WS notification to seller) â”€â”€ */
         async function sendMessage() {
-            const input = document.getElementById("chatInput");
+            const input   = document.getElementById("chatInput");
             const content = input.value.trim();
+            if (!content || !selectedRoom) return;
 
-            if (!content || !selectedShopId) return;
+            const body = {
+                shopId: selectedRoom.shopId,
+                content: content,
+                sellerUserId: selectedRoom.sellerUserId  // server push WS Ä‘áº¿n seller
+            };
 
-            const token = getToken();
-
-            const res = await fetch(`${BASE_URL}/api/chat/user/send`, {
+            const res = await fetch(BASE_URL + "/api/chat/user/send", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + token
                 },
-                body: JSON.stringify({
-                    shopId: selectedShopId,
-                    content: content
-                })
+                body: JSON.stringify(body)
             });
 
             if (res.ok) {
+                appendMsg(content, true);
                 input.value = "";
-                loadMessages();
-                loadUserRooms();
+                const last = document.getElementById("last-" + selectedRoom.roomId);
+                if (last) { last.textContent = content; last.style.fontWeight = ""; }
             }
         }
 
         function reloadCurrentChat() {
-            if (selectedShopId) {
-                loadMessages();
-            } else {
-                loadUserRooms();
-            }
+            if (selectedRoom) loadMessages(); else loadUserRooms();
         }
 
-        function handleEnterSend(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
-        }
+        function handleEnterSend(e) { if (e.key === "Enter") sendMessage(); }
 
-        function escapeHtml(text) {
-            return String(text || "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
+        /* â”€â”€ Helpers â”€â”€ */
+        async function apiFetch(path) {
+            try {
+                const r = await fetch(BASE_URL + path, { headers: { "Authorization": "Bearer " + token } });
+                return r.ok ? await r.json() : null;
+            } catch { return null; }
         }
-
-        function escapeJs(text) {
-            return String(text || "").replace(/'/g, "\\'");
+        function escHtml(t) {
+            return String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
         }
     </script>
 </body>
-
 </html>

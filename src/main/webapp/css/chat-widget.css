@@ -11,6 +11,7 @@
     font-size: 24px;
     z-index: 9999;
     box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+    cursor: pointer;
 }
 
 .chat-float-btn span {
@@ -25,6 +26,7 @@
     border: 1px solid #ee4d2d;
     font-size: 12px;
     line-height: 20px;
+    text-align: center;
 }
 
 .chat-popup {
@@ -39,18 +41,22 @@
     display: none;
     grid-template-columns: 260px 1fr;
     box-shadow: 0 10px 35px rgba(0, 0, 0, .25);
-    border-radius: 6px;
+    border-radius: 8px;
     overflow: hidden;
 }
 
+/* ── Sidebar ── */
 .chat-sidebar {
     border-right: 1px solid #eee;
     background: white;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
 .chat-sidebar-header {
+    flex-shrink: 0;
     height: 48px;
     padding: 0 14px;
     border-bottom: 1px solid #eee;
@@ -66,6 +72,7 @@
 }
 
 .chat-search {
+    flex-shrink: 0;
     padding: 10px;
     border-bottom: 1px solid #f1f1f1;
 }
@@ -77,11 +84,14 @@
     border-radius: 4px;
     padding: 0 10px;
     outline: none;
+    font-size: 13px;
+    box-sizing: border-box;
 }
 
 .chat-room-list {
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
 }
 
 .chat-room-item {
@@ -90,6 +100,7 @@
     padding: 12px;
     border-bottom: 1px solid #f6f6f6;
     cursor: pointer;
+    align-items: center;
 }
 
 .chat-room-item:hover,
@@ -103,11 +114,13 @@
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid #eee;
+    flex-shrink: 0;
 }
 
 .chat-room-info {
     flex: 1;
     overflow: hidden;
+    min-width: 0;
 }
 
 .chat-room-name {
@@ -128,13 +141,18 @@
     text-overflow: ellipsis;
 }
 
+/* ── Main panel ── */
 .chat-main {
     display: flex;
     flex-direction: column;
     background: #f7f7f7;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .chat-main-header {
+    flex-shrink: 0;
     height: 48px;
     background: #fff;
     border-bottom: 1px solid #eee;
@@ -146,12 +164,22 @@
 
 .chat-main-title {
     font-weight: 700;
+    font-size: 15px;
+    color: #222;
 }
 
 .chat-main-close {
     border: none;
     background: transparent;
-    font-size: 22px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+    padding: 4px 8px;
+}
+
+.chat-main-close:hover {
+    color: #ee4d2d;
 }
 
 .chat-empty {
@@ -161,18 +189,24 @@
     justify-content: center;
     color: #999;
     text-align: center;
+    font-size: 14px;
+    min-height: 0;
 }
 
+/* ── Messages ── */
 .chat-message-area {
     flex: 1;
-    padding: 14px;
+    min-height: 0;          /* CRITICAL: allow flex shrink below content */
+    padding: 14px 16px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: none;
 }
 
 .chat-msg-row {
     display: flex;
     margin-bottom: 10px;
+    align-items: flex-end;
 }
 
 .chat-msg-row.mine {
@@ -180,25 +214,33 @@
 }
 
 .chat-msg-bubble {
-    max-width: 75%;
+    max-width: 65%;
     padding: 9px 13px;
-    border-radius: 14px;
+    border-radius: 18px 18px 18px 4px;
     background: white;
     color: #222;
     font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+    word-wrap: break-word;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 
 .chat-msg-row.mine .chat-msg-bubble {
     background: #ee4d2d;
     color: white;
+    border-radius: 18px 18px 4px 18px;
 }
 
+/* ── Input ── */
 .chat-input-area {
+    flex-shrink: 0;         /* CRITICAL: never compress input bar */
     display: none;
     background: white;
     border-top: 1px solid #eee;
-    padding: 10px;
+    padding: 10px 12px;
     gap: 8px;
+    align-items: center;    /* vertical center button + input */
 }
 
 .chat-input-area input {
@@ -208,17 +250,33 @@
     border-radius: 20px;
     padding: 0 14px;
     outline: none;
+    font-size: 14px;
+    min-width: 0;
+}
+
+.chat-input-area input:focus {
+    border-color: #ee4d2d;
 }
 
 .chat-input-area button {
+    flex-shrink: 0;
     border: none;
     background: #ee4d2d;
     color: white;
-    padding: 0 16px;
+    padding: 0 18px;
+    height: 38px;
     border-radius: 20px;
     font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
+.chat-input-area button:hover {
+    opacity: 0.88;
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
     .chat-popup {
         right: 10px;
@@ -230,6 +288,6 @@
     }
 
     .chat-sidebar {
-        height: 220px;
+        height: 200px;
     }
 }

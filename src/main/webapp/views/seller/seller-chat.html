@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Chat khách hàng</title>
+    <title>Chat khÃ¡ch hÃ ng</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link href="css/styles.css" rel="stylesheet" />
@@ -23,17 +23,27 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        /* ── Override seller-modern.css padding on main for chat page ── */
+        #layoutSidenav_content main.seller-chat-page {
+            padding: 0 !important;
+        }
+
         body {
             background: #f0f4f8;
             font-family: 'Inter', 'Segoe UI', sans-serif;
         }
 
         .seller-chat-page {
-            padding: 24px;
+            padding: 0 !important;
+            height: calc(100vh - 57px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .seller-chat-wrapper {
-            height: calc(100vh - 90px);
+            flex: 1;
+            margin: 16px;
             background: #fff;
             border-radius: 18px;
             display: grid;
@@ -41,6 +51,7 @@
             overflow: hidden;
             box-shadow: 0 14px 40px rgba(15, 23, 42, .09);
             border: 1px solid #e2e8f0;
+            min-height: 0;
         }
 
         .chat-left {
@@ -65,7 +76,7 @@
         }
 
         .chat-left-header span {
-            color: rgba(255,255,255,.7);
+            color: rgba(255, 255, 255, .7);
             font-size: 12px;
         }
 
@@ -86,6 +97,7 @@
             font-family: 'Inter', sans-serif;
             transition: border-color .2s;
         }
+
         .chat-search-box input:focus {
             border-color: #14b8a6;
         }
@@ -107,8 +119,9 @@
         .room-item:hover {
             background: #f0fdfa;
         }
+
         .room-item.active {
-            background: rgba(13,148,136,.08);
+            background: rgba(13, 148, 136, .08);
             border-left: 3px solid #0d9488;
         }
 
@@ -136,6 +149,8 @@
             display: flex;
             flex-direction: column;
             background: #f8fafc;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .chat-panel-header {
@@ -161,15 +176,20 @@
         }
 
         .chat-panel-avatar {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: rgba(13,148,136,.15);
-            display: flex; align-items: center; justify-content: center;
-            color: #0d9488; font-size: 14px;
+            background: rgba(13, 148, 136, .15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0d9488;
+            font-size: 14px;
         }
 
         .seller-chat-body {
             flex: 1;
+            min-height: 0;
             padding: 20px 24px;
             overflow-y: auto;
         }
@@ -196,6 +216,8 @@
         .msg-row {
             display: flex;
             margin-bottom: 10px;
+            align-items: flex-end;
+            gap: 8px;
         }
 
         .msg-row.mine {
@@ -211,6 +233,8 @@
             font-size: 13.5px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
             line-height: 1.5;
+            word-break: break-word;
+            word-wrap: break-word;
         }
 
         .msg-row.mine .msg-bubble {
@@ -218,6 +242,7 @@
             color: #fff;
             border-radius: 16px 16px 4px 16px;
         }
+
 
         .seller-chat-footer {
             background: #fff;
@@ -239,6 +264,7 @@
             font-family: 'Inter', sans-serif;
             transition: border-color .2s;
         }
+
         .seller-chat-footer input:focus {
             border-color: #14b8a6;
         }
@@ -256,6 +282,7 @@
             cursor: pointer;
             transition: opacity .2s;
         }
+
         .seller-chat-footer button:hover {
             opacity: .88;
         }
@@ -274,7 +301,7 @@
                 <div class="seller-chat-wrapper">
                     <div class="chat-left">
                         <div class="chat-left-header">
-                            <h4>Chat khách hàng</h4>
+                            <h4>Chat với khách hàng</h4>
                             <span id="roomCount">0 cuộc trò chuyện</span>
                         </div>
 
@@ -289,7 +316,7 @@
                         <div class="chat-panel-header">
                             <div class="chat-panel-avatar"><i class="fas fa-user"></i></div>
                             <div>
-                                <h5 id="chatTitle">Chọn khách hàng để chat</h5>
+                                <h5 id="chatTitle">Chọn một khách hàng bên trái để bắt đầu trò chuyện</h5>
                                 <span id="chatSubTitle">Tin nhắn với khách hàng sẽ hiển thị tại đây</span>
                             </div>
                         </div>
@@ -311,146 +338,166 @@
         </div>
     </div>
 
+    <!-- SockJS + STOMP (webjars) -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script>
         const BASE_URL = "http://localhost:8080";
+        // token is already declared globally by menu1.js
 
-        let selectedRoomId = null;
-        let sellerInterval = null;
+        let stompClient = null;
+        let myId = null;
+        let rooms = [];
+        let selectedRoom = null; // { roomId, userId, username }
 
-        window.onload = function () {
+        /* Init */
+        window.onload = async function () {
+            const info = await apiFetch("/api/chat/seller/current-info");
+            if (!info) { alert("Vui long dang nhap"); return; }
+            myId = info.id;
+            console.log("[Seller Chat] myId =", myId);
+            connectStomp();
             loadSellerRooms();
         };
 
+        /* STOMP */
+        function connectStomp() {
+            const sock = new SockJS(BASE_URL + "/hello");
+            stompClient = Stomp.over(sock);
+            stompClient.debug = null;
+            stompClient.connect({}, function () {
+                const topic = "/topic/chat/" + myId;
+                console.log("[Seller Chat] subscribed:", topic);
+                stompClient.subscribe(topic, function (frame) {
+                    console.log("[Seller Chat] received:", frame.body);
+                    const msg = JSON.parse(frame.body);
+                    const incomingRoomId = Number(msg.roomId);
+                    const currentRoomId = selectedRoom ? Number(selectedRoom.roomId) : null;
+                    if (currentRoomId && incomingRoomId === currentRoomId) {
+                        appendMsg(msg.content, false);
+                    } else {
+                        markUnread(incomingRoomId);
+                        showToast("Co tin nhan moi tu khach hang!");
+                    }
+                });
+            }, function (err) { console.error("[Seller Chat] STOMP error:", err); });
+        }
+
+        /* â”€â”€ Rooms â”€â”€ */
         async function loadSellerRooms() {
-            const token = localStorage.getItem("token");
-
-            const res = await fetch(`${BASE_URL}/api/chat/seller/rooms`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-
-            if (!res.ok) {
-                alert("Không tải được danh sách chat");
-                return;
-            }
-
-            const rooms = await res.json();
-
+            rooms = await apiFetch("/api/chat/seller/rooms") || [];
+            document.getElementById("roomCount").textContent = rooms.length + " cuộc trò chuyện";
             let html = "";
-
-            rooms.forEach(room => {
-                html += `
-        <div class="room-item" id="room-${room.roomId}"
-             onclick="selectRoom(${room.roomId}, '${escapeJs(room.username || 'Khách hàng')}')">
-
-            <img class="room-avatar"
-                 src="/image/user.jpg">
-
-            <div class="room-info">
-                <div class="room-name">${room.username || 'Khách hàng'}</div>
-                <div class="room-last">Nhấn để xem tin nhắn...</div>
-            </div>
-        </div>
-    `;
+            rooms.forEach(r => {
+                html += `<div class="room-item" id="room-${r.roomId}"
+                              onclick="selectRoom(${r.roomId})">
+                    <img class="room-avatar" src="/image/user.jpg">
+                    <div class="room-info">
+                        <div class="room-name">${escHtml(r.username || "Khách hàng")}</div>
+                        <div class="room-last" id="last-${r.roomId}">Nhấn để xem tin nhắn</div>
+                    </div>
+                </div>`;
             });
-
             document.getElementById("roomList").innerHTML =
                 html || `<div class="room-item">Chưa có khách hàng nhắn tin</div>`;
         }
 
-        function selectRoom(roomId, username) {
-            selectedRoomId = roomId;
-
-            document.querySelectorAll(".room-item").forEach(item => {
-                item.classList.remove("active");
+        function filterRooms() {
+            const kw = document.getElementById("searchRoomInput").value.toLowerCase();
+            document.querySelectorAll(".room-item").forEach(el => {
+                const name = el.querySelector(".room-name")?.textContent.toLowerCase() || "";
+                el.style.display = name.includes(kw) ? "" : "none";
             });
-
-            const active = document.getElementById("room-" + roomId);
-            if (active) active.classList.add("active");
-
-            document.getElementById("chatTitle").innerText = username;
-
-            loadSellerMessages();
-
-            if (sellerInterval) clearInterval(sellerInterval);
-            sellerInterval = setInterval(loadSellerMessages, 3000);
         }
 
-        async function loadSellerMessages() {
-            if (!selectedRoomId) return;
+        function markUnread(roomId) {
+            const el = document.getElementById("room-" + roomId);
+            if (el) el.style.borderLeft = "3px solid #0d9488";
+            if (!el) loadSellerRooms();
+        }
 
-            const token = localStorage.getItem("token");
+        /* â”€â”€ Select room â”€â”€ */
+        async function selectRoom(roomId) {
+            selectedRoom = rooms.find(r => r.roomId === roomId);
+            if (!selectedRoom) return;
 
-            const res = await fetch(`${BASE_URL}/api/chat/seller/messages?roomId=${selectedRoomId}`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
+            document.querySelectorAll(".room-item").forEach(e => e.classList.remove("active"));
+            const el = document.getElementById("room-" + roomId);
+            if (el) { el.classList.add("active"); el.style.borderLeft = ""; }
 
-            if (!res.ok) return;
+            document.getElementById("chatTitle").innerText = selectedRoom.username || "Khách hàng";
+            document.getElementById("chatSubTitle").innerText = "Đang hoạt động";
 
-            const messages = await res.json();
+            await loadMessages();
+        }
 
-            let html = "";
-
-            messages.forEach(msg => {
-                html += `
-        <div class="msg-row ${msg.mine ? 'mine' : ''}">
-            <div class="msg-bubble">
-                ${escapeHtml(msg.content)}
-            </div>
-        </div>
-    `;
-            });
-
+        /* â”€â”€ Messages â”€â”€ */
+        async function loadMessages() {
+            if (!selectedRoom) return;
+            const msgs = await apiFetch(`/api/chat/seller/messages?roomId=${selectedRoom.roomId}`) || [];
             const box = document.getElementById("sellerChatMessages");
-            box.innerHTML = html;
+            box.innerHTML = "";
+            msgs.forEach(m => appendMsg(m.content, m.mine, false));
             box.scrollTop = box.scrollHeight;
         }
 
-        async function sellerSendMessage() {
-            if (!selectedRoomId) {
-                alert("Vui lòng chọn khách hàng");
-                return;
-            }
+        function appendMsg(content, mine, scroll = true) {
+            const box = document.getElementById("sellerChatMessages");
+            const row = document.createElement("div");
+            row.className = "msg-row" + (mine ? " mine" : "");
+            row.innerHTML = `<div class="msg-bubble">${escHtml(content)}</div>`;
+            box.appendChild(row);
+            if (scroll) box.scrollTop = box.scrollHeight;
+        }
 
+        /* â”€â”€ Send (REST POST + server push WS notification) â”€â”€ */
+        async function sellerSendMessage() {
+            if (!selectedRoom) { alert("Chọn khách hàng trước"); return; }
             const input = document.getElementById("sellerChatInput");
             const content = input.value.trim();
-
             if (!content) return;
 
-            const token = localStorage.getItem("token");
+            const body = {
+                roomId: selectedRoom.roomId,
+                content: content,
+                userId: selectedRoom.userId   // server sẽ push WS notification đến user này
+            };
 
-            const res = await fetch(`${BASE_URL}/api/chat/seller/send`, {
+            const res = await fetch(BASE_URL + "/api/chat/seller/send", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + token
                 },
-                body: JSON.stringify({
-                    roomId: selectedRoomId,
-                    content: content
-                })
+                body: JSON.stringify(body)
             });
 
             if (res.ok) {
+                appendMsg(content, true);
                 input.value = "";
-                loadSellerMessages();
+                const last = document.getElementById("last-" + selectedRoom.roomId);
+                if (last) last.textContent = content;
             } else {
                 alert("Không gửi được tin nhắn");
             }
         }
 
-        function escapeJs(str) {
-            return String(str || "").replace(/'/g, "\\'");
+        function handleEnter(e) { if (e.key === "Enter") sellerSendMessage(); }
+
+        /* â”€â”€ Toast â”€â”€ */
+        function showToast(msg) {
+            if (typeof toastr !== "undefined") toastr.info(msg);
         }
 
-        function escapeHtml(text) {
-            return String(text || "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
+        /* â”€â”€ Helpers â”€â”€ */
+        async function apiFetch(path) {
+            try {
+                const r = await fetch(BASE_URL + path, { headers: { "Authorization": "Bearer " + token } });
+                return r.ok ? await r.json() : null;
+            } catch { return null; }
+        }
+        function escHtml(t) {
+            return String(t || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>

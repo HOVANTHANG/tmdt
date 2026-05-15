@@ -92,4 +92,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
                         ")")
         Page<Invoice> searchBySellerShop(Long shopId, String q, Pageable pageable);
 
+        @Query(value = "SELECT COALESCE(MAX(i.id), 0) FROM invoice i " +
+                        "WHERE EXISTS (SELECT 1 FROM invoice_detail d " +
+                        "  JOIN product_variant pv ON d.product_variant_id = pv.id " +
+                        "  JOIN product p ON pv.product_id = p.id " +
+                        "  WHERE d.invoice_id = i.id AND p.shop_id = ?1)", nativeQuery = true)
+        Long findLatestIdByShopId(Long shopId);
+
 }

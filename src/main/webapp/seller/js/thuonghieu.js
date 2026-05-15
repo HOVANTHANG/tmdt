@@ -19,8 +19,14 @@ async function loadTrademark(page, param) {
                     <td>${list[i].id}</td>
                     <td>${list[i].name}</td>
                     <td class="sticky-col">
-                        <i onclick="deleteTrademark(${list[i].id})" class="fa fa-trash-alt iconaction"></i>
-                        <a data-bs-toggle="modal" data-bs-target="#addtk" href="#" onclick="loadATrademark(${list[i].id})"><i class="fa fa-edit iconaction"></i></a>
+                        <div class="act-group">
+                            <button onclick="deleteTrademark(${list[i].id})" class="btn-act btn-act-red" data-tip="Xóa">
+                                <i class="fa fa-trash-alt"></i>
+                            </button>
+                            <a class="btn-act btn-act-teal" data-bs-toggle="modal" data-bs-target="#addtk" href="#" onclick="loadATrademark(${list[i].id})" data-tip="Sửa">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>`
     }

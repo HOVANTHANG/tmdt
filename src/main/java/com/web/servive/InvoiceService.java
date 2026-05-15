@@ -45,4 +45,6 @@ public interface InvoiceService {
 
         Page<Invoice> searchInvoiceForSeller(String q, Pageable pageable);
 
+        Long getLatestIdForSeller();
+
 }

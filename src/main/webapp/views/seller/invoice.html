@@ -36,11 +36,127 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script src="/seller/js/menu1.js"></script>
     <script src="/seller/js/invoice.js"></script>
+
+    <style>
+        /* ── Invoice table: responsive scroll wrapper ── */
+        .invoice-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #invoiceTable {
+            min-width: 960px;
+            width: 100%;
+            table-layout: auto;
+        }
+
+        /* Địa chỉ: thu nhỏ, cắt chữ */
+        #invoiceTable td:nth-child(3),
+        #invoiceTable th:nth-child(3) {
+            max-width: 160px;
+            min-width: 120px;
+        }
+        #invoiceTable td:nth-child(3) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Hành động: đủ rộng cho 3 nút */
+        #invoiceTable td:nth-child(8),
+        #invoiceTable th:nth-child(8) {
+            width: 130px;
+            min-width: 130px;
+            white-space: nowrap;
+        }
+        #invoiceTable td:nth-child(8) .act-group {
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+
+        /* Các cột số: căn phải */
+        #invoiceTable td:nth-child(4),
+        #invoiceTable td:nth-child(5) {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .lb-form {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--tx2);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* ── New order notification bell ── */
+        .notif-bell-wrap {
+            position: relative;
+            cursor: pointer;
+        }
+        .notif-bell {
+            font-size: 22px;
+            color: rgba(255,255,255,.85);
+            transition: color .2s;
+        }
+        .notif-bell.ringing {
+            animation: bell-ring .6s ease infinite;
+            color: #fde68a;
+        }
+        @keyframes bell-ring {
+            0%,100% { transform: rotate(0); }
+            20%      { transform: rotate(20deg); }
+            40%      { transform: rotate(-18deg); }
+            60%      { transform: rotate(14deg); }
+            80%      { transform: rotate(-10deg); }
+        }
+        .notif-badge {
+            position: absolute;
+            top: -7px; right: -9px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 20px;
+            padding: 1px 5px;
+            min-width: 18px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,.25);
+            animation: pop-in .3s cubic-bezier(.34,1.56,.64,1);
+        }
+        @keyframes pop-in {
+            from { transform: scale(0); }
+            to   { transform: scale(1); }
+        }
+        .notif-status {
+            font-size: 11.5px;
+            color: rgba(255,255,255,.65);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* ── New order row highlight ── */
+        @keyframes new-order-glow {
+            0%   { background: rgba(45,212,191,.30); }
+            60%  { background: rgba(45,212,191,.12); }
+            100% { background: transparent; }
+        }
+        #listinvoice tr.new-order-row td {
+            animation: new-order-glow 3s ease forwards;
+            font-weight: 600;
+        }
+        #listinvoice tr.new-order-row td:first-child {
+            border-left: 4px solid #2dd4bf !important;
+        }
+    </style>
     <script>
         window.onload = function () {
             loadAllStatus();
             loadInvoice(0);
             loadStatusUpdate();
+            initPolling();
         }
     </script>
 </head>
@@ -57,6 +173,16 @@
                     <div>
                         <h4>Quản lý đơn hàng</h4>
                         <p>Xem và cập nhật trạng thái các đơn hàng trong shop</p>
+                    </div>
+                    <div class="ptc-actions ms-auto d-flex align-items-center gap-3">
+                        <div class="notif-bell-wrap" title="Thông báo đơn hàng mới">
+                            <i class="fas fa-bell notif-bell" id="notifBell"></i>
+                            <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+                        </div>
+                        <span class="notif-status" id="notifStatus">
+                            <i class="fas fa-circle-notch fa-spin me-1" style="font-size:11px"></i>
+                            Đang theo dõi...
+                        </span>
                     </div>
                 </div>
 
@@ -97,34 +223,36 @@
                         <div class="headertable">
                             <div class="divsearchtb">
                                 <label>Sắp xếp: </label>
-                                <select onchange="loadInvoice(0)" id="sort" class="form-control" style="width:auto;display:inline-block">
-                                    <option value="id,asc">Cũ nhất</option>
-                                    <option value="id,desc">Mới nhất</option>
+                                <select onchange="loadInvoice(0)" id="sort" class="form-control"
+                                    style="width:auto;display:inline-block">
+                                    <option value="asc">Cũ nhất</option>
+                                    <option value="desc" selected>Mới nhất</option>
                                 </select>
                                 <input id="search" class="inputsearchtable"
-                                    placeholder="Tìm IMEI / SĐT / Tên khách hàng"
-                                    style="width:280px">
+                                    placeholder="Tìm số điện thoại / Tên khách hàng" style="width:280px">
                                 <button onclick="searchInvoice(0)" class="btn btn-primary btn-sm">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </div>
-                        <table class="table table-striped tablefix">
+                        <div class="invoice-table-wrap">
+                        <table class="table table-striped" id="invoiceTable">
                             <thead class="thead-tablefix">
                                 <tr>
-                                    <th>Mã đơn hàng</th>
-                                    <th class="floatr">Ngày đặt</th>
+                                    <th>Mã đơn</th>
+                                    <th>Ngày đặt</th>
                                     <th>Địa chỉ</th>
-                                    <th class="floatr">Giá trị<br>đơn hàng</th>
-                                    <th class="floatr">Phí ship</th>
-                                    <th>Trạng thái thanh toán</th>
-                                    <th class="floatr">Trạng thái vận chuyển</th>
-                                    <th class="sticky-col">Hành động</th>
+                                    <th style="text-align:right">Giá trị</th>
+                                    <th style="text-align:right">Phí ship</th>
+                                    <th>TT thanh toán</th>
+                                    <th>TT vận chuyển</th>
+                                    <th style="text-align:center">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody id="listinvoice">
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <nav aria-label="Page navigation example">
                         <ul class="pagination" id="pageable">
@@ -209,7 +337,6 @@
                             <th>Đơn giá</th>
                             <th>Số lượng</th>
                             <th>Tổng</th>
-                            <th>Imei</th>
                         </tr>
                     </thead>
                     <tbody id="listDetailinvoice">

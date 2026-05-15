@@ -31,14 +31,14 @@ function loadMenu() {
             <span class="topbar-divider"></span>
 
             <a href="/baiviet">
-                <i class="fa fa-newspaper-o"></i>
+                <i class="fas fa-newspaper"></i>
                 Tin công nghệ
             </a>
 
             <span class="topbar-divider"></span>
 
             <a href="/diachi">
-                <i class="fa fa-map-marker"></i>
+                <i class="fas fa-map-marker-alt"></i>
                 Hệ thống cửa hàng
             </a>
 
@@ -47,7 +47,7 @@ function loadMenu() {
         <div class="topbar-right">
 
             <a href="timdonhang">
-                <i class="fa fa-truck"></i>
+                <i class="fas fa-shipping-fast"></i>
                 Tra cứu đơn hàng
             </a>
             <span class="topbar-divider"></span>
@@ -89,7 +89,7 @@ function loadMenu() {
 
                     <div class="search-box-modern">
 
-                        <i class="fa fa-search search-icon-modern"></i>
+                        <i class="fas fa-search search-icon-modern"></i>
 
                         <input
                                 type="text"
@@ -142,7 +142,7 @@ function loadMenu() {
                    href="timdonhang">
 
                     <div class="header-action-icon">
-                        <i class="fa fa-truck"></i>
+                        <i class="fas fa-shipping-fast"></i>
                     </div>
 
                     <div class="header-action-text">
@@ -248,28 +248,28 @@ function loadFooter() {
         <div class="container">
             <div class="ft-trust-grid">
                 <div class="ft-trust-item">
-                    <div class="ft-trust-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="ft-trust-icon"><i class="fas fa-shipping-fast"></i></div>
                     <div class="ft-trust-text">
                         <strong>Miễn phí vận chuyển</strong>
                         <span>Tất cả đơn hàng trên toàn quốc</span>
                     </div>
                 </div>
                 <div class="ft-trust-item">
-                    <div class="ft-trust-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="ft-trust-icon"><i class="fas fa-undo-alt"></i></div>
                     <div class="ft-trust-text">
                         <strong>Đổi trả dễ dàng</strong>
                         <span>Hoàn hàng trong vòng 7 ngày</span>
                     </div>
                 </div>
                 <div class="ft-trust-item">
-                    <div class="ft-trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="ft-trust-icon"><i class="fas fa-shield-alt"></i></div>
                     <div class="ft-trust-text">
                         <strong>Thanh toán bảo mật</strong>
                         <span>Mã hóa SSL 256-bit</span>
                     </div>
                 </div>
                 <div class="ft-trust-item">
-                    <div class="ft-trust-icon"><i class="fa-solid fa-headset"></i></div>
+                    <div class="ft-trust-icon"><i class="fas fa-headset"></i></div>
                     <div class="ft-trust-text">
                         <strong>Hỗ trợ 24/7</strong>
                         <span>Đội ngũ tư vấn luôn sẵn sàng</span>
@@ -284,7 +284,7 @@ function loadFooter() {
         <div class="container">
             <div class="ft-nl-inner">
                 <div class="ft-nl-left">
-                    <div class="ft-nl-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div class="ft-nl-icon"><i class="fas fa-envelope-open-text"></i></div>
                     <div>
                         <h3 class="ft-nl-title">Đăng ký nhận ưu đãi</h3>
                         <p class="ft-nl-sub">Nhận voucher độc quyền và thông tin sản phẩm mới mỗi tuần</p>
@@ -293,7 +293,7 @@ function loadFooter() {
                 <div class="ft-nl-form">
                     <input type="email" placeholder="Nhập địa chỉ email của bạn..." class="ft-nl-input" id="nlEmail">
                     <button class="ft-nl-btn" onclick="subscribeNewsletter()">
-                        <i class="fa-solid fa-paper-plane"></i> Đăng ký
+                        <i class="fas fa-paper-plane"></i> Đăng ký
                     </button>
                 </div>
             </div>
@@ -371,19 +371,19 @@ function loadFooter() {
                         <h4 class="ft-col-title">Liên hệ</h4>
                         <ul class="ft-contact-list">
                             <li>
-                                <i class="fa-solid fa-location-dot"></i>
+                                <i class="fas fa-map-marker-alt"></i>
                                 <span>123 Nguyễn Trãi, Hà Nội, Việt Nam</span>
                             </li>
                             <li>
-                                <i class="fa-solid fa-phone"></i>
+                                <i class="fas fa-phone"></i>
                                 <span>0972 374 823</span>
                             </li>
                             <li>
-                                <i class="fa-solid fa-envelope"></i>
+                                <i class="fas fa-envelope"></i>
                                 <span>sellora@gmail.com</span>
                             </li>
                             <li>
-                                <i class="fa-solid fa-clock"></i>
+                                <i class="fas fa-clock"></i>
                                 <span>Hỗ trợ: 08:00 – 22:00 hàng ngày</span>
                             </li>
                         </ul>
@@ -408,7 +408,7 @@ function loadFooter() {
         <div class="container ft-bottom-inner">
             <div class="ft-copy">
                 © 2026 <strong>Sellora</strong>. Bảo lưu mọi quyền.
-                <span class="ft-copy-heart"><i class="fa-solid fa-heart"></i></span>
+                <span class="ft-copy-heart"><i class="fas fa-heart"></i></span>
                 Made in Vietnam
             </div>
             <div class="ft-payment-icons">

@@ -7,9 +7,13 @@ import lombok.Setter;
 @Setter
 public class ChatMessageRequest {
 
-    private Long shopId;
+    private Long shopId;        // Shop entity ID (user gửi lên)
 
-    private Long roomId;
+    private Long roomId;        // Room ID (seller gửi lên)
 
     private String content;
-}
+
+    private Long sellerUserId;  // Seller's user account ID (để push WS notification)
+
+    private Long userId;        // User's account ID (để push WS notification)
+}

@@ -27,8 +27,14 @@ async function loadVoucher(page, start, end) {
                     <td>${list[i].endDate}</td>
                     <td>${list[i].block == true ? '<span class="locked">Đã khóa</span>' : '<span class="actived">Đang hoạt động</span>'}</td>
                     <td class="sticky-col">
-                        <i onclick="deleteVoucher(${list[i].id})" class="fa fa-trash iconaction"></i><br>
-                        <a href="addvoucher?id=${list[i].id}"><i class="fa fa-edit iconaction"></i></a>
+                        <div class="act-group">
+                            <button onclick="deleteVoucher(${list[i].id})" class="btn-act btn-act-red" data-tip="Xóa">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <a href="addvoucher?id=${list[i].id}" class="btn-act btn-act-teal" data-tip="Sửa">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>`
     }

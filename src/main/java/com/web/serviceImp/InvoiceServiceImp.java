@@ -525,4 +525,11 @@ public class InvoiceServiceImp implements InvoiceService {
         return invoiceRepository.searchBySellerShop(shopId, "%" + q + "%", pageable);
     }
 
+    @Override
+    public Long getLatestIdForSeller() {
+        Long shopId = getCurrentSellerShopId();
+        Long latestId = invoiceRepository.findLatestIdByShopId(shopId);
+        return latestId != null ? latestId : 0L;
+    }
+
 }

@@ -9,13 +9,12 @@ public class ChatRoomResponse {
 
     private Long roomId;
 
-    private Long userId;
+    private Long userId;        // user's account ID
+    private String username;    // user's display name
 
-    private String username;
-
-    private Long shopId;
-
+    private Long shopId;        // Shop entity ID
     private String shopName;
-
     private String shopAvatar;
-}
+
+    private Long sellerUserId;  // seller's account ID (for STOMP routing)
+}

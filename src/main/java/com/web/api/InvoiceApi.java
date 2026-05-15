@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -104,7 +105,11 @@ public class InvoiceApi {
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "desc") String sort) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Sort.Direction direction = "asc".equalsIgnoreCase(sort)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "id"));
+
         return new ResponseEntity<>(
                 invoiceService.findInvoiceBySellerShop(from, to, payType, status, pageable, sort),
                 HttpStatus.OK);
@@ -135,5 +140,11 @@ public class InvoiceApi {
             @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(invoiceService.searchInvoiceForSeller(q, pageable), HttpStatus.OK);
+    }
+
+    @GetMapping("/seller/latest-id")
+    public ResponseEntity<?> getLatestIdForSeller() {
+        Long latestId = invoiceService.getLatestIdForSeller();
+        return ResponseEntity.ok(java.util.Collections.singletonMap("latestId", latestId));
     }
 }

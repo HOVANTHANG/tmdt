@@ -197,8 +197,18 @@ public class ChatService1 {
             res.setShopId(room.getShop().getId());
             res.setShopName(room.getShop().getShopName());
             res.setShopAvatar(room.getShop().getAvatar());
+
+            // sellerUserId: cách 1 - shop.owner
+            if (room.getShop().getOwner() != null) {
+                res.setSellerUserId(room.getShop().getOwner().getId());
+            } else {
+                // cách 2 - tìm user có shop_id = shop.id (users.shop_id)
+                userRepository.findByShopId(room.getShop().getId())
+                        .ifPresent(seller -> res.setSellerUserId(seller.getId()));
+            }
         }
 
         return res;
     }
 }
+

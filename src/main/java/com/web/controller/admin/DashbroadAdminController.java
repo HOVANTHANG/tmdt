@@ -2,7 +2,6 @@ package com.web.controller.admin;
 
 import com.web.enums.StatusInvoice;
 import com.web.repository.InvoiceRepository;
-import com.web.repository.ProductColorRepository;
 import com.web.repository.ProductRepository;
 import com.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +23,12 @@ public class DashbroadAdminController {
     private UserRepository userRepository;
 
     @Autowired
-    private ProductColorRepository productColorRepository;
-
-    @Autowired
     private InvoiceRepository invoiceRepository;
 
     @Autowired
     private ProductRepository productRepository;
 
-    @RequestMapping(value = {"/index"}, method = RequestMethod.GET)
+    @RequestMapping(value = { "/index" }, method = RequestMethod.GET)
     public String index(Model model) {
         Date date = new Date(System.currentTimeMillis());
         String[] str = date.toString().split("-");
@@ -40,7 +36,6 @@ public class DashbroadAdminController {
         Integer month = Integer.valueOf(str[1]);
         model.addAttribute("numAdmin", userRepository.countAdmin("ROLE_ADMIN"));
         model.addAttribute("numUser", userRepository.countAdmin("ROLE_USER"));
-        model.addAttribute("totalProduct", productColorRepository.totalProduct());
         int index = Arrays.asList(StatusInvoice.values()).indexOf(StatusInvoice.DA_NHAN);
         model.addAttribute("doanhThuThangNay", invoiceRepository.calDt(month, year, index));
         model.addAttribute("sanPhamBanChay", productRepository.findTop10Selling());
@@ -49,8 +44,10 @@ public class DashbroadAdminController {
         LocalDateTime startOfDay = localDate.atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
-        model.addAttribute("soDonHoanThanhHomNay", invoiceRepository.numInvoiceToDay(new Date(System.currentTimeMillis()), index));
-        model.addAttribute("doanhThuHomNay", invoiceRepository.revenueByDate(new Date(System.currentTimeMillis()), index));
+        model.addAttribute("soDonHoanThanhHomNay",
+                invoiceRepository.numInvoiceToDay(new Date(System.currentTimeMillis()), index));
+        model.addAttribute("doanhThuHomNay",
+                invoiceRepository.revenueByDate(new Date(System.currentTimeMillis()), index));
 
         return "admin/index";
     }
