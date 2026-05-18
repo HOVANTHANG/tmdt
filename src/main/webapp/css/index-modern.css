@@ -278,12 +278,14 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); }
 
 .category-grid {
     display: grid;
-    grid-template-rows: repeat(2, 125px);
+    grid-template-rows: repeat(2, 136px);  /* 136px ≥ item height (~129px) */
     grid-auto-flow: column;
-    grid-auto-columns: 108px;
+    grid-auto-columns: 112px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
+    scrollbar-width: none;      /* Firefox: ẩn scrollbar để không cắt hàng 2 */
+    -ms-overflow-style: none;   /* IE/Edge cũ */
 }
 .category-grid::-webkit-scrollbar { display: none; }
 
@@ -329,7 +331,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); }
     font-weight: 500;
     line-height: 1.35;
     text-align: center;
-    max-height: 32px;
+    max-height: 36px;    /* tăng từ 32px để tên dài 2 dòng hiển thị đủ */
     overflow: hidden;
 }
 
@@ -357,6 +359,106 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); }
 }
 .category-arrow-left  { left: 5px; }
 .category-arrow-right { right: 5px; }
+
+/* ── Category wrapper (item + subcategory dropdown) ── */
+.category-item-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ── Subcategory dropdown panel ── */
+.subcategory-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--sh-lg);
+    min-width: 200px;
+    max-width: 260px;
+    padding: 8px 0;
+    animation: subDropIn .22s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+}
+
+@keyframes subDropIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Arrow tip above dropdown */
+.subcategory-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid var(--border);
+}
+.subcategory-dropdown::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid var(--card);
+}
+
+/* Each subcategory link */
+.subcategory-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    text-decoration: none;
+    color: var(--tx);
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--ease);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.subcategory-item:hover {
+    background: linear-gradient(90deg, rgba(13,148,136,.08), rgba(6,95,70,.04));
+    color: var(--p);
+    padding-left: 22px;
+}
+.subcategory-item img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f1f5f9;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+}
+.subcategory-item span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Ensure category-grid children don't clip dropdown */
+.category-grid {
+    overflow-x: auto;
+    overflow-y: visible !important;
+}
+.category-wrapper {
+    overflow: visible !important;
+}
+.category-section {
+    overflow: visible !important;
+}
 
 /* =====================================================
    PRODUCT SECTIONS

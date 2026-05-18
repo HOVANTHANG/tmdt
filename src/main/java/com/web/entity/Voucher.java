@@ -32,4 +32,8 @@ public class Voucher {
     private Boolean block;
 
     private Integer quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 }

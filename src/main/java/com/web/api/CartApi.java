@@ -27,8 +27,9 @@ public class CartApi {
     }
 
     @PostMapping("/user/add-cart")
-    public ResponseEntity<?> addCart(@RequestParam("productVariantId") Long productVariantId) {
-        cartService.addCart(productVariantId);
+    public ResponseEntity<?> addCart(@RequestParam("productVariantId") Long productVariantId,
+                                     @RequestParam(value = "quantity", defaultValue = "1") int quantity) {
+        cartService.addCart(productVariantId, quantity);
         return new ResponseEntity<>("Thêm giỏ hàng thành công", HttpStatus.OK);
     }
 

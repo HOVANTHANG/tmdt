@@ -30,20 +30,33 @@ public class CartServiceImp implements CartService {
     private ProductVariantRepository productVariantRepository;
 
     @Override
-    public void addCart(Long productVariantId) {
+    public void addCart(Long productVariantId, int quantity) {
         User user = userUtils.getUserWithAuthority();
 
-        Optional<Cart> c = cartRepository.findByVariantAndUser(user.getId(), productVariantId);
-        if (c.isPresent()) {
-            return;
-        }
+        if (quantity < 1) quantity = 1;
 
         ProductVariant productVariant = productVariantRepository.findById(productVariantId)
                 .orElseThrow(() -> new MessageException("Không tìm thấy biến thể sản phẩm"));
 
+        Optional<Cart> existing = cartRepository.findByVariantAndUser(user.getId(), productVariantId);
+        if (existing.isPresent()) {
+            Cart cart = existing.get();
+            int newQty = cart.getQuantity() + quantity;
+            if (newQty > productVariant.getQuantity()) {
+                throw new MessageException("Số lượng trong kho không đủ (còn " + productVariant.getQuantity() + ")");
+            }
+            cart.setQuantity(newQty);
+            cartRepository.save(cart);
+            return;
+        }
+
+        if (quantity > productVariant.getQuantity()) {
+            throw new MessageException("Số lượng trong kho không đủ (còn " + productVariant.getQuantity() + ")");
+        }
+
         Cart cart = new Cart();
         cart.setUser(user);
-        cart.setQuantity(1);
+        cart.setQuantity(quantity);
         cart.setProductVariant(productVariant);
 
         cartRepository.save(cart);

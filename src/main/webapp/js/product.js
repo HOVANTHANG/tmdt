@@ -166,8 +166,8 @@ async function loadSanPhamNoiBatCart() {
 }
 
 
-var listbonho = [];
-async function loadAProduct() {
+/* Legacy function - replaced by modern version in detail.html */
+async function loadAProductLegacy() {
     var uls = new URL(document.URL)
     var id = uls.searchParams.get("id");
     var url = 'http://localhost:8080/api/product/public/findById?id=' + id;
@@ -298,7 +298,7 @@ function chonMauSac(idmausac, e, price) {
     document.getElementById("pricedetail").innerHTML = formatmoney(price)
 }
 
-async function loadSanPhamLienQuan(idtrademark, idcategory, idproduct) {
+async function loadSanPhamLienQuanLegacy(idtrademark, idcategory, idproduct) {
     var url = 'http://localhost:8080/api/product/public/san-pham-lienquan?page=0&size=4&sort=id,desc&id=' + idproduct;
     idcategory != null ? url += '&idcategory=' + idcategory : url += ''
     idtrademark != null ? url += '&idtrademark=' + idtrademark : url += ''

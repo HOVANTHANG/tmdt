@@ -352,30 +352,8 @@ body {
     border: 1px solid #f0f0f0;
 }
 
-.thumb-list {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-}
+/* .thumb-list / .thumb-item styles moved to detail.html inline <style> */
 
-.thumb-item {
-    width: 76px;
-    height: 76px;
-    padding: 0;
-}
-
-.thumb-item img {
-    width: 76px;
-    height: 76px;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    cursor: pointer;
-}
-
-.thumb-item img.active-thumb {
-    border: 2px solid #ee4d2d;
-}
 
 .product-detail-name {
     font-size: 22px;
@@ -710,52 +688,11 @@ body {
     }
 }
 
-/* Chi tiết sản phẩm    */
-.variant-option {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px 12px;
-    cursor: pointer;
-    text-align: center;
-    background: #fff;
-    transition: 0.2s;
-    margin-bottom: 10px;
-    font-size: 14px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+/* .variant-option styles defined in detail.html inline <style> — no duplicate needed here */
 
-.variant-option:hover {
-    border-color: #d70018;
-}
 
-.variant-option.active {
-    border-color: #d70018;
-    background: #fff5f5;
-    color: #d70018;
-    font-weight: 600;
-}
+/* .thumb-item img rules moved to detail.html inline <style> */
 
-.variant-image {
-    width: 100%;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
-.thumb-item img {
-    width: 100%;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-}
-
-.thumb-item img.active-thumb {
-    border: 2px solid #d70018;
-}
 
 .price-box {
     margin-bottom: 10px;

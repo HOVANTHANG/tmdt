@@ -94,22 +94,23 @@ public class ProductServiceImp implements ProductService {
 
         Product product = productMapper.productRequestToProduct(productRequest);
 
-        Optional<TradeMark> tradeMark = tradeMarkRepository.findById(productRequest.getTradeMarkId());
         Optional<Category> category = categoryRepository.findById(productRequest.getCategoryId());
-
-        if (tradeMark.isEmpty()) {
-            throw new MessageException("Không tìm thấy thương hiệu");
-        }
 
         if (category.isEmpty()) {
             throw new MessageException("Không tìm thấy danh mục");
         }
         Shop shop = resolveShop(productRequest);
 
+        // Thương hiệu là tùy chọn — không bắt buộc
+        TradeMark tradeMark = null;
+        if (productRequest.getTradeMarkId() != null) {
+            tradeMark = tradeMarkRepository.findById(productRequest.getTradeMarkId()).orElse(null);
+        }
+
         product.setCreatedDate(new Date(System.currentTimeMillis()));
         product.setCreatedTime(new Time(System.currentTimeMillis()));
         product.setQuantitySold(0);
-        product.setTradeMark(tradeMark.get());
+        product.setTradeMark(tradeMark);
         product.setCategory(category.get());
         product.setShop(shop);
 
@@ -152,13 +153,16 @@ public class ProductServiceImp implements ProductService {
         Product exist = productRepository.findById(productRequest.getId())
                 .orElseThrow(() -> new MessageException("product not found"));
 
-        TradeMark tradeMark = tradeMarkRepository.findById(productRequest.getTradeMarkId())
-                .orElseThrow(() -> new MessageException("Không tìm thấy thương hiệu"));
-
         Category category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(() -> new MessageException("Không tìm thấy danh mục"));
 
         Shop shop = resolveShop(productRequest);
+
+        // Thương hiệu là tùy chọn — không bắt buộc
+        TradeMark tradeMark = null;
+        if (productRequest.getTradeMarkId() != null) {
+            tradeMark = tradeMarkRepository.findById(productRequest.getTradeMarkId()).orElse(null);
+        }
 
         exist.setCode(productRequest.getCode());
         exist.setName(productRequest.getName());
@@ -408,7 +412,7 @@ public class ProductServiceImp implements ProductService {
             throw new MessageException("categoryId không được để trống");
         }
 
-        Page<Product> page = productRepository.findByCategoryIdAndDeletedFalse(categoryId, pageable);
+        Page<Product> page = productRepository.findByCategoryIdIncludingChildren(categoryId, pageable);
 
         return page.map(p -> {
             ProductShopResponse dto = new ProductShopResponse();

@@ -1,135 +1,372 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
-        integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-        integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-
-    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js"></script>
-    <link href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"
-        rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Quản lý Danh mục - Admin</title>
+    <link href="css/styles.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="/css/category.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script src="js/menu.js"></script>
-    <script src="js/category.js"></script>
-    <script>
-        window.onload = function () {
-            loadTypeCategory();
-            loadCategory(0, "");
-        }
-
-    </script>
+    <style>
+        :root{--p:#0d9488;--p-dk:#0f766e;--border:#e2e8f0;--card:#fff;--tx:#1e293b;--tx2:#64748b;}
+        .dm-wrap{padding:24px;}
+        .dm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+        .dm-top h4{margin:0;font-size:20px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:9px;}
+        .dm-top h4 i{color:var(--p);}
+        .dm-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+        .dm-search{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;}
+        .dm-search input{border:none;background:transparent;outline:none;font-size:13px;width:200px;}
+        .btn-add{background:var(--p);color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;}
+        .btn-add:hover{background:var(--p-dk);}
+        .dm-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);}
+        .dm-tab{padding:9px 22px;font-size:13px;font-weight:600;cursor:pointer;color:var(--tx2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;}
+        .dm-tab.active{color:var(--p);border-bottom-color:var(--p);}
+        .dm-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+        .dm-table th{background:#f8fafc;font-size:11.5px;font-weight:700;color:var(--tx2);padding:11px 14px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);}
+        .dm-table td{padding:11px 14px;font-size:13.5px;color:var(--tx);border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+        .dm-table tr:last-child td{border-bottom:none;}
+        .dm-table tr:hover td{background:#f8fafc;}
+        .cat-thumb{width:38px;height:38px;object-fit:contain;border-radius:7px;background:#f1f5f9;border:1px solid var(--border);}
+        .cat-no-img{width:38px;height:38px;border-radius:7px;background:#f1f5f9;border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;color:#cbd5e1;font-size:13px;}
+        .badge-p{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#e0f2fe;color:#0369a1;}
+        .badge-c{background:#fce7f3;color:#9d174d;}
+        .badge-cnt{background:#f0fdf4;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+        .act-btn{width:30px;height:30px;border:none;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;transition:.18s;}
+        .btn-e{background:#eff6ff;color:#3b82f6;}.btn-e:hover{background:#3b82f6;color:#fff;}
+        .btn-d{background:#fef2f2;color:#ef4444;}.btn-d:hover{background:#ef4444;color:#fff;}
+        .btn-s{background:#f0fdf4;color:#16a34a;}.btn-s:hover{background:#16a34a;color:#fff;}
+        .pg{display:flex;gap:5px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+        .pg-btn{min-width:34px;height:34px;border:1px solid var(--border);background:var(--card);border-radius:6px;font-size:13px;cursor:pointer;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;}
+        .pg-btn.active,.pg-btn:hover{background:var(--p);color:#fff;border-color:var(--p);}
+        /* Modal */
+        .modal-header-custom{background:linear-gradient(135deg,var(--p),var(--p-dk));padding:16px 20px;border-radius:12px 12px 0 0;}
+        .modal-header-custom .modal-title{color:#fff;font-weight:700;font-size:16px;}
+        .modal-header-custom .btn-close{filter:invert(1);}
+        .fm-lbl{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:5px;display:block;}
+        .fm-lbl .opt{font-weight:400;color:#94a3b8;font-size:11.5px;}
+        .fm-inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13.5px;outline:none;transition:.2s;font-family:inherit;}
+        .fm-inp:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(13,148,136,.1);}
+        .fm-grp{margin-bottom:14px;}
+        .btn-sv{background:var(--p);color:#fff;border:none;padding:11px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;width:100%;transition:.2s;}
+        .btn-sv:hover{background:var(--p-dk);}
+        .img-prev{width:70px;height:70px;object-fit:contain;border-radius:8px;border:1px solid var(--border);margin-top:8px;display:none;}
+    </style>
 </head>
-
 <body class="sb-nav-fixed">
-    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav"></div>
-        <div id="layoutSidenav_content">
-            <main class="main">
-                <div class="col-sm-12 header-sp">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a onclick="clearData()" data-bs-toggle="modal" data-bs-target="#addtk" href="#"
-                                class="btn btn-success"><i class="fa fa-plus"></i> Thêm danh mục</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="wrapper">
-                        <div class="headertable">
-                            <div class="divsearchtb">
-                                <label>search: </label>
-                                <input onkeyup="loadCategory(0,this.value)" id="searchtable" placeholder="tìm kiếm"
-                                    class="inputsearchtable">
-                            </div>
-                        </div>
-                        <table class="table table-striped tablefix">
-                            <thead class="thead-tablefix">
-                                <tr>
-                                    <th>id</th>
-                                    <th>Tên danh mục</th>
-                                    <th>Loại danh mục</th>
-                                    <th class="sticky-col">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listcategory">
+<nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav"></div>
+    <div id="layoutSidenav_content">
+        <main class="main">
+            <div class="dm-wrap">
 
-                            </tbody>
-                        </table>
+                <div class="dm-top">
+                    <h4><i class="fa-solid fa-layer-group"></i> Quản lý Danh mục</h4>
+                    <div class="dm-actions">
+                        <div class="dm-search">
+                            <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
+                            <input id="searchInput" placeholder="Tìm theo tên..." oninput="applyFilter()">
+                        </div>
+                        <button class="btn-add" onclick="openAdd(null)">
+                            <i class="fa-solid fa-plus"></i> Thêm danh mục cha
+                        </button>
                     </div>
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="pageable">
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        </ul>
-                    </nav>
                 </div>
-            </main>
-        </div>
+
+                <div class="dm-tabs">
+                    <div class="dm-tab active" id="tabAll"    onclick="switchTab('all')">Tất cả</div>
+                    <div class="dm-tab"        id="tabParent" onclick="switchTab('parent')">Danh mục cha</div>
+                    <div class="dm-tab"        id="tabChild"  onclick="switchTab('child')">Danh mục con</div>
+                </div>
+
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th style="width:50px">ID</th>
+                            <th style="width:52px">Ảnh</th>
+                            <th>Tên danh mục</th>
+                            <th>Danh mục cha</th>
+                            <th>Loại</th>
+                            <th>Danh mục con</th>
+                            <th style="width:140px">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="catBody">
+                        <tr><td colspan="7" style="text-align:center;padding:36px;color:#94a3b8">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="pg" id="pg"></div>
+
+            </div>
+        </main>
     </div>
+</div>
 
-</body>
-<div class="modal fade" id="addtk" tabindex="-1" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="modalCat" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content category-modal">
-            <div class="modal-header">
-                <h5 class="modal-title">Thêm / cập nhật danh mục</h5>
+        <div class="modal-content" style="border-radius:12px;overflow:hidden;border:none">
+            <div class="modal-header-custom d-flex justify-content-between align-items-center">
+                <span class="modal-title" id="modalTitle">Thêm danh mục</span>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <div class="modal-body" style="padding:22px">
+                <input type="hidden" id="catId">
 
-            <div class="modal-body">
-                <form action="javascript:saveCategory()" class="category-form">
-                    <input id="idcate" type="hidden">
+                <div class="fm-grp">
+                    <label class="fm-lbl">Tên danh mục <span style="color:#ef4444">*</span></label>
+                    <input class="fm-inp" id="catName" placeholder="Nhập tên danh mục">
+                </div>
 
-                    <label class="lb-form">Tên danh mục</label>
-                    <input id="catename" type="text" class="form-control modern-input" placeholder="Nhập tên danh mục">
-
-                    <label class="lb-form mt-3">Loại danh mục</label>
-                    <select id="catetype" class="form-control modern-input">
-                        <option value="">-- Chọn loại danh mục --</option>
-                        <option value="DIEN_TU">Điện tử</option>
-                        <option value="PHU_KIEN">Phụ kiện</option>
+                <div class="fm-grp">
+                    <label class="fm-lbl">Danh mục cha <span class="opt">(để trống nếu là danh mục cha)</span></label>
+                    <select class="fm-inp" id="catParent">
+                        <option value="">-- Không có (là danh mục cha) --</option>
                     </select>
+                </div>
 
-                    <label class="lb-form mt-3">Ảnh danh mục</label>
-                    <input id="categoryImageFile" type="file" accept="image/*" class="form-control modern-input">
-                    <input id="categoryImage" type="hidden">
+                <div class="fm-grp">
+                    <label class="fm-lbl">Loại danh mục</label>
+                    <select class="fm-inp" id="catType">
+                        <option value="">-- Chọn loại --</option>
+                    </select>
+                </div>
 
-                    <img id="categoryImagePreview"
-                        style="display:none; width:90px; height:90px; object-fit:cover; border-radius:12px; margin-top:12px; border:1px solid #ddd;">
+                <div class="fm-grp">
+                    <label class="fm-lbl">Ảnh danh mục</label>
+                    <input type="file" accept="image/*" class="fm-inp" id="catImgFile" onchange="previewImg(this)">
+                    <input type="hidden" id="catImgUrl">
+                    <img id="catImgPrev" class="img-prev">
+                </div>
 
-                    <button class="btn btn-primary form-control mt-4 btn-save-category">
-                        Thêm / cập nhật danh mục
-                    </button>
-                </form>
+                <button class="btn-sv" onclick="saveCategory()">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Lưu danh mục
+                </button>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+const BASE = "http://localhost:8080";
+const API  = BASE + "/api/category";
+const UPLOAD = BASE + "/api/public/upload-file";
+// token lấy từ menu.js (var token = localStorage.getItem("token"))
+
+let allCats = [], filteredCats = [], currentTab = "all", currentPage = 0;
+const PAGE_SIZE = 15;
+let modal;
+
+window.onload = async function () {
+    modal = new bootstrap.Modal(document.getElementById("modalCat"));
+    await loadData();
+};
+
+async function loadData() {
+    try {
+        const [cRes, tRes] = await Promise.all([
+            fetch(API + "/public/findAll"),
+            fetch(API + "/public/get-all-category-type")
+        ]);
+        allCats = cRes.ok ? await cRes.json() : [];
+        if (tRes.ok) {
+            const types = await tRes.json();
+            const sel = document.getElementById("catType");
+            sel.innerHTML = '<option value="">-- Chọn loại --</option>';
+            types.forEach(t => sel.innerHTML += `<option value="${t}">${t}</option>`);
+        }
+        applyFilter();
+    } catch(e) { toastr.error("Không tải được dữ liệu"); }
+}
+
+function applyFilter() {
+    const q = (document.getElementById("searchInput").value || "").toLowerCase();
+    filteredCats = allCats.filter(c => {
+        const ok = (c.name || "").toLowerCase().includes(q);
+        if (currentTab === "parent") return ok && !c.parentId;
+        if (currentTab === "child")  return ok && !!c.parentId;
+        return ok;
+    });
+    currentPage = 0;
+    render();
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll(".dm-tab").forEach(t => t.classList.remove("active"));
+    document.getElementById("tab" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
+    applyFilter();
+}
+
+function render() {
+    const body  = document.getElementById("catBody");
+    const start = currentPage * PAGE_SIZE;
+    const page  = filteredCats.slice(start, start + PAGE_SIZE);
+
+    if (!page.length) {
+        body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:#94a3b8">Không có danh mục nào</td></tr>`;
+        renderPg(); return;
+    }
+
+    body.innerHTML = page.map(cat => {
+        const parentCat  = cat.parentId ? allCats.find(c => Number(c.id) === Number(cat.parentId)) : null;
+        const parentName = parentCat ? esc(parentCat.name) : '<span style="color:#cbd5e1">—</span>';
+        const childCount = allCats.filter(c => Number(c.parentId) === Number(cat.id)).length;
+        const imgHtml = cat.image
+            ? `<img src="${cat.image}" class="cat-thumb" onerror="this.style.display='none'">`
+            : `<span class="cat-no-img"><i class="fa-solid fa-image"></i></span>`;
+
+        return `<tr>
+            <td style="color:#94a3b8;font-size:12px">${cat.id}</td>
+            <td>${imgHtml}</td>
+            <td style="font-weight:600">${esc(cat.name)}</td>
+            <td>${parentName}</td>
+            <td><span class="${cat.parentId ? 'badge-c' : 'badge-p'}">${cat.parentId ? 'Con' : 'Cha'}</span></td>
+            <td>${childCount > 0 ? `<span class="badge-cnt">${childCount} mục con</span>` : '<span style="color:#cbd5e1;font-size:12px">—</span>'}</td>
+            <td>
+                <div style="display:flex;gap:5px">
+                    ${!cat.parentId ? `<button class="act-btn btn-s" title="Thêm mục con" onclick="openAddChild(${cat.id})"><i class="fa-solid fa-plus"></i></button>` : ''}
+                    <button class="act-btn btn-e" title="Sửa" onclick="openEdit(${cat.id})"><i class="fa-solid fa-pen"></i></button>
+                    <button class="act-btn btn-d" title="Xóa" onclick="deleteCategory(${cat.id})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>`;
+    }).join("");
+
+    renderPg();
+}
+
+function renderPg() {
+    const total = Math.ceil(filteredCats.length / PAGE_SIZE);
+    const pg = document.getElementById("pg");
+    if (total <= 1) { pg.innerHTML = ""; return; }
+    let h = `<button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===0?"disabled":""}>‹</button>`;
+    for (let i = 0; i < total; i++) h += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i+1}</button>`;
+    h += `<button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage+1>=total?"disabled":""}>›</button>`;
+    pg.innerHTML = h;
+}
+
+function goPage(p) { currentPage = p; render(); }
+
+// ── Modal helpers ──
+function resetModal() {
+    ["catId","catName","catImgUrl"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("catParent").value = "";
+    document.getElementById("catType").value = "";
+    document.getElementById("catImgFile").value = "";
+    document.getElementById("catImgPrev").style.display = "none";
+    fillParents("");
+}
+
+function fillParents(excludeId) {
+    const sel = document.getElementById("catParent");
+    sel.innerHTML = '<option value="">-- Không có (là danh mục cha) --</option>';
+    allCats.filter(c => !c.parentId && String(c.id) !== String(excludeId))
+           .forEach(c => sel.innerHTML += `<option value="${c.id}">${esc(c.name)}</option>`);
+}
+
+function openAdd(parentId) {
+    resetModal();
+    document.getElementById("modalTitle").textContent = "Thêm danh mục";
+    if (parentId) document.getElementById("catParent").value = parentId;
+    modal.show();
+}
+
+function openAddChild(parentId) {
+    resetModal();
+    document.getElementById("modalTitle").textContent = "Thêm danh mục con";
+    document.getElementById("catParent").value = parentId;
+    modal.show();
+}
+
+function openEdit(id) {
+    const cat = allCats.find(c => Number(c.id) === Number(id));
+    if (!cat) return;
+    resetModal();
+    document.getElementById("modalTitle").textContent = "Sửa danh mục";
+    document.getElementById("catId").value     = cat.id;
+    document.getElementById("catName").value   = cat.name || "";
+    document.getElementById("catType").value   = cat.categoryType || "";
+    document.getElementById("catImgUrl").value = cat.image || "";
+    fillParents(cat.id);
+    if (cat.parentId) document.getElementById("catParent").value = cat.parentId;
+    if (cat.image) {
+        const p = document.getElementById("catImgPrev");
+        p.src = cat.image; p.style.display = "block";
+    }
+    modal.show();
+}
+
+function previewImg(input) {
+    const f = input.files[0]; if (!f) return;
+    const p = document.getElementById("catImgPrev");
+    p.src = URL.createObjectURL(f); p.style.display = "block";
+}
+
+// ── Save ──
+async function saveCategory() {
+    const name = document.getElementById("catName").value.trim();
+    if (!name) { toastr.warning("Vui lòng nhập tên danh mục"); return; }
+
+    let imageUrl = document.getElementById("catImgUrl").value;
+    const file = document.getElementById("catImgFile").files[0];
+    if (file) {
+        try {
+            const fd = new FormData(); fd.append("file", file);
+            const up = await fetch(UPLOAD, { method:"POST", body:fd });
+            if (!up.ok) throw new Error();
+            imageUrl = await up.text();
+        } catch { toastr.error("Upload ảnh thất bại"); return; }
+    }
+
+    const idVal    = document.getElementById("catId").value;
+    const parentId = document.getElementById("catParent").value;
+    const type     = document.getElementById("catType").value;
+
+    const payload = {
+        id: idVal ? Number(idVal) : undefined,
+        name, categoryType: type || undefined,
+        image: imageUrl || undefined,
+        parentId: parentId ? Number(parentId) : null
+    };
+
+    try {
+        const url = idVal ? `${API}/admin/update` : `${API}/admin/create`;
+        const res = await fetch(url, {
+            method:"POST",
+            headers:{ "Content-Type":"application/json", "Authorization":"Bearer " + token },
+            body: JSON.stringify(payload)
+        });
+        if (!res.ok) { const e = await res.json().catch(()=>({})); toastr.error(e.message||"Lưu thất bại"); return; }
+        toastr.success(idVal ? "Cập nhật thành công!" : "Thêm danh mục thành công!");
+        modal.hide();
+        await loadData();
+    } catch { toastr.error("Lỗi kết nối server"); }
+}
+
+// ── Delete ──
+async function deleteCategory(id) {
+    const childCount = allCats.filter(c => Number(c.parentId) === Number(id)).length;
+    if (childCount > 0) { toastr.warning(`Có ${childCount} danh mục con. Hãy xóa danh mục con trước!`); return; }
+    const cat = allCats.find(c => Number(c.id) === Number(id));
+    if (!confirm(`Xóa danh mục "${cat?.name}"?`)) return;
+    try {
+        const res = await fetch(`${API}/admin/delete?id=${id}`, {
+            method:"DELETE", headers:{ "Authorization":"Bearer "+token }
+        });
+        if (!res.ok) { toastr.error("Xóa thất bại"); return; }
+        toastr.success("Đã xóa danh mục!");
+        await loadData();
+    } catch { toastr.error("Lỗi kết nối"); }
+}
+
+function esc(s) { return s ? String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") : ""; }
+</script>
+</body>
 </html>

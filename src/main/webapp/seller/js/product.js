@@ -29,7 +29,7 @@ async function loadAProduct() {
         document.getElementById("danhmucsp").value = result.category.id
         document.getElementById("baomat").value = result.securityInfor
         document.getElementById("oldprice").value = result.oldPrice
-        document.getElementById("hangsx").value = result.tradeMark.id
+        document.getElementById("hangsx").value = result.tradeMark ? result.tradeMark.id : ""
         document.getElementById("camsau").value = result.backCamera
         document.getElementById("chatlieu").value = result.material
         document.getElementById("tinhnangdacbiet").value = result.specialFeature
@@ -213,7 +213,7 @@ async function loadAllTradeMarkSelect() {
     const response = await fetch(url, {
     });
     var list = await response.json();
-    var main = '';
+    var main = '<option value="">-- Không có thương hiệu --</option>';
     for (i = 0; i < list.length; i++) {
         main += `<option value="${list[i].id}">${list[i].name}</option>`
     }

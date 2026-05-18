@@ -58,6 +58,7 @@ public class SellerAdminApi {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy ROLE_SELLER"));
 
         owner.setAuthorities(sellerRole);
+        owner.setShop(shop);
         userRepository.save(owner);
 
         shop.setStatus(ShopStatus.APPROVED);

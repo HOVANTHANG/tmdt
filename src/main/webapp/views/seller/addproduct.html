@@ -42,8 +42,16 @@
                         <input id="productId" type="hidden" />
                         <div class="grid">
                             <div class="form-group col-3">
-                                <label>Mã sản phẩm</label>
-                                <input id="code" type="text" placeholder="Ví dụ: IP15-001" />
+                                <label>Mã sản phẩm <span style="color:#9ca3af;font-size:11px;font-weight:400">(tự động)</span></label>
+                                <div style="display:flex;gap:6px;align-items:center">
+                                    <input id="code" type="text" readonly
+                                           style="background:#f8fafc;color:#64748b;cursor:default;letter-spacing:.5px;font-family:monospace;font-size:13px;flex:1" />
+                                    <button type="button" title="Tạo mã mới"
+                                            onclick="generateProductCode()"
+                                            style="padding:9px 11px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;color:#64748b;font-size:14px;flex-shrink:0;transition:.2s"
+                                            onmouseover="this.style.borderColor='#0d9488';this.style.color='#0d9488'"
+                                            onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#64748b'">&#x21bb;</button>
+                                </div>
                             </div>
 
                             <div class="form-group col-9">
@@ -78,9 +86,17 @@
                             </div>
 
                             <div class="form-group col-3">
-                                <label>Danh mục</label>
-                                <select id="categoryId">
+                                <label>Danh mục cha</label>
+                                <select id="categoryId" onchange="loadSubCategories()">
                                     <option value="">-- Chọn danh mục --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-3" id="subCategoryWrapper" style="display:none;">
+                                <label>Danh mục con <span style="color:#aaa;font-weight:400;font-size:12px">(tuỳ
+                                        chọn)</span></label>
+                                <select id="subCategoryId">
+                                    <option value="">-- Chọn danh mục con --</option>
                                 </select>
                             </div>
 
@@ -237,7 +253,8 @@
 
     <script>
         const BASE_URL = "http://localhost:8080";
-        const CATEGORY_API = BASE_URL + "/api/category/public/findAll";
+        const CATEGORY_API = BASE_URL + "/api/category/public/root";
+        const CATEGORY_CHILDREN_API = BASE_URL + "/api/category/public/children";
         const TRADEMARK_API = BASE_URL + "/api/trademark/public/findAll";
         const SHOP_API = BASE_URL + "/api/public/shop/all";
 
@@ -322,6 +339,55 @@
             toggleVariantConfig();
         }
 
+        // ── Điền danh mục cha + con khi sửa sản phẩm ────────────────────────
+        async function fillCategoryForEdit(catId) {
+            try {
+                const CATEGORY_ALL_API = BASE_URL + "/api/category/public/findAll";
+                const res = await fetch(CATEGORY_ALL_API);
+                if (!res.ok) return;
+                const allCats = await res.json();
+
+                const cat = allCats.find(c => Number(c.id) === Number(catId));
+                if (!cat) return;
+
+                if (cat.parentId) {
+                    // Đây là danh mục CON → set danh mục cha trước
+                    document.getElementById("categoryId").value = cat.parentId;
+
+                    // Load danh mục con của cha đó
+                    const subRes = await fetch(`${CATEGORY_CHILDREN_API}?parentId=${cat.parentId}`);
+                    if (subRes.ok) {
+                        const children = await subRes.json();
+                        const subSelect = document.getElementById("subCategoryId");
+                        const subWrapper = document.getElementById("subCategoryWrapper");
+
+                        subSelect.innerHTML = '<option value="">-- Chọn danh mục con --</option>';
+                        children.forEach(c => {
+                            const opt = document.createElement("option");
+                            opt.value = c.id;
+                            opt.textContent = c.name;
+                            subSelect.appendChild(opt);
+                        });
+
+                        subWrapper.style.display = "block";
+
+                        // Chọn đúng danh mục con
+                        subSelect.value = catId;
+                    }
+                } else {
+                    // Đây là danh mục CHA → chỉ set categoryId, không hiện sub
+                    document.getElementById("categoryId").value = catId;
+                    document.getElementById("subCategoryWrapper").style.display = "none";
+                    document.getElementById("subCategoryId").innerHTML =
+                        '<option value="">-- Chọn danh mục con --</option>';
+                }
+            } catch (e) {
+                console.error("fillCategoryForEdit error:", e);
+                // fallback
+                document.getElementById("categoryId").value = catId;
+            }
+        }
+
         async function loadProductDetail(id) {
             try {
                 clearStatus();
@@ -349,10 +415,13 @@
 
                 setBannerPreview(data.imageBanner || "");
 
-                if (data.category && data.category.id) {
-                    document.getElementById("categoryId").value = data.category.id;
-                } else if (data.categoryId) {
-                    document.getElementById("categoryId").value = data.categoryId;
+                // ── Fill danh mục cha + danh mục con ──────────────────────
+                const catId = (data.category && data.category.id)
+                    ? data.category.id
+                    : (data.categoryId || null);
+
+                if (catId) {
+                    await fillCategoryForEdit(catId);
                 }
 
                 if (data.tradeMark && data.tradeMark.id) {
@@ -642,6 +711,43 @@
             }
         }
 
+        // ── Load danh mục con khi chọn cha ──
+        async function loadSubCategories() {
+            const parentId = document.getElementById("categoryId").value;
+            const subWrapper = document.getElementById("subCategoryWrapper");
+            const subSelect = document.getElementById("subCategoryId");
+
+            subSelect.innerHTML = '<option value="">-- Chọn danh mục con --</option>';
+
+            if (!parentId) {
+                subWrapper.style.display = "none";
+                return;
+            }
+
+            try {
+                const res = await fetch(`${CATEGORY_CHILDREN_API}?parentId=${parentId}`);
+                if (!res.ok) { subWrapper.style.display = "none"; return; }
+                const children = await res.json();
+
+                if (!children || children.length === 0) {
+                    subWrapper.style.display = "none";
+                    return;
+                }
+
+                children.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.name;
+                    subSelect.appendChild(opt);
+                });
+
+                subWrapper.style.display = "block";
+            } catch (e) {
+                console.error(e);
+                subWrapper.style.display = "none";
+            }
+        }
+
         async function submitProduct() {
             clearStatus();
 
@@ -658,8 +764,15 @@
                 imageBanner: document.getElementById("imageBanner").value.trim(),
                 price: Number(document.getElementById("price").value || 0),
                 oldPrice: Number(document.getElementById("oldPrice").value || 0),
-                categoryId: Number(document.getElementById("categoryId").value || 0),
-                tradeMarkId: Number(document.getElementById("tradeMarkId").value || 0),
+                categoryId: (() => {
+                    // Ưu tiên danh mục con nếu được chọn
+                    const sub = document.getElementById("subCategoryId").value;
+                    const par = document.getElementById("categoryId").value;
+                    return Number(sub || par || 0);
+                })(),
+                tradeMarkId: document.getElementById("tradeMarkId").value
+                    ? Number(document.getElementById("tradeMarkId").value)
+                    : null,
                 shopId: document.getElementById("shopId").value
                     ? Number(document.getElementById("shopId").value)
                     : null,
@@ -686,8 +799,8 @@
                 return;
             }
 
-            if (!payload.categoryId || !payload.tradeMarkId) {
-                setStatus("Vui lòng chọn category, trademark.", "error");
+            if (!payload.categoryId) {
+                setStatus("Vui lòng chọn danh mục sản phẩm.", "error");
                 return;
             }
 
@@ -825,6 +938,20 @@
         }
 
 
+        /* ── Sinh mã sản phẩm ngẫu nhiên ──────────────────────────────── */
+        function generateProductCode() {
+            const now   = new Date();
+            const ymd   = now.getFullYear().toString()
+                        + String(now.getMonth() + 1).padStart(2, "0")
+                        + String(now.getDate()).padStart(2, "0");
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // loại I,O,0,1 dễ nhầm
+            let rand    = "";
+            for (let i = 0; i < 6; i++) {
+                rand += chars[Math.floor(Math.random() * chars.length)];
+            }
+            document.getElementById("code").value = `SP${ymd}-${rand}`;
+        }
+
         async function initPage() {
             toggleVariantConfig();
             await initDropdowns();
@@ -832,6 +959,9 @@
             const productId = getProductIdFromUrl();
             if (productId) {
                 await loadProductDetail(productId);
+            } else {
+                // Sản phẩm mới → tự sinh mã
+                generateProductCode();
             }
         }
 

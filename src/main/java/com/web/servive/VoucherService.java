@@ -20,12 +20,26 @@ public interface VoucherService {
 
     public List<Voucher> findAll(Date start, Date end);
 
-    public Page<Voucher> findAll(Date start, Date end,Pageable pageable);
+    public Page<Voucher> findAll(Date start, Date end, Pageable pageable);
 
     public Optional<Voucher> findById(Long id);
 
     public void block(Long id);
 
     public Optional<Voucher> findByCode(String code, Double amount);
+
+    // Seller-specific: tạo voucher gắn với shop của seller
+    public Voucher createForSeller(Voucher voucher);
+
+    // Seller-specific: chỉnh sửa voucher (chỉ sửa được voucher của shop mình)
+    public Voucher updateForSeller(Voucher voucher);
+
+    // Seller-specific: xóa voucher (chỉ xóa được voucher của shop mình)
+    public void deleteForSeller(Long id);
+
+    // Seller-specific: lấy voucher theo shop của seller
+    public Page<Voucher> findAllBySeller(Date start, Date end, Pageable pageable);
+
+    public List<Voucher> findAllListBySeller(Date start, Date end);
 
 }

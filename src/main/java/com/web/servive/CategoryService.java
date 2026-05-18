@@ -27,4 +27,8 @@ public interface CategoryService {
 
     public List<Category> findByType(CategoryType categoryType);
 
+    public List<Category> findRootCategories();
+
+    public List<Category> findByParentId(Long parentId);
+
 }

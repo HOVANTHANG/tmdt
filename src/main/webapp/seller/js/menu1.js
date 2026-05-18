@@ -28,13 +28,6 @@ $(document).ready(function () {
             <a class="nav-link ${active('/seller/voucher')}" href="/seller/voucher">
                 <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>Voucher
             </a>
-            <div class="sb-sidenav-menu-heading">Danh mục</div>
-            <a class="nav-link ${active('/seller/danhmuc')}" href="/seller/danhmuc">
-                <div class="sb-nav-link-icon"><i class="fas fa-layer-group"></i></div>Danh mục
-            </a>
-            <a class="nav-link ${active('/seller/thuonghieu')}" href="/seller/thuonghieu">
-                <div class="sb-nav-link-icon"><i class="fas fa-certificate"></i></div>Thương hiệu
-            </a>
             <div class="sb-sidenav-menu-heading">Hỗ trợ</div>
             <a class="nav-link ${active('/seller/seller-chat')}" href="/seller/seller-chat">
                 <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>Tin nhắn

@@ -47,6 +47,18 @@ public class CategoryApi {
         return new ResponseEntity<>(type, HttpStatus.OK);
     }
 
+    @GetMapping("/public/root")
+    public ResponseEntity<?> findRootCategories() {
+        List<Category> roots = categoryService.findRootCategories();
+        return new ResponseEntity<>(roots, HttpStatus.OK);
+    }
+
+    @GetMapping("/public/children")
+    public ResponseEntity<?> findChildren(@RequestParam("parentId") Long parentId) {
+        List<Category> children = categoryService.findByParentId(parentId);
+        return new ResponseEntity<>(children, HttpStatus.OK);
+    }
+
     @PostMapping("/admin/create")
     public ResponseEntity<?> save(@RequestBody Category category) {
         Category result = categoryService.save(category);

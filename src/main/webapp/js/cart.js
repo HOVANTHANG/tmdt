@@ -61,7 +61,11 @@ async function addCart(type) {
         return;
     }
 
-    const url = "http://localhost:8080/api/cart/user/add-cart?productVariantId=" + idVariantCart;
+    // Đọc số lượng từ input trên trang detail (nếu có), mặc định là 1
+    const qtyInput = document.getElementById("qtyInput");
+    const quantity = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+
+    const url = "http://localhost:8080/api/cart/user/add-cart?productVariantId=" + idVariantCart + "&quantity=" + quantity;
 
     try {
         const response = await fetch(url, {
@@ -72,7 +76,7 @@ async function addCart(type) {
         });
 
         if (response.status < 300) {
-            toastr.success("Thêm giỏ hàng thành công!");
+            toastr.success("Thêm giỏ hàng thành công! (x" + quantity + ")");
             if (typeof countCart === "function") {
                 countCart();
             }
@@ -86,6 +90,12 @@ async function addCart(type) {
                 const result = await response.json();
                 if (result && result.message) {
                     message = result.message;
+                }
+            } catch (e) { }
+            // Try reading as text if json fails
+            try {
+                if (message === "Thêm giỏ hàng thất bại!") {
+                    message = await response.text() || message;
                 }
             } catch (e) { }
             toastr.error(message);

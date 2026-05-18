@@ -32,6 +32,175 @@
     <script src="js/comment.js"></script>
 
     <style>
+        /* ===== PRODUCT GALLERY ===== */
+        .product-gallery {
+            width: 100%;
+            position: sticky;
+            top: 16px;
+        }
+
+        .main-img-wrapper {
+            position: relative;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .main-product-image {
+            width: 100%;
+            height: 420px;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        .main-img-wrapper:hover .main-product-image {
+            transform: scale(1.04);
+        }
+
+        /* Thumbnail Strip */
+        .thumb-strip {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: thin;
+            scrollbar-color: #ee4d2d #f0f0f0;
+        }
+
+        .thumb-strip::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .thumb-strip::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .thumb-strip::-webkit-scrollbar-thumb {
+            background: #ee4d2d;
+            border-radius: 4px;
+        }
+
+        .thumb-item {
+            flex-shrink: 0;
+            width: 72px;
+            height: 72px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s;
+            background: #fafafa;
+        }
+
+        .thumb-item:hover {
+            border-color: #ee4d2d;
+            transform: translateY(-2px);
+        }
+
+        .thumb-item.active-thumb {
+            border-color: #ee4d2d;
+            box-shadow: 0 0 0 1px #ee4d2d;
+        }
+
+        .thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ===== VARIANT OPTIONS ===== */
+        .variant-options-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .variant-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #fff;
+            font-size: 13px;
+            color: #444;
+            transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+            min-width: 80px;
+            position: relative;
+        }
+
+        .variant-option:hover {
+            border-color: #ee4d2d;
+            color: #ee4d2d;
+        }
+
+        .variant-option.active {
+            border-color: #ee4d2d;
+            background: #fff5f5;
+            color: #ee4d2d;
+            font-weight: 600;
+            box-shadow: 0 0 0 1px #ee4d2d inset;
+        }
+
+        .variant-option.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 18px;
+            height: 18px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ee4d2d' d='M0 20 L20 0 L20 20 Z'/%3E%3C/svg%3E") no-repeat center/contain;
+            border-radius: 0 0 6px 0;
+        }
+
+        .variant-option.active::before {
+            content: '✓';
+            position: absolute;
+            bottom: -1px;
+            right: 1px;
+            font-size: 9px;
+            color: white;
+            z-index: 1;
+            line-height: 1;
+        }
+
+        .variant-option .v-img {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .variant-option .v-text {
+            font-size: 13px;
+        }
+
+        .variant-option.out-of-stock {
+            opacity: 0.45;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* ===== SOLD COUNT BADGE ===== */
+        .sold-badge {
+            background: #fff5f5;
+            color: #ee4d2d;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 2px 0;
+        }
+
+        /* ===== REVIEW STYLES ===== */
         .review-summary {
             background: #fff7f2;
             border: 1px solid #ffd8cc;
@@ -225,6 +394,77 @@
                 font-size: 18px;
             }
         }
+
+        /* Variant thumbnails are merged into .thumb-strip — no separate section needed */
+
+        /* ===== QUANTITY BOX V2 ===== */
+        .quantity-box-v2 {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            overflow: hidden;
+            height: 38px;
+        }
+
+        .qty-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            background: #f5f5f5;
+            color: #333;
+            font-size: 18px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .qty-btn:hover:not(:disabled) {
+            background: #ee4d2d;
+            color: #fff;
+        }
+
+        .qty-btn:active:not(:disabled) {
+            background: #d73211;
+            color: #fff;
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .qty-input {
+            width: 54px;
+            height: 38px;
+            border: none;
+            border-left: 1px solid #d9d9d9;
+            border-right: 1px solid #d9d9d9;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+            background: #fff;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+
+        .qty-input::-webkit-inner-spin-button,
+        .qty-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+
+        .qty-note {
+            margin-left: 12px;
+            font-size: 13px;
+            color: #888;
+            align-self: center;
+        }
     </style>
 
     <script>
@@ -244,8 +484,11 @@
 
             <div class="product-detail-card">
                 <div class="product-gallery">
-                    <img id="imgdetailpro" src="image/product1.webp" class="main-product-image">
-                    <div class="thumb-list" id="listimgdetail"></div>
+                    <div class="main-img-wrapper">
+                        <img id="imgdetailpro" src="image/product1.webp" class="main-product-image">
+                    </div>
+                    <!-- Thumbnail strip: product images + variant images in one row -->
+                    <div class="thumb-strip" id="listimgdetail"></div>
                 </div>
 
                 <div class="product-info-area">
@@ -258,14 +501,14 @@
                         <span class="divider"></span>
                         <span id="ratingCountTop">0 Đánh Giá</span>
                         <span class="divider"></span>
-                        <span>Đã Bán 10k+</span>
+                        <span class="sold-badge" id="soldCountTop"></span>
                         <span class="report-link">Tố cáo</span>
                     </div>
 
                     <div class="price-panel">
                         <strong class="newpricestr" id="pricedetail"></strong>
                         <span class="oldpricestr" id="oldpricestr"></span>
-                        <span class="discount-badge">-21%</span>
+                        <span class="discount-badge" id="discountBadge" style="display:none;"></span>
                     </div>
 
                     <div class="shipping-row">
@@ -288,27 +531,29 @@
                     </div>
 
                     <div class="variant-area">
-                        <div class="variant-row">
+                        <div class="variant-row" id="tier1Row" style="display:none;">
                             <div class="label-col">
-                                <span id="tier1label" style="display:none;"></span>
+                                <span id="tier1label"></span>
                             </div>
-                            <div class="variant-options row" id="listbonho"></div>
+                            <div class="variant-options-flex" id="listbonho"></div>
                         </div>
 
-                        <div class="variant-row">
+                        <div class="variant-row" id="tier2Row" style="display:none;">
                             <div class="label-col">
-                                <span id="tier2label" style="display:none;"></span>
+                                <span id="tier2label"></span>
                             </div>
-                            <div class="variant-options row" id="listcolor"></div>
+                            <div class="variant-options-flex" id="listcolor"></div>
                         </div>
                     </div>
 
                     <div class="quantity-row">
                         <div class="label-col">Số Lượng</div>
-                        <div class="quantity-box">
-                            <button type="button">−</button>
-                            <input value="1" readonly>
-                            <button type="button">+</button>
+                        <div class="quantity-box-v2">
+                            <button type="button" id="btnQtyMinus" onclick="changeQty(-1)"
+                                class="qty-btn qty-btn-minus">-</button>
+                            <input type="number" id="qtyInput" value="1" min="1" max="999" readonly class="qty-input">
+                            <button type="button" id="btnQtyPlus" onclick="changeQty(1)"
+                                class="qty-btn qty-btn-plus">+</button>
                         </div>
                         <span id="variantstock" class="stock-box"></span>
                     </div>
@@ -501,9 +746,61 @@
 
         function clickImgdetail(el) {
             document.getElementById("imgdetailpro").src = el.src;
-            const all = document.querySelectorAll(".thumb-item img");
-            all.forEach(item => item.classList.remove("active-thumb"));
-            el.classList.add("active-thumb");
+            const allItems = document.querySelectorAll("#listimgdetail .thumb-item");
+            allItems.forEach(item => item.classList.remove("active-thumb"));
+            el.closest(".thumb-item").classList.add("active-thumb");
+        }
+
+        /* ===== QUANTITY CONTROL ===== */
+        function changeQty(delta) {
+            const input = document.getElementById("qtyInput");
+            if (!input) return;
+            let val = parseInt(input.value) || 1;
+            const maxStock = selectedVariant ? (selectedVariant.quantity || 999) : 999;
+            val = Math.max(1, Math.min(maxStock, val + delta));
+            input.value = val;
+            // Update button states
+            document.getElementById("btnQtyMinus").disabled = val <= 1;
+            document.getElementById("btnQtyPlus").disabled = val >= maxStock;
+        }
+
+        /* ===== VARIANT IMAGE STRIP (merged into main thumb-strip) ===== */
+        function renderVariantImages(variants) {
+            const strip = document.getElementById("listimgdetail");
+            if (!strip) return;
+
+            // Remove previously appended variant thumbs (marked with data-variant)
+            strip.querySelectorAll('.thumb-item[data-variant]').forEach(el => el.remove());
+
+            // Collect variants with unique images
+            const seen = new Set();
+            const withImg = (variants || []).filter(v => {
+                if (!v.image || seen.has(v.image)) return false;
+                seen.add(v.image);
+                return true;
+            });
+
+            if (withImg.length === 0) return;
+
+            withImg.forEach(v => {
+                const label = [v.tier1value, v.tier2value].filter(Boolean).join(' - ') || 'Biến thể';
+                const div = document.createElement('div');
+                div.className = 'thumb-item';
+                div.setAttribute('data-variant', '1');
+                div.setAttribute('title', label);
+                div.innerHTML = `<img src="${v.image}" alt="${label}" onerror="this.src='image/product1.webp'">`;
+                div.addEventListener('click', function () {
+                    document.getElementById('imgdetailpro').src = v.image;
+                    strip.querySelectorAll('.thumb-item').forEach(i => i.classList.remove('active-thumb'));
+                    div.classList.add('active-thumb');
+                });
+                strip.appendChild(div);
+            });
+        }
+
+        /* selectVariantByImage kept for backward compat (not used from strip anymore) */
+        function selectVariantByImage(imgSrc, el) {
+            document.getElementById('imgdetailpro').src = imgSrc;
         }
 
         async function loadAProduct() {
@@ -557,10 +854,34 @@
             }
 
             document.getElementById("pricedetail").innerText = formatmoney(product.price || 0);
-            document.getElementById("oldpricestr").innerText = product.oldPrice ? formatmoney(product.oldPrice) : "";
+            const oldP = product.oldPrice || 0;
+            document.getElementById("oldpricestr").innerText = oldP > 0 ? formatmoney(oldP) : "";
             document.getElementById("imgdetailpro").src = product.imageBanner || "image/product1.webp";
             document.getElementById("imganhkythuat").src = product.imageBanner || "image/product1.webp";
             document.getElementById("tenspkythuat").innerText = product.name || "";
+
+            // Discount badge
+            const discountEl = document.getElementById("discountBadge");
+            if (discountEl && oldP > 0 && product.price > 0 && oldP > product.price) {
+                const pct = Math.round((1 - product.price / oldP) * 100);
+                discountEl.innerText = `-${pct}%`;
+                discountEl.style.display = "";
+            } else if (discountEl) {
+                discountEl.style.display = "none";
+            }
+
+            // Sold count
+            const sold = product.quantitySold || 0;
+            const soldEl = document.getElementById("soldCountTop");
+            if (soldEl) {
+                if (sold >= 1000) {
+                    soldEl.innerText = `Đã Bán ${(sold / 1000).toFixed(1).replace('.0', '')}k+`;
+                } else if (sold > 0) {
+                    soldEl.innerText = `Đã Bán ${sold.toLocaleString('vi-VN')}`;
+                } else {
+                    soldEl.innerText = '';
+                }
+            }
         }
 
         async function loadShopReviewCount(shopId) {
@@ -592,8 +913,6 @@
 
         function renderProductImages(product) {
             const listimgdetail = document.getElementById("listimgdetail");
-            let html = "";
-
             const images = [];
             if (product.imageBanner) images.push(product.imageBanner);
             if (product.productImages && product.productImages.length > 0) {
@@ -602,31 +921,44 @@
                 });
             }
 
-            images.forEach((src, index) => {
-                html += `
-                    <div class="col-lg-3 col-md-3 col-sm-3 col-3 thumb-item">
-                        <img onclick="clickImgdetail(this)" src="${src}" class="${index === 0 ? 'active-thumb' : ''}">
-                    </div>
-                `;
-            });
+            listimgdetail.innerHTML = images.map((src, index) => `
+                <div class="thumb-item ${index === 0 ? 'active-thumb' : ''}" onclick="clickImgdetail(this.querySelector('img'))">
+                    <img src="${src}" alt="ảnh sản phẩm ${index + 1}"
+                         onerror="this.src='image/product1.webp'">
+                </div>
+            `).join('');
+        }
 
-            listimgdetail.innerHTML = html;
+        function buildVariantOptionHTML(value, variantRef, isActive, onclickFn) {
+            const imgSrc = variantRef && variantRef.image ? variantRef.image : '';
+            const imgTag = imgSrc
+                ? `<img src="${imgSrc}" class="v-img" onerror="this.style.display='none'">`
+                : '';
+            const outOfStock = variantRef && (variantRef.quantity <= 0) ? 'out-of-stock' : '';
+            return `<div class="variant-option ${isActive ? 'active' : ''} ${outOfStock}" onclick="${onclickFn}">
+                        ${imgTag}<span class="v-text">${value}</span>
+                    </div>`;
         }
 
         function renderVariants(product) {
             const variants = product.productVariants || [];
             const tier1Label = document.getElementById("tier1label");
             const tier2Label = document.getElementById("tier2label");
+            const tier1Row = document.getElementById("tier1Row");
+            const tier2Row = document.getElementById("tier2Row");
             const listTier1 = document.getElementById("listbonho");
             const listTier2 = document.getElementById("listcolor");
 
-            tier1Label.style.display = "none";
-            tier2Label.style.display = "none";
+            tier1Row.style.display = "none";
+            tier2Row.style.display = "none";
             listTier1.innerHTML = "";
             listTier2.innerHTML = "";
             selectedVariant = null;
             selectedTier1Value = null;
             selectedTier2Value = null;
+
+            // Always render variant image strip
+            renderVariantImages(variants);
 
             if (!variants.length) {
                 document.getElementById("phukiendikem").innerText = "Không có biến thể";
@@ -640,29 +972,22 @@
             const tier2Values = [...new Set(variants.map(v => v.tier2value).filter(v => v != null && v !== ""))];
 
             if (tier1name && tier1Values.length > 0) {
-                tier1Label.style.display = "block";
+                tier1Row.style.display = "flex";
                 tier1Label.innerText = tier1name;
 
-                let html1 = "";
-                tier1Values.forEach(value => {
-                    html1 += `
-                        <div class="col-md-4 col-6">
-                            <div class="variant-option" onclick="selectTier1('${escapeJs(value)}', this)">${value}</div>
-                        </div>
-                    `;
-                });
-                listTier1.innerHTML = html1;
+                listTier1.innerHTML = tier1Values.map((value, idx) => {
+                    const ref = variants.find(v => v.tier1value === value) || null;
+                    return buildVariantOptionHTML(value, ref, idx === 0,
+                        `selectTier1('${escapeJs(value)}', this)`);
+                }).join('');
             }
 
             if (tier2name && tier2Values.length > 0) {
-                tier2Label.style.display = "block";
                 tier2Label.innerText = tier2name;
             }
 
             if (tier1Values.length > 0) {
                 selectedTier1Value = tier1Values[0];
-                const first = document.querySelector("#listbonho .variant-option");
-                if (first) first.classList.add("active");
                 renderTier2Options();
             } else if (tier2Values.length > 0) {
                 selectedTier2Value = tier2Values[0];
@@ -683,46 +1008,45 @@
 
         function renderTier2Options() {
             const listTier2 = document.getElementById("listcolor");
+            const tier2Row = document.getElementById("tier2Row");
             const variants = currentProduct.productVariants || [];
             const matched = variants.filter(v => selectedTier1Value == null || v.tier1value === selectedTier1Value);
             const tier2Values = [...new Set(matched.map(v => v.tier2value).filter(v => v != null && v !== ""))];
 
             if (tier2Values.length === 0) {
                 listTier2.innerHTML = "";
+                tier2Row.style.display = "none";
                 selectedTier2Value = null;
                 updateSelectedVariant();
                 return;
             }
 
-            let html = "";
-            tier2Values.forEach((value, index) => {
-                html += `
-                    <div class="col-md-4 col-6">
-                        <div class="variant-option ${index === 0 ? 'active' : ''}" onclick="selectTier2('${escapeJs(value)}', this)">${value}</div>
-                    </div>
-                `;
-            });
+            tier2Row.style.display = "flex";
+            listTier2.innerHTML = tier2Values.map((value, index) => {
+                const ref = matched.find(v => v.tier2value === value) || null;
+                return buildVariantOptionHTML(value, ref, index === 0,
+                    `selectTier2('${escapeJs(value)}', this)`);
+            }).join('');
 
-            listTier2.innerHTML = html;
             selectedTier2Value = tier2Values[0];
             updateSelectedVariant();
         }
 
         function renderOnlyTier2Options() {
             const listTier2 = document.getElementById("listcolor");
+            const tier2Row = document.getElementById("tier2Row");
             const variants = currentProduct.productVariants || [];
             const tier2Values = [...new Set(variants.map(v => v.tier2value).filter(v => v != null && v !== ""))];
 
-            let html = "";
-            tier2Values.forEach((value, index) => {
-                html += `
-                    <div class="col-md-4 col-6">
-                        <div class="variant-option ${index === 0 ? 'active' : ''}" onclick="selectTier2('${escapeJs(value)}', this)">${value}</div>
-                    </div>
-                `;
-            });
+            if (tier2Values.length === 0) { tier2Row.style.display = "none"; return; }
 
-            listTier2.innerHTML = html;
+            tier2Row.style.display = "flex";
+            listTier2.innerHTML = tier2Values.map((value, index) => {
+                const ref = variants.find(v => v.tier2value === value) || null;
+                return buildVariantOptionHTML(value, ref, index === 0,
+                    `selectTier2('${escapeJs(value)}', this)`);
+            }).join('');
+
             selectedTier2Value = tier2Values[0];
             updateSelectedVariant();
         }
@@ -747,10 +1071,50 @@
 
         function updateProductViewByVariant() {
             if (!selectedVariant) return;
-            document.getElementById("pricedetail").innerText = formatmoney(selectedVariant.price || currentProduct.price || 0);
+            const varPrice = selectedVariant.price || currentProduct.price || 0;
+            document.getElementById("pricedetail").innerText = formatmoney(varPrice);
             document.getElementById("phukiendikem").innerText = buildVariantDisplayText(selectedVariant);
-            document.getElementById("variantstock").innerText = `Số lượng còn lại: ${selectedVariant.quantity || 0}`;
-            if (selectedVariant.image) document.getElementById("imgdetailpro").src = selectedVariant.image;
+
+            // Stock
+            const qty = selectedVariant.quantity || 0;
+            const stockEl = document.getElementById("variantstock");
+            stockEl.innerText = `Số lượng còn lại: ${qty}`;
+            stockEl.style.color = qty <= 5 && qty > 0 ? '#ee4d2d' : '';
+
+            // Reset quantity input & buttons when variant changes
+            const qtyInput = document.getElementById("qtyInput");
+            if (qtyInput) {
+                qtyInput.value = 1;
+                qtyInput.max = qty > 0 ? qty : 999;
+            }
+            const btnMinus = document.getElementById("btnQtyMinus");
+            const btnPlus = document.getElementById("btnQtyPlus");
+            if (btnMinus) btnMinus.disabled = true;  // value starts at 1
+            if (btnPlus) btnPlus.disabled = qty <= 1;
+
+            // Update main image + sync active thumbnail (including variant thumbs)
+            if (selectedVariant.image) {
+                document.getElementById("imgdetailpro").src = selectedVariant.image;
+                const thumbs = document.querySelectorAll("#listimgdetail .thumb-item");
+                thumbs.forEach(item => {
+                    item.classList.remove("active-thumb");
+                    const img = item.querySelector("img");
+                    if (img && (img.src === selectedVariant.image || img.getAttribute('src') === selectedVariant.image))
+                        item.classList.add("active-thumb");
+                });
+            }
+
+            // Recalculate discount badge for this variant
+            const baseOld = currentProduct.oldPrice || 0;
+            const discountEl = document.getElementById("discountBadge");
+            if (discountEl && baseOld > varPrice && varPrice > 0) {
+                const pct = Math.round((1 - varPrice / baseOld) * 100);
+                discountEl.innerText = `-${pct}%`;
+                discountEl.style.display = "";
+            } else if (discountEl) {
+                discountEl.style.display = "none";
+            }
+
             idVariantCart = selectedVariant.id;
         }
 
@@ -784,8 +1148,9 @@
                 toastr.warning("Vui lòng chọn biến thể sản phẩm");
                 return;
             }
+            let sl = document.getElementById("qtyInput").value;
 
-            const url = `http://localhost:8080/api/cart/user/add-cart?productVariantId=${selectedVariant.id}`;
+            const url = `http://localhost:8080/api/cart/user/add-cart?productVariantId=${selectedVariant.id}&quantity=${sl}`;
 
             try {
                 const response = await fetch(url, {

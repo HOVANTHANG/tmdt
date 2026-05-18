@@ -72,4 +72,14 @@ public class CategoryServiceImp implements CategoryService {
     public List<Category> findByType(CategoryType categoryType) {
         return categoryRepository.findByType(categoryType);
     }
+
+    @Override
+    public List<Category> findRootCategories() {
+        return categoryRepository.findRootCategories();
+    }
+
+    @Override
+    public List<Category> findByParentId(Long parentId) {
+        return categoryRepository.findByParentId(parentId);
+    }
 }

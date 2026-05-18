@@ -22,7 +22,13 @@ public interface VoucherRepository extends JpaRepository<Voucher,Long> {
     @Query("select v from Voucher v where v.startDate >= ?1 and v.endDate <= ?2")
     public List<Voucher> findByDate(Date start, Date end);
 
-
     @Query("select v from Voucher v where v.startDate >= ?1 and v.endDate <= ?2")
     public Page<Voucher> findByDate(Date start, Date end, Pageable pageable);
+
+    // Queries lọc theo shop
+    @Query("select v from Voucher v where v.shop.id = ?1 and v.startDate >= ?2 and v.endDate <= ?3")
+    public List<Voucher> findByShopAndDate(Long shopId, Date start, Date end);
+
+    @Query("select v from Voucher v where v.shop.id = ?1 and v.startDate >= ?2 and v.endDate <= ?3")
+    public Page<Voucher> findByShopAndDate(Long shopId, Date start, Date end, Pageable pageable);
 }

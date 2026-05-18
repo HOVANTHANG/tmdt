@@ -77,7 +77,7 @@ public class VoucherApi {
 
     @PostMapping("/seller/create")
     public ResponseEntity<?> save1(@RequestBody Voucher voucher) {
-        Voucher result = voucherService.create(voucher);
+        Voucher result = voucherService.createForSeller(voucher);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
@@ -103,14 +103,14 @@ public class VoucherApi {
     public ResponseEntity<?> findAll1(@RequestParam(value = "start", required = false) Date start,
             @RequestParam(value = "end", required = false) Date end,
             Pageable pageable) {
-        Page<Voucher> result = voucherService.findAll(start, end, pageable);
+        Page<Voucher> result = voucherService.findAllBySeller(start, end, pageable);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/seller/findAll-list")
     public ResponseEntity<?> findAllList1(@RequestParam(value = "start", required = false) Date start,
             @RequestParam(value = "end", required = false) Date end) {
-        List<Voucher> result = voucherService.findAll(start, end);
+        List<Voucher> result = voucherService.findAllListBySeller(start, end);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

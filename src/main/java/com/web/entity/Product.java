@@ -1,6 +1,7 @@
 package com.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,8 +52,9 @@ public class Product {
     @JoinColumn(name = "trademark_id")
     private TradeMark tradeMark;
 
-    @ManyToOne
     @JoinColumn(name = "category_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
