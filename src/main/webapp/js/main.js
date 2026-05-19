@@ -425,16 +425,19 @@ $(document).ready(function () {
 });
 
 function connect(username) {
-    var socket = new SockJS('/hello');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({ username: username, }, function () {
-        console.log('Web Socket is connected');
-        stompClient.subscribe('/users/queue/messages', function (message) {
-            // var Idsender = message.headers.sender
-            appendRecivers(message.body)
+    if (typeof SockJS === 'undefined' || typeof Stomp === 'undefined') return;
+    try {
+        var socket = new SockJS('/hello');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({ username: username, }, function () {
+            console.log('Web Socket is connected');
+            stompClient.subscribe('/users/queue/messages', function (message) {
+                appendRecivers(message.body)
+            });
         });
-
-    });
+    } catch (e) {
+        // SockJS không khả dụng trên trang này
+    }
 }
 
 
@@ -471,24 +474,34 @@ function appendRecivers(message) {
 
 
 async function loadMyChat() {
+    // Không gọi nếu chưa đăng nhập hoặc element không tồn tại trên trang này
+    if (!token) return;
+    var listchatEl = document.getElementById("listchat");
+    if (!listchatEl) return;
+
     var url = 'http://localhost:8080/api/chat/user/my-chat';
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + token
-        })
-    });
-    var list = await response.json();
-    var main = '';
-    for (i = 0; i < list.length; i++) {
-        if (list[i].sender.authorities.name == "ROLE_USER") {
-            main += `<p class="mychat">${list[i].content}</p>`
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+                'Authorization': 'Bearer ' + token
+            })
+        });
+        if (!response.ok) return;
+        var list = await response.json();
+        var main = '';
+        for (i = 0; i < list.length; i++) {
+            if (list[i].sender.authorities.name == "ROLE_USER") {
+                main += `<p class="mychat">${list[i].content}</p>`
+            }
+            else {
+                main += `<p class="adminchat">${list[i].content}</p>`
+            }
         }
-        else {
-            main += `<p class="adminchat">${list[i].content}</p>`
-        }
+        listchatEl.innerHTML = main;
+    } catch (e) {
+        // Bỏ qua lỗi khi trang không có listchat
     }
-    document.getElementById("listchat").innerHTML = main
 }
 
 

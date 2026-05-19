@@ -32,29 +32,37 @@ async function initChatWidget() {
 /* ── STOMP ── */
 function connectChatStomp() {
     if (!chatMyId) return;
-    const sock = new SockJS(CHAT_BASE_URL + "/hello");
-    chatStompClient = Stomp.over(sock);
-    chatStompClient.debug = null;
-    chatStompClient.connect({}, function () {
-        const topic = "/topic/chat/" + chatMyId;
-        console.log("[Chat Widget] STOMP subscribed:", topic);
-        chatStompClient.subscribe(topic, function (frame) {
-            const msg = JSON.parse(frame.body);
-            console.log("[Chat Widget] WS received:", msg);
-            const incomingRoomId = Number(msg.roomId);
-            const currentRoomId  = selectedChatRoom ? Number(selectedChatRoom.roomId) : null;
-            if (currentRoomId && incomingRoomId === currentRoomId) {
-                appendChatBubble(msg.content, false);
-            } else {
-                // Highlight badge + room
-                highlightChatRoom(incomingRoomId);
-                const badge = document.getElementById("chatRoomCount");
-                if (badge) badge.style.background = "#ee4d2d";
-            }
+    // Guard: SockJS hoặc Stomp chưa được load trên trang này
+    if (typeof SockJS === "undefined" || typeof Stomp === "undefined") {
+        console.warn("[Chat Widget] SockJS/Stomp not loaded — realtime disabled.");
+        return;
+    }
+    try {
+        const sock = new SockJS(CHAT_BASE_URL + "/hello");
+        chatStompClient = Stomp.over(sock);
+        chatStompClient.debug = null;
+        chatStompClient.connect({}, function () {
+            const topic = "/topic/chat/" + chatMyId;
+            console.log("[Chat Widget] STOMP subscribed:", topic);
+            chatStompClient.subscribe(topic, function (frame) {
+                const msg = JSON.parse(frame.body);
+                console.log("[Chat Widget] WS received:", msg);
+                const incomingRoomId = Number(msg.roomId);
+                const currentRoomId  = selectedChatRoom ? Number(selectedChatRoom.roomId) : null;
+                if (currentRoomId && incomingRoomId === currentRoomId) {
+                    appendChatBubble(msg.content, false);
+                } else {
+                    highlightChatRoom(incomingRoomId);
+                    const badge = document.getElementById("chatRoomCount");
+                    if (badge) badge.style.background = "#ee4d2d";
+                }
+            });
+        }, function (err) {
+            console.error("[Chat Widget] STOMP error:", err);
         });
-    }, function (err) {
-        console.error("[Chat Widget] STOMP error:", err);
-    });
+    } catch (e) {
+        console.error("[Chat Widget] connectChatStomp error:", e);
+    }
 }
 
 /* ── HTML Template ── */
@@ -290,6 +298,11 @@ async function sendChatMessage() {
         });
 
         if (res.ok) {
+            const saved = await res.json();
+            // Cập nhật roomId nếu lần đầu nhắn tin (room mới được tạo)
+            if (saved && saved.roomId && !selectedChatRoom.roomId) {
+                selectedChatRoom.roomId = saved.roomId;
+            }
             appendChatBubble(content, true);
             input.value = "";
             const last = document.getElementById("chat-last-" + selectedChatRoom.roomId);
@@ -321,8 +334,39 @@ function openChatWithShop(shop) {
     loadChatRooms().then(function () {
         // Find room by shopId
         const room = chatRooms.find(function (r) { return r.shopId === shop.id; });
-        if (room) selectChatRoom(room.roomId);
+        if (room) {
+            selectChatRoom(room.roomId);
+        } else {
+            // Chưa có room (lần đầu chat với shop) → mở chat mới trực tiếp
+            openNewChatWithShop(shop);
+        }
     });
+}
+
+/* ── Mở chat mới với shop chưa từng nhắn tin ── */
+function openNewChatWithShop(shop) {
+    // Tạo room giả để hiện UI
+    selectedChatRoom = {
+        shopId:       shop.id,
+        shopName:     shop.shopName || shop.name || "Shop",
+        sellerUserId: shop.sellerUserId || null,
+        roomId:       null   // chưa có roomId thật, sẽ được tạo khi gửi tin đầu tiên
+    };
+
+    document.getElementById("chatMainTitle").innerText = selectedChatRoom.shopName;
+    document.getElementById("chatEmpty").style.display        = "none";
+    document.getElementById("chatMessageArea").style.display  = "block";
+    document.getElementById("chatInputArea").style.display    = "flex";
+
+    const box = document.getElementById("chatMessageArea");
+    if (box) {
+        box.innerHTML = `<div style="text-align:center;color:#aaa;padding:20px;font-size:13px;">
+            Bắt đầu cuộc trò chuyện với <b>${selectedChatRoom.shopName}</b>
+        </div>`;
+    }
+
+    const input = document.getElementById("chatInput");
+    if (input) input.focus();
 }
 
 /* ── Helpers ── */

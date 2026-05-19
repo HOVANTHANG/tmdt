@@ -27,6 +27,10 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" href="css/chat-widget.css">
 
+    <!-- SockJS + STOMP (required by chat-widget.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
     <script src="js/main.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/comment.js"></script>
@@ -35,15 +39,14 @@
         /* ===== PRODUCT GALLERY ===== */
         .product-gallery {
             width: 100%;
-            position: sticky;
-            top: 16px;
+            position: static; /* Mặc định không sticky, cuộn bình thường */
         }
 
-        /* Trên mobile: tắt sticky để ảnh cuộn bình thường */
-        @media (max-width: 767px) {
+        /* Chỉ bật sticky trên màn hình desktop (≥992px) khi layout 2 cột */
+        @media (min-width: 992px) {
             .product-gallery {
-                position: static !important;
-                top: auto !important;
+                position: sticky;
+                top: 16px;
             }
         }
 
