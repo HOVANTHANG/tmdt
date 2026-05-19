@@ -2,6 +2,23 @@ var listFile = [];
 
 var storagelist = [];
 
+// ── Badge trạng thái sản phẩm ────────────────────────────
+function statusBadge(status) {
+    if (status === 'APPROVED') {
+        return `<span style="background:#dcfce7;color:#15803d;font-size:.72rem;font-weight:700;
+                border-radius:6px;padding:3px 9px;">
+                <i class="fa fa-check-circle"></i> Đã duyệt</span>`;
+    }
+    if (status === 'REJECTED') {
+        return `<span style="background:#fee2e2;color:#dc2626;font-size:.72rem;font-weight:700;
+                border-radius:6px;padding:3px 9px;">
+                <i class="fa fa-times-circle"></i> Bị từ chối</span>`;
+    }
+    return `<span style="background:#fef9c3;color:#a16207;font-size:.72rem;font-weight:700;
+            border-radius:6px;padding:3px 9px;">
+            <i class="fa fa-clock"></i> Chờ duyệt</span>`;
+}
+
 async function loadAProduct() {
     var uls = new URL(document.URL)
     var id = uls.searchParams.get("id");
@@ -382,6 +399,7 @@ async function loadProduct(page, param = "") {
                     <td>${list[i].createdTime || ''}<br>${list[i].createdDate || ''}</td>
                     <td>${stockDetail}</td>
                     <td>${list[i].shop ? list[i].shop.shopName : ''}</td>
+                    <td>${statusBadge(list[i].status)}</td>
                     <td class="sticky-col">
                         <i onclick="deleteProduct(${list[i].id})" class="fa fa-trash-alt iconaction"></i>
                         <a href="addproduct?id=${list[i].id}">

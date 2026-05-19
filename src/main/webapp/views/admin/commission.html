@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Chiết khấu | Admin</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <!-- Admin CSS + Menu -->
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="js/menu.js"></script>
+    <script src="js/commission.js"></script>
+
+    <style>
+        /* ── Stat Cards ───────────────────────── */
+        .cm-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            padding: 24px 28px 0;
+        }
+        .cm-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+            transition: transform .2s;
+        }
+        .cm-card:hover { transform: translateY(-2px); }
+        .cm-card-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; flex-shrink: 0;
+        }
+        .cm-card-icon.blue   { background: rgba(59,130,246,.12);  color: #3b82f6; }
+        .cm-card-icon.green  { background: rgba(16,185,129,.12); color: #10b981; }
+        .cm-card-icon.amber  { background: rgba(245,158,11,.12);  color: #f59e0b; }
+        .cm-card-value { font-size: 22px; font-weight: 800; color: #111827; line-height:1.1; }
+        .cm-card-label { font-size: 11.5px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-top: 3px; }
+
+        /* ── Page Header ──────────────────────── */
+        .cm-page-header {
+            display: flex; align-items: center; gap: 14px;
+            padding: 22px 28px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .cm-page-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: #fff;
+        }
+        .cm-page-header h1 { font-size: 1.35rem; font-weight: 700; color: #111827; margin: 0; }
+        .cm-page-header p  { font-size: .82rem; color: #6b7280; margin: 2px 0 0; }
+
+        /* ── Chart ────────────────────────────── */
+        .cm-chart-wrap {
+            margin: 20px 28px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px 24px;
+        }
+        .cm-chart-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .cm-chart-title { font-weight: 700; font-size: .95rem; color: #111827; }
+        .cm-chart-nav { display: flex; align-items: center; gap: 10px; }
+        .cm-chart-nav button {
+            background: #f3f4f6; border: none; border-radius: 7px;
+            padding: 5px 12px; cursor: pointer; font-size: .82rem; font-weight: 600;
+            transition: background .15s;
+        }
+        .cm-chart-nav button:hover { background: #e5e7eb; }
+        #chartYear { font-weight: 800; font-size: 1rem; color: #3b82f6; min-width: 45px; text-align: center; }
+        .cm-chart-canvas-wrap { height: 240px; }
+
+        /* ── Global Rate ──────────────────────── */
+        .cm-global-wrap {
+            margin: 0 28px 20px;
+            background: linear-gradient(135deg, #eff6ff, #eef2ff);
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .cm-global-wrap label {
+            font-weight: 700; font-size: .88rem; color: #1e40af;
+            white-space: nowrap;
+        }
+        .cm-rate-global-input {
+            border: 2px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: .9rem;
+            font-weight: 700;
+            width: 100px;
+            color: #1e40af;
+            background: #fff;
+            outline: none;
+        }
+        .cm-rate-global-input:focus { border-color: #3b82f6; }
+        .cm-btn-global {
+            background: #3b82f6; color: #fff;
+            border: none; border-radius: 8px;
+            padding: 9px 20px; font-weight: 600; font-size: .85rem;
+            cursor: pointer; transition: background .2s;
+        }
+        .cm-btn-global:hover { background: #2563eb; }
+        .cm-global-note { font-size: .78rem; color: #4b5563; flex: 1; }
+
+        /* ── Table ────────────────────────────── */
+        .cm-table-wrap { padding: 0 28px 28px; overflow-x: auto; }
+        .cm-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+        .cm-table thead th {
+            background: #f3f4f6; color: #374151; font-weight: 600;
+            padding: 11px 14px; text-align: left; white-space: nowrap;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .cm-table tbody tr { border-bottom: 1px solid #f3f4f6; transition: background .15s; }
+        .cm-table tbody tr:hover { background: #fafafa; }
+        .cm-table td { padding: 11px 14px; vertical-align: middle; }
+
+        .cm-avatar { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1px solid #e5e7eb; }
+        .cm-avatar-ph {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: #f3f4f6; display: flex; align-items: center;
+            justify-content: center; color: #9ca3af; font-size: 1.2rem;
+        }
+        .cm-rate-badge {
+            background: rgba(59,130,246,.1); color: #2563eb;
+            font-weight: 700; font-size: .8rem;
+            border-radius: 6px; padding: 3px 10px;
+        }
+        .cm-actions { display: flex; gap: 8px; align-items: center; }
+        .cm-rate-input {
+            border: 1.5px solid #d1d5db; border-radius: 7px;
+            padding: 6px 10px; width: 75px;
+            font-size: .85rem; font-weight: 700; color: #374151;
+            outline: none; text-align: center;
+        }
+        .cm-rate-input:focus { border-color: #3b82f6; }
+        .cm-btn-save {
+            background: #10b981; color: #fff; border: none;
+            border-radius: 7px; padding: 6px 14px;
+            font-size: .8rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            transition: background .2s;
+        }
+        .cm-btn-save:hover { background: #059669; }
+
+        /* ── State ────────────────────────────── */
+        .cm-state {
+            text-align: center; padding: 50px 0 !important; color: #6b7280;
+        }
+        .cm-spinner {
+            width: 32px; height: 32px;
+            border: 3px solid #e5e7eb; border-top-color: #3b82f6;
+            border-radius: 50%; animation: spin .8s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .cm-section-title {
+            font-size: .88rem; font-weight: 700; color: #374151;
+            padding: 18px 28px 10px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .cm-section-title i { color: #3b82f6; }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav"></div>
+        <div id="layoutSidenav_content">
+            <main>
+
+                <!-- Page Header -->
+                <div class="cm-page-header">
+                    <div class="cm-page-icon"><i class="fa-solid fa-percent"></i></div>
+                    <div>
+                        <h1>Quản lý Chiết Khấu</h1>
+                        <p>Cấu hình tỉ lệ chiết khấu và theo dõi thu nhập từ các cửa hàng</p>
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="cm-stats">
+                    <div class="cm-card">
+                        <div class="cm-card-icon blue"><i class="fa-solid fa-calendar-day"></i></div>
+                        <div>
+                            <div class="cm-card-value" id="commissionThisMonth">—</div>
+                            <div class="cm-card-label">Chiết khấu tháng này</div>
+                        </div>
+                    </div>
+                    <div class="cm-card">
+                        <div class="cm-card-icon green"><i class="fa-solid fa-coins"></i></div>
+                        <div>
+                            <div class="cm-card-value" id="commissionAllTime">—</div>
+                            <div class="cm-card-label">Tổng chiết khấu tất cả</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="cm-chart-wrap">
+                    <div class="cm-chart-header">
+                        <div class="cm-chart-title">
+                            <i class="fa-solid fa-chart-column" style="color:#3b82f6;margin-right:7px;"></i>
+                            Chiết khấu theo tháng
+                        </div>
+                        <div class="cm-chart-nav">
+                            <button onclick="prevYear()"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span id="chartYear"></span>
+                            <button onclick="nextYear()"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="cm-chart-canvas-wrap">
+                        <canvas id="commissionChartCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Global Rate -->
+                <div class="cm-section-title">
+                    <i class="fa-solid fa-globe"></i> Đặt tỉ lệ chiết khấu toàn cục
+                </div>
+                <div class="cm-global-wrap">
+                    <label><i class="fa-solid fa-percent me-1"></i> Tỉ lệ áp dụng cho tất cả shop:</label>
+                    <input type="number" id="globalRateInput" class="cm-rate-global-input"
+                           value="5" min="0" max="100" step="0.5" />
+                    <button class="cm-btn-global" onclick="applyGlobalRate()">
+                        <i class="fa-solid fa-check me-1"></i>Áp dụng tất cả
+                    </button>
+                    <span class="cm-global-note">
+                        <i class="fa-solid fa-circle-info me-1" style="color:#6b7280;"></i>
+                        Thao tác này sẽ ghi đè tỉ lệ hiện tại của tất cả shop đang hoạt động.
+                    </span>
+                </div>
+
+                <!-- Table -->
+                <div class="cm-section-title">
+                    <i class="fa-solid fa-store"></i> Chiết khấu theo từng cửa hàng
+                </div>
+                <div class="cm-table-wrap">
+                    <table class="cm-table">
+                        <thead>
+                            <tr>
+                                <th>Avatar</th>
+                                <th>Cửa hàng</th>
+                                <th>Tỉ lệ hiện tại</th>
+                                <th>Doanh thu tổng</th>
+                                <th>Chiết khấu tháng này</th>
+                                <th>Chiết khấu tổng</th>
+                                <th style="min-width:200px;">Điều chỉnh tỉ lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="commissionTable">
+                            <tr>
+                                <td colspan="7" class="cm-state">
+                                    <div class="cm-spinner"></div>
+                                    <span>Đang tải dữ liệu...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</body>
+</html>

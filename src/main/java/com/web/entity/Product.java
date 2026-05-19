@@ -3,6 +3,7 @@ package com.web.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.web.enums.ProductStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,6 +48,12 @@ public class Product {
     private Long reviewCount = 0L;
 
     private Boolean deleted = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ProductStatus status = ProductStatus.PENDING;
+
+    private String rejectedReason;
 
     @ManyToOne
     @JoinColumn(name = "trademark_id")

@@ -100,6 +100,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByShopAndCategoryAndTrademark(Long shopId, String search, Long categoryId, Long trademarkId,
             Pageable pageable);
 
+    /** Trang shop công khai – chỉ hiện sản phẩm APPROVED */
+    @Query("select p from Product p where p.shop.id = ?1 and p.deleted = false and p.status = com.web.enums.ProductStatus.APPROVED")
     Page<Product> findByShopIdAndDeletedFalse(Long shopId, Pageable pageable);
 
     Page<Product> findByCategoryIdAndDeletedFalse(Long categoryId, Pageable pageable);
@@ -108,15 +110,38 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * Tìm sản phẩm theo danh mục CHA hoặc danh mục CON của nó.
      * LEFT JOIN để không loại sản phẩm có category không có parent.
      */
-    @Query(value = "select p from Product p " +
-            "left join p.category c " +
-            "left join c.parent parent " +
-            "where p.deleted = false " +
-            "and (c.id = :categoryId or parent.id = :categoryId)", countQuery = "select count(p) from Product p " +
-                    "left join p.category c " +
-                    "left join c.parent parent " +
-                    "where p.deleted = false " +
-                    "and (c.id = :categoryId or parent.id = :categoryId)")
+    @Query(value = """
+                select distinct p
+                from Product p
+                join fetch p.category c
+                left join fetch c.parent parent
+                join fetch p.shop s
+                where p.deleted = false
+                and s.status = com.web.enums.ShopStatus.APPROVED
+                and p.status = com.web.enums.ProductStatus.APPROVED
+                and (c.id = :categoryId or parent.id = :categoryId)
+                order by
+                case
+                    when c.id = :categoryId then 100
+                    else 50
+                end desc,
+                s.avgStar desc,
+                s.reviewCount desc,
+                p.avgStar desc,
+                p.reviewCount desc,
+                p.sold desc,
+                p.price asc
+            """, countQuery = """
+                select count(distinct p)
+                from Product p
+                join p.category c
+                left join c.parent parent
+                join p.shop s
+                where p.deleted = false
+                and s.status = com.web.enums.ShopStatus.APPROVED
+                and p.status = com.web.enums.ProductStatus.APPROVED
+                and (c.id = :categoryId or parent.id = :categoryId)
+            """)
     Page<Product> findByCategoryIdIncludingChildren(@Param("categoryId") Long categoryId, Pageable pageable);
 
     Long countByShopId(Long shopId);
@@ -128,6 +153,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 where p.deleted = false
                 and p.shop is not null
                 and p.shop.status = com.web.enums.ShopStatus.APPROVED
+                and p.status = com.web.enums.ProductStatus.APPROVED
                 and (
                     lower(p.name) like lower(concat('%', :keyword, '%'))
                     or lower(p.code) like lower(concat('%', :keyword, '%'))
@@ -154,6 +180,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 where p.deleted = false
                 and p.shop is not null
                 and p.shop.status = com.web.enums.ShopStatus.APPROVED
+                and p.status = com.web.enums.ProductStatus.APPROVED
                 and (
                     lower(p.name) like lower(concat('%', :keyword, '%'))
                     or lower(p.code) like lower(concat('%', :keyword, '%'))
@@ -162,5 +189,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 )
             """)
     Page<Product> searchMarketplace(@Param("keyword") String keyword, Pageable pageable);
+
+    // ===================== PRODUCT APPROVAL =====================
+
+    /** Lấy tất cả sản phẩm chờ duyệt (PENDING) */
+    @Query("select p from Product p where p.deleted = false and p.status = com.web.enums.ProductStatus.PENDING order by p.createdDate desc, p.createdTime desc")
+    Page<Product> findAllPending(Pageable pageable);
+
+    /** Tìm kiếm sản phẩm chờ duyệt theo tên/mã */
+    @Query("select p from Product p where p.deleted = false and p.status = com.web.enums.ProductStatus.PENDING " +
+            "and (lower(p.name) like lower(concat('%', :keyword, '%')) or lower(p.code) like lower(concat('%', :keyword, '%'))) "
+            +
+            "order by p.createdDate desc, p.createdTime desc")
+    Page<Product> searchPending(@Param("keyword") String keyword, Pageable pageable);
+
+    /** Đếm số sản phẩm đang chờ duyệt */
+    @Query("select count(p) from Product p where p.deleted = false and p.status = com.web.enums.ProductStatus.PENDING")
+    Long countPending();
 
 }

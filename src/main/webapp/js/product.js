@@ -105,7 +105,7 @@ async function loadPhuKien(page) {
 
 
 async function loadSanPhamNoiBat() {
-    var url = 'http://localhost:8080/api/product/public/best-saler?page=0&size=4&sort=quantitySold,desc';
+    var url = 'http://localhost:8080/api/product/public/best-saler?page=0&size=4&sort=sold,desc';
     const response = await fetch(url, {
     });
     var result = await response.json();
@@ -130,7 +130,7 @@ async function loadSanPhamNoiBat() {
 
 
 async function loadSanPhamNoiBatCart() {
-    var url = 'http://localhost:8080/api/product/public/best-saler?page=0&size=4&sort=quantitySold,desc';
+    var url = 'http://localhost:8080/api/product/public/best-saler?page=0&size=4&sort=sold,desc';
     const response = await fetch(url);
     var result = await response.json();
     var list = result.content;
@@ -349,11 +349,11 @@ function calcRelevanceScore(product, keyword) {
     var kw = keyword.trim().toLowerCase();
     var name = (product.name || '').toLowerCase();
     var score = 0;
-    if (name === kw)                   score = 3000;
-    else if (name.startsWith(kw))      score = 2000;
-    else if (name.includes(kw))        score = 1000;
+    if (name === kw) score = 3000;
+    else if (name.startsWith(kw)) score = 2000;
+    else if (name.includes(kw)) score = 1000;
     // bonus: từng từ trong keyword khớp riêng lẻ
-    kw.split(/\s+/).forEach(function(word) {
+    kw.split(/\s+/).forEach(function (word) {
         if (word.length > 1 && name.includes(word)) score += 100;
     });
     // bonus lượng bán
@@ -403,23 +403,23 @@ function renderProductCard(p, keyword) {
 async function sanPhamByThuongHieuAndDanhMuc(page) {
     var uls = new URL(document.URL)
     var thuonghieu = uls.searchParams.get("thuonghieu");
-    var danhmuc    = uls.searchParams.get("danhmuc");
-    var search     = uls.searchParams.get("search");
+    var danhmuc = uls.searchParams.get("danhmuc");
+    var search = uls.searchParams.get("search");
 
     var fetchSize = search ? Math.max(size, 20) : size;
 
     var url = 'http://localhost:8080/api/product/public/loc-san-pham?page=' + page
-            + '&size=' + fetchSize + '&sort=id,desc&small=0&large=1000000000';
+        + '&size=' + fetchSize + '&sort=id,desc&small=0&large=1000000000';
     if (thuonghieu != null) url += '&trademark=' + thuonghieu;
-    if (danhmuc    != null) url += '&idcategory=' + danhmuc;
-    if (search     != null) url += '&search=' + encodeURIComponent(search);
+    if (danhmuc != null) url += '&idcategory=' + danhmuc;
+    if (search != null) url += '&search=' + encodeURIComponent(search);
 
     const response = await fetch(url);
     var result = await response.json();
     var list = result.content;
 
     if (search) {
-        list.sort(function(a, b) {
+        list.sort(function (a, b) {
             return calcRelevanceScore(b, search) - calcRelevanceScore(a, search);
         });
     }
@@ -459,7 +459,7 @@ async function sanPhamByThuongHieuAndDanhMuc(page) {
 
 async function locSanPham(page) {
     var searchEl = document.getElementById("search");
-    var search   = searchEl ? searchEl.value.trim() : '';
+    var search = searchEl ? searchEl.value.trim() : '';
     var fetchSize = search ? Math.max(size, 30) : size;
 
     var sort = 'id,desc';
@@ -467,32 +467,32 @@ async function locSanPham(page) {
     if (sortEl && sortEl.value) sort = sortEl.value;
 
     var mucgiaEl = document.getElementById("mucgia");
-    var mucgia   = mucgiaEl ? mucgiaEl.value : '0-1000000000';
-    var parts    = mucgia.split('-');
-    var small    = parts[0] || 0;
-    var large    = parts[1] || 1000000000;
+    var mucgia = mucgiaEl ? mucgiaEl.value : '0-1000000000';
+    var parts = mucgia.split('-');
+    var small = parts[0] || 0;
+    var large = parts[1] || 1000000000;
 
     var thuonghieuEl = document.getElementById("thuonghieu");
-    var thuonghieu   = thuonghieuEl ? thuonghieuEl.value : '';
-    var danhmucEl    = document.getElementById("danhmuc");
-    var danhmuc      = danhmucEl ? danhmucEl.value : '';
+    var thuonghieu = thuonghieuEl ? thuonghieuEl.value : '';
+    var danhmucEl = document.getElementById("danhmuc");
+    var danhmuc = danhmucEl ? danhmucEl.value : '';
 
     var url = 'http://localhost:8080/api/product/public/loc-san-pham'
-            + '?page=' + page
-            + '&size=' + fetchSize
-            + '&sort=' + sort
-            + '&small=' + small
-            + '&large=' + large;
-    if (search)     url += '&search=' + encodeURIComponent(search);
+        + '?page=' + page
+        + '&size=' + fetchSize
+        + '&sort=' + sort
+        + '&small=' + small
+        + '&large=' + large;
+    if (search) url += '&search=' + encodeURIComponent(search);
     if (thuonghieu) url += '&trademark=' + encodeURIComponent(thuonghieu);
-    if (danhmuc)    url += '&idcategory=' + encodeURIComponent(danhmuc);
+    if (danhmuc) url += '&idcategory=' + encodeURIComponent(danhmuc);
 
     const response = await fetch(url);
     var result = await response.json();
-    var list   = result.content;
+    var list = result.content;
 
     if (search && sort === 'id,desc') {
-        list.sort(function(a, b) {
+        list.sort(function (a, b) {
             return calcRelevanceScore(b, search) - calcRelevanceScore(a, search);
         });
     }

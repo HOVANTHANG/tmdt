@@ -47,6 +47,10 @@ public class Shop {
     @Enumerated(EnumType.STRING)
     private ShopStatus status;
 
+    /** Tỉ lệ chiết khấu admin thu từ mỗi đơn hàng (%). Mặc định 5%. */
+    @Column(name = "commission_rate")
+    private Double commissionRate = 5.0;
+
     @OneToMany(mappedBy = "shop")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();

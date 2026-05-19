@@ -297,7 +297,7 @@ async function loadTopProducts() {
 
                         <td>${formatmoney(list[i].price || 0)}</td>
 
-                        <td>${list[i].quantitySold || 0}</td>
+                        <td>${list[i].sold || 0}</td>
                     </tr>
                 `;
             }

@@ -114,4 +114,14 @@ public class AdminController {
         return "admin/baohanh";
     }
 
+    @RequestMapping(value = { "/product-approval" }, method = RequestMethod.GET)
+    public String productApproval() {
+        return "admin/product-approval";
+    }
+
+    @RequestMapping(value = { "/commission" }, method = RequestMethod.GET)
+    public String commission() {
+        return "admin/commission";
+    }
+
 }

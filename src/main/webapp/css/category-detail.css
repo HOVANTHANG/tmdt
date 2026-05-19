@@ -1,0 +1,451 @@
+:root {
+    --primary: #0d9488;
+    --primary-lt: #14b8a6;
+    --primary-dk: #0f766e;
+    --accent: #ee4d2d;
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --tx: #111827;
+    --tx2: #4b5563;
+    --tx3: #9ca3af;
+    --border: #e5e7eb;
+    --shadow: 0 1px 4px rgba(0, 0, 0, .08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, .1);
+    --r: 8px;
+    --sidebar-w: 224px;
+    --gap: 16px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--tx);
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Page wrapper ── */
+.cd-page {
+    padding: 16px 0 60px;
+}
+
+/* ── Breadcrumb ── */
+.cd-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--tx3);
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.cd-breadcrumb a {
+    color: var(--tx3);
+    text-decoration: none;
+    transition: color .15s;
+}
+
+.cd-breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.cd-breadcrumb .sep {
+    font-size: 10px;
+    color: var(--border);
+}
+
+.cd-breadcrumb .current {
+    color: var(--tx);
+    font-weight: 600;
+}
+
+/* ── Layout ── */
+.cd-wrap {
+    display: flex;
+    gap: var(--gap);
+    align-items: flex-start;
+    position: relative;
+}
+
+/* ── Cột chứa danh mục (Cuộn tự nhiên cùng sản phẩm) ── */
+.cd-sidebar-slot {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+}
+
+.cd-sidebar {
+    background: var(--card);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.cd-sidebar-hd {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    color: #fff;
+    letter-spacing: .2px;
+    flex-shrink: 0;
+}
+
+.cd-sidebar-hd i {
+    font-size: 14px;
+    opacity: .9;
+}
+
+/* Nội dung danh mục hiển thị tự nhiên */
+#sidebarContent {
+    flex: 1;
+    padding-bottom: 10px;
+}
+
+.cd-cat-group {
+    padding: 12px 0 6px;
+}
+
+.cd-cat-parent {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--tx3);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    padding: 0 16px 8px;
+}
+
+.cd-cat-item a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 16px 8px 20px;
+    color: var(--tx2);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all .18s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+}
+
+.cd-cat-item a:hover {
+    background: #fef7f5;
+    color: var(--accent);
+    border-left-color: var(--accent);
+}
+
+.cd-cat-item a.active {
+    background: #fef2f0;
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 700;
+}
+
+.cd-cat-item a .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+    opacity: .5;
+    transition: opacity .18s;
+}
+
+.cd-cat-item a:hover .dot,
+.cd-cat-item a.active .dot {
+    opacity: 1;
+}
+
+/* ── Main content area ── */
+.cd-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Sort bar ── */
+.cd-sort-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+}
+
+.cd-sort-label {
+    font-size: 12.5px;
+    color: var(--tx3);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.cd-sort-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--tx2);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Inter', sans-serif;
+}
+
+.cd-sort-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.cd-sort-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 600;
+}
+
+.cd-result-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--tx3);
+    white-space: nowrap;
+}
+
+/* ── Product grid ── */
+.cd-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+/* ── Product card ── */
+.cd-card {
+    background: var(--card);
+    border-radius: var(--r);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: all .22s ease;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.cd-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 6px 20px rgba(238, 77, 45, .14);
+    transform: translateY(-3px);
+}
+
+.cd-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    z-index: 1;
+    letter-spacing: .3px;
+}
+
+.cd-img-wrap {
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+.cd-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 10px;
+    transition: transform .35s ease;
+}
+
+.cd-card:hover .cd-img-wrap img {
+    transform: scale(1.06);
+}
+
+.cd-body {
+    padding: 10px 11px 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cd-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--tx);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.45;
+    flex: 1;
+    transition: color .15s;
+}
+
+.cd-card:hover .cd-name {
+    color: var(--accent);
+}
+
+.cd-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: auto;
+}
+
+.cd-price {
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.cd-oldprice {
+    color: var(--tx3);
+    font-size: 11.5px;
+    text-decoration: line-through;
+}
+
+.cd-sold {
+    font-size: 11px;
+    color: var(--tx3);
+}
+
+/* ── States ── */
+.cd-loading,
+.cd-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--tx3);
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+}
+
+.cd-loading i {
+    font-size: 30px;
+    color: var(--primary);
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cd-empty i {
+    font-size: 40px;
+    color: var(--border);
+}
+
+.cd-empty span {
+    font-size: 12px;
+}
+
+/* ── Pagination ── */
+.cd-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.cd-page-btn {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    color: var(--tx2);
+    font-family: 'Inter', sans-serif;
+    transition: all .15s;
+}
+
+.cd-page-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.cd-page-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+.cd-page-btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+    .cd-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .cd-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .cd-sidebar-slot {
+        display: none;
+    }
+
+    .cd-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .cd-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}

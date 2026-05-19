@@ -49,6 +49,21 @@ $(document).ready(function () {
                 <div class="sb-nav-link-icon"><i class="fas fa-tshirt iconmenu"></i></div>
                 Sản phẩm
             </a>
+            <a class="nav-link" href="/admin/product-approval" id="menuProductApproval">
+                <div class="sb-nav-link-icon"><i class="fas fa-clipboard-check iconmenu"></i></div>
+                Duyệt sản phẩm
+                <span id="pendingProductBadge" style="
+                    display:none;
+                    background:#ef4444;color:#fff;
+                    font-size:10px;font-weight:700;
+                    border-radius:999px;padding:1px 7px;
+                    margin-left:6px;vertical-align:middle;
+                ">0</span>
+            </a>
+            <a class="nav-link" href="/admin/commission">
+                <div class="sb-nav-link-icon"><i class="fas fa-percent iconmenu"></i></div>
+                Chiết khấu
+            </a>
             <a class="nav-link" href="/admin/banner">
                 <div class="sb-nav-link-icon"><i class="fa fa-image iconmenu"></i></div>
                 banner
@@ -123,6 +138,26 @@ async function checkroleAdmin() {
         window.location.replace('../dangnhap')
     }
 }
+
+// ── Load badge số sản phẩm chờ duyệt trên menu ──────────
+async function loadPendingProductCount() {
+    try {
+        const res = await fetch('http://localhost:8080/api/admin/shop/product/pending/count', {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const count = data.count || 0;
+        const badge = document.getElementById('pendingProductBadge');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'inline' : 'none';
+        }
+    } catch (e) { /* silent */ }
+}
+
+// Gọi sau khi DOM sẵn sàng
+setTimeout(loadPendingProductCount, 500);
 
 
 

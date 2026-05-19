@@ -90,8 +90,9 @@
         #productTable th:nth-child(4) { width: 110px; }
         #productTable th:nth-child(5) { width: 100px; }
         #productTable th:nth-child(6) { width: 88px; }
-        #productTable th:nth-child(7) { width: 120px; text-align: center; }  /* Tồn kho rộng hơn */
-        #productTable th:nth-child(8) { width: 130px; }  /* Hành động rộng hơn */
+        #productTable th:nth-child(7) { width: 120px; text-align: center; }  /* Tồn kho */
+        #productTable th:nth-child(8) { width: 110px; text-align: center; }  /* Trạng thái */
+        #productTable th:nth-child(9) { width: 110px; }  /* Hành động */
 
         /* ── Product thumbnail ── */
         .product-thumb {
@@ -311,12 +312,13 @@
                                 <th>Thương hiệu</th>
                                 <th>Ngày tạo</th>
                                 <th style="text-align:center;">Kho</th>
+                                <th style="text-align:center;">Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="listproduct">
                             <tr>
-                                <td colspan="8" class="td-state">
+                                <td colspan="9" class="td-state">
                                     <i class="fa-solid fa-spinner fa-spin"></i>
                                     <span>Đang tải dữ liệu...</span>
                                 </td>

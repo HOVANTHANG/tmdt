@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Duyệt sản phẩm | Admin</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <!-- Admin CSS -->
+    <link href="css/styles.css" rel="stylesheet" />
+
+    <!-- Menu & Auth -->
+    <script src="js/menu.js"></script>
+    <script src="js/product-approval.js"></script>
+
+    <style>
+        /* ── Layout ─────────────────────────── */
+        .pa-page-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 22px 28px 18px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fff;
+        }
+        .pa-page-header .pa-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: #fff; flex-shrink: 0;
+        }
+        .pa-page-header h1 {
+            font-size: 1.35rem; font-weight: 700; color: #111827; margin: 0;
+        }
+        .pa-page-header p {
+            font-size: .82rem; color: #6b7280; margin: 2px 0 0;
+        }
+        .pa-badge-count {
+            margin-left: auto;
+            background: #ef4444;
+            color: #fff;
+            font-size: .78rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 4px 12px;
+        }
+
+        /* ── Toolbar ─────────────────────────── */
+        .pa-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 28px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+        .pa-search-wrap {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            flex: 1;
+            min-width: 220px;
+            max-width: 400px;
+        }
+        .pa-search-wrap i { padding: 0 12px; color: #9ca3af; }
+        .pa-search-wrap input {
+            border: none; outline: none; padding: 9px 0;
+            font-size: .875rem; flex: 1; background: transparent;
+        }
+        .pa-btn-search {
+            background: #3b82f6; color: #fff;
+            border: none; padding: 9px 18px;
+            font-size: .85rem; font-weight: 600;
+            cursor: pointer; transition: background .2s;
+        }
+        .pa-btn-search:hover { background: #2563eb; }
+
+        /* ── Table ───────────────────────────── */
+        .pa-table-wrap { padding: 20px 28px; overflow-x: auto; }
+        .pa-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+        .pa-table thead th {
+            background: #f3f4f6;
+            color: #374151;
+            font-weight: 600;
+            padding: 11px 14px;
+            text-align: left;
+            white-space: nowrap;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .pa-table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            transition: background .15s;
+        }
+        .pa-table tbody tr:hover { background: #fafafa; }
+        .pa-table td { padding: 11px 14px; vertical-align: middle; }
+
+        .pa-id { font-size: .78rem; color: #6b7280; font-weight: 600; }
+        .pa-thumb {
+            width: 72px; height: 72px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .pa-thumb-ph {
+            width: 72px; height: 72px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            display: flex; align-items: center; justify-content: center;
+            color: #9ca3af; font-size: 1.4rem;
+        }
+        .pa-name {
+            font-weight: 600; color: #111827;
+            max-width: 200px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .pa-code { font-size: .75rem; color: #6b7280; margin-top: 2px; }
+
+        /* ── Empty / Loading ─────────────────── */
+        .pa-state {
+            text-align: center;
+            padding: 60px 0 !important;
+            color: #6b7280;
+        }
+        .pa-state i { display: block; font-size: 2.5rem; margin-bottom: 12px; }
+        .pa-state span { display: block; font-size: .9rem; }
+        .pa-spinner {
+            width: 36px; height: 36px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Action buttons ──────────────────── */
+        .pa-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .pa-btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            border: none; border-radius: 7px;
+            padding: 7px 13px; font-size: .8rem; font-weight: 600;
+            cursor: pointer; transition: opacity .18s, transform .12s;
+            white-space: nowrap;
+        }
+        .pa-btn:hover { opacity: .88; transform: translateY(-1px); }
+        .pa-btn-approve { background: #10b981; color: #fff; }
+        .pa-btn-reject  { background: #ef4444; color: #fff; }
+
+        /* ── Reject Modal ────────────────────── */
+        #rejectModal .modal-header {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+        }
+        #rejectModal .modal-header .btn-close { filter: invert(1); }
+        #rejectModal textarea {
+            border-radius: 8px; border: 1px solid #d1d5db;
+            padding: 10px; font-size: .875rem;
+            resize: vertical; min-height: 90px;
+        }
+        #rejectModal textarea:focus { outline: none; border-color: #ef4444; }
+        .reject-product-name {
+            font-weight: 700; color: #111827;
+            background: #fff7ed; border: 1px solid #fed7aa;
+            border-radius: 7px; padding: 8px 14px;
+            font-size: .9rem; margin-bottom: 14px;
+        }
+        .btn-confirm-reject {
+            background: #ef4444; color: #fff; border: none;
+            border-radius: 8px; padding: 9px 22px;
+            font-weight: 600; cursor: pointer;
+            transition: background .2s;
+        }
+        .btn-confirm-reject:hover { background: #dc2626; }
+
+        /* ── Pagination ──────────────────────── */
+        .pa-pagination { padding: 10px 28px 22px; }
+
+        /* ── Badge on pending row ────────────── */
+        #globalPendingBadge {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #ef4444; color: #fff;
+            font-size: .7rem; font-weight: 700;
+            border-radius: 999px; min-width: 20px; height: 20px;
+            padding: 0 6px; margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav id="top" class="sb-topnav navbar navbar-expand navbar-dark bg-dark"></nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav"></div>
+        <div id="layoutSidenav_content">
+            <main>
+
+                <!-- Page Header -->
+                <div class="pa-page-header">
+                    <div class="pa-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div>
+                        <h1>Duyệt Sản Phẩm</h1>
+                        <p>Xem xét và phê duyệt các sản phẩm mới từ cửa hàng</p>
+                    </div>
+                    <span class="pa-badge-count" id="pendingBadge" style="display:none;">0</span>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="pa-toolbar">
+                    <div class="pa-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchPendingInput" placeholder="Tìm theo tên hoặc mã sản phẩm..." />
+                        <button class="pa-btn-search" onclick="searchPending()">Tìm</button>
+                    </div>
+                    <button class="pa-btn-search" style="border-radius:8px;padding:9px 18px;" onclick="loadPendingProducts(0,'')">
+                        <i class="fa-solid fa-rotate-right"></i> Tải lại
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div class="pa-table-wrap">
+                    <table class="pa-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Cửa hàng</th>
+                                <th>Danh mục</th>
+                                <th>Thương hiệu</th>
+                                <th>Ngày tạo</th>
+                                <th style="text-align:center;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingList">
+                            <tr>
+                                <td colspan="8" class="pa-state">
+                                    <div class="pa-spinner"></div>
+                                    <span>Đang tải dữ liệu...</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pa-pagination">
+                    <nav>
+                        <ul class="pagination" id="pendingPagination"></ul>
+                    </nav>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Từ Chối -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:14px;overflow:hidden;">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-circle-xmark me-2"></i>Từ Chối Sản Phẩm
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding:22px;">
+                    <div class="reject-product-name" id="rejectProductName"></div>
+                    <label style="font-weight:600;font-size:.85rem;color:#374151;margin-bottom:6px;display:block;">
+                        Lý do từ chối <span style="color:#9ca3af;font-weight:400;">(tuỳ chọn)</span>
+                    </label>
+                    <textarea id="rejectReason" class="form-control" placeholder="Ví dụ: Hình ảnh không rõ ràng, mô tả không đầy đủ..."></textarea>
+                    <p style="font-size:.78rem;color:#6b7280;margin-top:8px;">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        Lý do sẽ được gửi thông báo đến cửa hàng để họ chỉnh sửa lại.
+                    </p>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid #e5e7eb;gap:8px;">
+                    <button type="button" data-bs-dismiss="modal"
+                        style="background:#f3f4f6;color:#374151;border:none;border-radius:8px;padding:9px 20px;font-weight:600;cursor:pointer;">
+                        Huỷ bỏ
+                    </button>
+                    <button class="btn-confirm-reject" onclick="confirmReject()">
+                        <i class="fa-solid fa-circle-xmark me-1"></i>Xác nhận từ chối
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

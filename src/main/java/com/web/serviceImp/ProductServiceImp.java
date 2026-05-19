@@ -8,11 +8,13 @@ import com.web.dto.response.ProductShopResponse;
 import com.web.dto.response.ShopResponse;
 import com.web.entity.*;
 import com.web.enums.CategoryType;
+import com.web.enums.ProductStatus;
 import com.web.exception.MessageException;
 import com.web.mapper.ProductMapper;
 import com.web.repository.*;
 import com.web.servive.ProductService;
 import com.web.utils.UserUtils;
+import org.springframework.data.domain.PageImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -113,6 +115,14 @@ public class ProductServiceImp implements ProductService {
         product.setTradeMark(tradeMark);
         product.setCategory(category.get());
         product.setShop(shop);
+
+        // Nếu admin tạo → APPROVED ngay; nếu seller tạo → PENDING chờ duyệt
+        String role = userUtils.getUserWithAuthority().getAuthorities().getName();
+        if ("ROLE_ADMIN".equals(role)) {
+            product.setStatus(ProductStatus.APPROVED);
+        } else {
+            product.setStatus(ProductStatus.PENDING);
+        }
 
         Product savedProduct = productRepository.save(product);
 
@@ -412,11 +422,16 @@ public class ProductServiceImp implements ProductService {
             throw new MessageException("categoryId không được để trống");
         }
 
+        // 1. Lấy dữ liệu đã được sắp xếp theo độ ưu tiên từ DB
         Page<Product> page = productRepository.findByCategoryIdIncludingChildren(categoryId, pageable);
+        List<Product> originalList = page.getContent();
 
-        return page.map(p -> {
+        // 2. Áp dụng thuật toán trộn/xen kẽ để phân tán các sản phẩm trùng Shop
+        List<Product> diversifiedList = diversifyShops(originalList);
+
+        // 3. Map danh sách đã phân tán sang DTO
+        List<ProductShopResponse> dtoList = diversifiedList.stream().map(p -> {
             ProductShopResponse dto = new ProductShopResponse();
-
             dto.setId(p.getId());
             dto.setCode(p.getCode());
             dto.setName(p.getName());
@@ -431,9 +446,11 @@ public class ProductServiceImp implements ProductService {
                 shop.setAvatar(p.getShop().getAvatar());
                 dto.setShop(shop);
             }
-
             return dto;
-        });
+        }).toList();
+
+        // 4. Trả về đối tượng PageImpl mới với danh sách DTO đã được sắp xếp lại
+        return new PageImpl<>(dtoList, pageable, page.getTotalElements());
     }
 
     @Override
@@ -441,9 +458,50 @@ public class ProductServiceImp implements ProductService {
         if (keyword == null) {
             keyword = "";
         }
-        Page<Product> result = productRepository.searchMarketplace(keyword, pageable);
 
-        System.out.println(result.getContent());
+        // 1. Lấy dữ liệu tìm kiếm gốc
+        Page<Product> page = productRepository.searchMarketplace(keyword, pageable);
+        List<Product> originalList = page.getContent();
+
+        // 2. Áp dụng thuật toán trộn/xen kẽ sản phẩm
+        List<Product> diversifiedList = diversifyShops(originalList);
+
+        // 3. Trả về PageImpl mới chứa danh sách thực thể Product đã phân tán
+        return new PageImpl<>(diversifiedList, pageable, page.getTotalElements());
+    }
+
+    /**
+     * Thuật toán xen kẽ (Interleaving) sản phẩm của các Shop khác nhau.
+     * Giữ nguyên thứ tự ưu tiên tối đa nhưng không để các sản phẩm của cùng 1 Shop
+     * đứng cạnh nhau liên tiếp.
+     */
+    private List<Product> diversifyShops(List<Product> originalList) {
+        if (originalList == null || originalList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Product> result = new ArrayList<>();
+        // Sử dụng LinkedHashMap để giữ nguyên thứ tự xuất hiện đầu tiên của các Shop
+        // (đảm bảo tính công bằng theo điểm số)
+        Map<Long, Queue<Product>> shopProductsMap = new LinkedHashMap<>();
+
+        // Gom sản phẩm vào các hàng đợi (Queue) riêng biệt theo từng Shop ID
+        for (Product p : originalList) {
+            Long shopId = (p.getShop() != null) ? p.getShop().getId() : -1L; // Đề phòng sản phẩm không có shop
+            shopProductsMap.computeIfAbsent(shopId, k -> new LinkedList<>()).add(p);
+        }
+
+        // Lấy xen kẽ tuần tự 1 sản phẩm từ mỗi Shop ra đưa vào danh sách kết quả
+        boolean hasMoreProducts = true;
+        while (hasMoreProducts) {
+            hasMoreProducts = false;
+            for (Queue<Product> queue : shopProductsMap.values()) {
+                if (!queue.isEmpty()) {
+                    result.add(queue.poll());
+                    hasMoreProducts = true; // Xác nhận vẫn còn sản phẩm để tiếp tục vòng lặp
+                }
+            }
+        }
 
         return result;
     }

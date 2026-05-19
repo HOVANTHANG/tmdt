@@ -39,6 +39,14 @@
             top: 16px;
         }
 
+        /* Trên mobile: tắt sticky để ảnh cuộn bình thường */
+        @media (max-width: 767px) {
+            .product-gallery {
+                position: static !important;
+                top: auto !important;
+            }
+        }
+
         .main-img-wrapper {
             position: relative;
             width: 100%;
@@ -465,6 +473,72 @@
             color: #888;
             align-self: center;
         }
+
+        /* ===== DETAIL SECTION CARD ===== */
+        .detail-section-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0,0,0,.07);
+            border: 1px solid #f0f0f0;
+            padding: 22px 24px;
+            margin-bottom: 0;
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #222;
+            margin: 0 0 18px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: linear-gradient(180deg, #086f5a, #0d9488);
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* ===== PRODUCT DESCRIPTION ===== */
+        #descriptiondetail {
+            font-size: 14.5px;
+            line-height: 1.8;
+            color: #333;
+            word-break: break-word;
+            max-height: none !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+
+        #descriptiondetail img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin: 10px auto;
+        }
+
+        #descriptiondetail p {
+            margin-bottom: 10px;
+        }
+
+        #descriptiondetail ul,
+        #descriptiondetail ol {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+
+
     </style>
 
     <script>
@@ -609,9 +683,6 @@
                     <div class="detail-section-card">
                         <h5 class="section-title">Mô tả sản phẩm</h5>
                         <div id="descriptiondetail"></div>
-                        <div class="divmore">
-                            <span id="lbxemthem">Xem thêm</span>
-                        </div>
                     </div>
 
                     <div class="detail-section-card mt-3">
@@ -871,7 +942,7 @@
             }
 
             // Sold count
-            const sold = product.quantitySold || 0;
+            const sold = product.sold || 0;
             const soldEl = document.getElementById("soldCountTop");
             if (soldEl) {
                 if (sold >= 1000) {
@@ -1126,7 +1197,8 @@
         }
 
         function renderDescription(product) {
-            document.getElementById("descriptiondetail").innerHTML = product.description || "";
+            const el = document.getElementById("descriptiondetail");
+            el.innerHTML = product.description || "";
         }
 
         function renderTechnicalInfo(product) {
@@ -1456,20 +1528,6 @@
             }
         }
 
-        document.getElementById("lbxemthem").onclick = function () {
-            const desc = document.getElementById("descriptiondetail");
-            const btn = document.getElementById("lbxemthem");
-
-            if (!isExpandedDescription) {
-                desc.style.maxHeight = "none";
-                btn.innerText = "Thu gọn";
-                isExpandedDescription = true;
-            } else {
-                desc.style.maxHeight = "500px";
-                btn.innerText = "Xem thêm";
-                isExpandedDescription = false;
-            }
-        };
 
         function openChatShop() {
             if (!currentShop || !currentShop.id) {

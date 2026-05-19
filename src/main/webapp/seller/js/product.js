@@ -2,6 +2,27 @@ var listFile = [];
 
 var storagelist = [];
 
+// ── Hiển thị badge trạng thái sản phẩm ──────────────────
+function statusBadge(status) {
+    if (status === 'APPROVED') {
+        return `<span style="background:#dcfce7;color:#15803d;font-size:.72rem;font-weight:700;
+                border-radius:6px;padding:3px 9px;white-space:nowrap;">
+                <i class="fa-solid fa-circle-check" style="margin-right:3px;"></i>Đã duyệt</span>`;
+    }
+    if (status === 'REJECTED') {
+        return `<span style="background:#fee2e2;color:#dc2626;font-size:.72rem;font-weight:700;
+                border-radius:6px;padding:3px 9px;white-space:nowrap;"
+                title="Sản phẩm bị từ chối — Hãy chỉnh sửa lại và liên hệ admin">
+                <i class="fa-solid fa-circle-xmark" style="margin-right:3px;"></i>Bị từ chối</span>`;
+    }
+    // PENDING hoặc null
+    return `<span style="background:#fef9c3;color:#a16207;font-size:.72rem;font-weight:700;
+            border-radius:6px;padding:3px 9px;white-space:nowrap;">
+            <i class="fa-solid fa-clock" style="margin-right:3px;"></i>Chờ duyệt</span>`;
+}
+
+
+
 async function loadAProduct() {
     var uls = new URL(document.URL)
     var id = uls.searchParams.get("id");
@@ -76,9 +97,9 @@ async function saveProduct() {
     var uls = new URL(document.URL)
     var id = uls.searchParams.get("id");
 
-    var url = 'http://localhost:8080/api/product/admin/create';
+    var url = 'http://localhost:8080/api/product/seller/create';
     if (id != null) {
-        url = 'http://localhost:8080/api/product/admin/update';
+        url = 'http://localhost:8080/api/product/seller/update';
     }
 
     var manhinh = document.getElementById("manhinh").value
@@ -328,7 +349,7 @@ async function loadProduct(page, param = "") {
 
     // Hiển thị trạng thái loading
     document.getElementById("listproduct").innerHTML =
-        `<tr><td colspan="8" class="td-state"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải dữ liệu...</span></td></tr>`;
+        `<tr><td colspan="9" class="td-state"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải dữ liệu...</span></td></tr>`;
 
     var url = 'http://localhost:8080/api/product/seller/my-shop-products?page=' + page + '&size=' + size;
     if (param != null && param.trim() !== "") url += '&search=' + encodeURIComponent(param);
@@ -348,7 +369,7 @@ async function loadProduct(page, param = "") {
         // Empty state
         if (list.length === 0) {
             document.getElementById("listproduct").innerHTML =
-                `<tr><td colspan="8" class="td-state">
+                `<tr><td colspan="9" class="td-state">
                     <i class="fa-solid fa-box-open"></i>
                     <span>Chưa có sản phẩm nào. Nhấn "Thêm sản phẩm" để bắt đầu!</span>
                 </td></tr>`;
@@ -395,6 +416,7 @@ async function loadProduct(page, param = "") {
                 <td><span class="badge-brand" title="${p.tradeMark ? p.tradeMark.name : ''}">${p.tradeMark ? p.tradeMark.name : '—'}</span></td>
                 <td><span class="col-date">${p.createdDate || ''}</span></td>
                 <td style="text-align:center;">${stockHtml}</td>
+                <td style="text-align:center;">${statusBadge(p.status)}</td>
                 <td>
                     <div class="tbl-actions">
                         <button onclick="deleteProduct(${p.id})" class="btn-tbl btn-tbl-delete" title="Xóa">
@@ -433,7 +455,7 @@ async function loadProduct(page, param = "") {
     } catch (error) {
         console.error(error);
         document.getElementById("listproduct").innerHTML =
-            `<tr><td colspan="8" class="td-state">
+            `<tr><td colspan="9" class="td-state">
                 <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i>
                 <span>Không tải được danh sách sản phẩm. Vui lòng thử lại.</span>
             </td></tr>`;

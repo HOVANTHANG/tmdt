@@ -1,6 +1,5 @@
 package com.web.repository;
 
-import com.web.entity.Category;
 import com.web.entity.InvoiceDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,14 +18,14 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
                         "where d.productVariant.product.shop.id = ?1 " +
                         "and month(d.invoice.createdDate) = month(current_date) " +
                         "and year(d.invoice.createdDate) = year(current_date) " +
-                        "and d.invoice.statusInvoice <> com.web.enums.StatusInvoice.DA_HUY")
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
         Double revenueThisMonthByShop(Long shopId);
 
         @Query("select coalesce(sum(d.price * d.quantity), 0) " +
                         "from InvoiceDetail d " +
                         "where d.productVariant.product.shop.id = ?1 " +
                         "and d.invoice.createdDate = current_date " +
-                        "and d.invoice.statusInvoice <> com.web.enums.StatusInvoice.DA_HUY")
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
         Double revenueTodayByShop(Long shopId);
 
         @Query("select count(distinct d.invoice.id) " +
@@ -52,7 +51,7 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
                         "from InvoiceDetail d " +
                         "where d.productVariant.product.shop.id = ?1 " +
                         "and year(d.invoice.createdDate) = ?2 " +
-                        "and d.invoice.statusInvoice <> com.web.enums.StatusInvoice.DA_HUY " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN " +
                         "group by month(d.invoice.createdDate) " +
                         "order by month(d.invoice.createdDate)")
         List<Object[]> revenueByMonthOfYearAndShop(Long shopId, Integer year);
@@ -72,8 +71,7 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
                         "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
         Double profitTodayByShop(Long shopId);
 
-        @Query("select month(d.invoice.createdDate), coalesce(sum((d.price - coalesce(d.importPrice, 0)) * d.quantity), 0) "
-                        +
+        @Query("select month(d.invoice.createdDate), coalesce(sum((d.price - coalesce(d.importPrice, 0)) * d.quantity), 0) " +
                         "from InvoiceDetail d " +
                         "where d.productVariant.product.shop.id = ?1 " +
                         "and year(d.invoice.createdDate) = ?2 " +
@@ -90,7 +88,6 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
                         "where d.invoice.id = ?1 and d.productVariant.product.shop.id = ?2")
         List<InvoiceDetail> findByInvoiceIdAndShopId(Long invoiceId, Long shopId);
 
-        // InvoiceDetailRepository
         @Query("select count(i) > 0 from InvoiceDetail i where i.productVariant.id = ?1")
         boolean existsByProductVariantId(Long productVariantId);
 
@@ -111,5 +108,14 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetail, Lo
                         "where d.productVariant.product.shop.id = ?1 " +
                         "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN")
         Long countOrderByShop(Long shopId);
+
+        // ── Revenue theo từng tháng trong năm (dùng cho commission chart) ──
+        @Query("select month(d.invoice.createdDate), coalesce(sum(d.price * d.quantity), 0) " +
+                        "from InvoiceDetail d " +
+                        "where year(d.invoice.createdDate) = ?1 " +
+                        "and d.invoice.statusInvoice = com.web.enums.StatusInvoice.DA_NHAN " +
+                        "group by month(d.invoice.createdDate) " +
+                        "order by month(d.invoice.createdDate)")
+        List<Object[]> totalRevenueByMonthOfYear(Integer year);
 
 }
