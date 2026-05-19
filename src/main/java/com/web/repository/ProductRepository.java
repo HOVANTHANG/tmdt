@@ -207,4 +207,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select count(p) from Product p where p.deleted = false and p.status = com.web.enums.ProductStatus.PENDING")
     Long countPending();
 
+    /** Lấy tất cả sản phẩm APPROVED cho AI chatbot (tránh lỗi enum khi có dữ liệu không hợp lệ trong DB) */
+    @Query(value = "SELECT * FROM product WHERE deleted = 0 AND status = 'APPROVED'", nativeQuery = true)
+    List<Product> findAllApprovedForAI();
+
 }

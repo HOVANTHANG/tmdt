@@ -66,8 +66,15 @@ async function loadMyInvoice() {
                     </td>
                     <td>${item.statusInvoice || ""}</td>
                     <td>
-                        ${(item.statusInvoice === "DANG_CHO_XAC_NHAN" || item.statusInvoice === "DA_XAC_NHAN") && item.payType === "COD"
-                    ? `<i onclick="event.stopPropagation(); cancelInvoice(${item.id})" class="fa fa-trash-o huydon"></i>`
+                        ${(["DANG_CHO_XAC_NHAN", "DA_XAC_NHAN"].includes(item.statusInvoice))
+                    ? `<button
+                            onclick="event.stopPropagation(); cancelInvoice(${item.id})"
+                            onmouseover="this.style.background='#ef4444';this.style.color='#fff'"
+                            onmouseout="this.style.background='transparent';this.style.color='#ef4444'"
+                            style="background:transparent;color:#ef4444;border:1.5px solid #ef4444;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;"
+                            title="Hủy đơn hàng">
+                          Hủy đơn
+                        </button>`
                     : ""}
                     </td>
                 </tr>

@@ -1,9 +1,8 @@
 package com.web.servive;
 
-
 import com.google.gson.*;
 import com.web.entity.Product;
-import com.web.repository.*;
+import com.web.repository.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,156 +13,152 @@ import java.net.URI;
 import java.net.http.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
 
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
+    @Value("${groq.api.key}")
+    private String groqApiKey;
 
     @Autowired
     private ProductRepository productRepository;
 
-    private static final String GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+    // Groq API – tương thích OpenAI format
+    private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-    private static final Pattern IMAGE_URL_PATTERN = Pattern.compile("Ảnh kèm theo:\\s*(https?://\\S+)");
+    // Model miễn phí, nhanh, hỗ trợ tiếng Việt tốt
+    private static final String GROQ_MODEL = "llama-3.1-8b-instant";
 
+    // Pattern nhận URL ảnh từ frontend: [URL_IMAGE: https://...]
+    private static final Pattern IMAGE_URL_PATTERN = Pattern.compile("\\[URL_IMAGE:\\s*(https?://\\S+)\\]");
+
+    // Giới hạn số lượt lịch sử giữ lại
+    private static final int MAX_HISTORY = 5;
+
+    // Giới hạn số sản phẩm gửi vào prompt
+    private static final int MAX_PRODUCTS = 40;
 
     public String chatWithGemini(String userMessage, HttpSession session) {
-        if(session.getAttribute("history-chat") == null){
-            session.setAttribute("Number", 1);
-            session.setAttribute("history-chat", "Lịch sử chat của người dùng:\nCâu 1: "+userMessage+"\n");
-        }
+        // --- Quản lý lịch sử hội thoại ---
+        @SuppressWarnings("unchecked")
+        List<String[]> history = (List<String[]>) session.getAttribute("groq-history");
+        if (history == null)
+            history = new ArrayList<>();
 
-        else{
-            String his = (String) session.getAttribute("history-chat");
-            Integer num = (Integer) session.getAttribute("Number");
-            his = his + "\n"+"Câu "+num.toString()+": "+userMessage;
-            session.setAttribute("Number", ++num);
-            session.setAttribute("history-chat",his);
-        }
-        String his =  (String) session.getAttribute("history-chat");
         try {
-            // 1. Lấy dữ liệu plant
-            List<Product> plants = productRepository.findAll();
+            // --- 1. Chuẩn bị dữ liệu sản phẩm (tối ưu token) ---
+            List<Product> products = productRepository.findAllApprovedForAI();
+            String productData = products.stream()
+                    .sorted(Comparator.comparingLong(p -> -(p.getSold() != null ? p.getSold() : 0L)))
+                    .limit(MAX_PRODUCTS)
+                    .map(p -> String.format(
+                            "%d. %s | Giá: %,.0fđ | Thương hiệu: %s | Danh mục: %s | ⭐%.1f | Đã bán: %d",
+                            p.getId(),
+                            nvl(p.getName()),
+                            p.getPrice() != null ? p.getPrice() : 0,
+                            p.getTradeMark() != null ? nvl(p.getTradeMark().getName()) : "N/A",
+                            p.getCategory() != null ? nvl(p.getCategory().getName()) : "N/A",
+                            p.getAvgStar() != null ? p.getAvgStar() : 0.0,
+                            p.getSold() != null ? p.getSold() : 0L))
+                    .collect(Collectors.joining("\n"));
 
-            // 2. Chuẩn bị dữ liệu plant cho prompt
-            final List<String> fieldsToExcludeByName = Arrays.asList(
-                    "code","imageBanner","description","createdDate","createdTime","imei1","imei2","deleted","productImages","productStorages"
-            );
-
-            final String entityPackagePrefix = "com.web.entity";
-
-            Gson gson = new GsonBuilder()
-                    .setExclusionStrategies(new ExclusionStrategy() {
-                        @Override
-                        public boolean shouldSkipField(FieldAttributes f) {
-                            Class<?> fieldType = f.getDeclaredClass();
-
-                            // 1. Phá vỡ quan hệ vòng: Loại bỏ Collection (List/Set) và Map
-                            if (Collection.class.isAssignableFrom(fieldType) ||
-                                    Map.class.isAssignableFrom(fieldType)) {
-                                return true;
-                            }
-
-                            // 2. Phá vỡ quan hệ vòng: Loại bỏ các trường Entity (ManyToOne, OneToOne)
-                            if (fieldType.getName().startsWith(entityPackagePrefix) && !fieldType.equals(Product.class)) {
-                                return true;
-                            }
-
-                            // 3. Loại bỏ các trường theo tên
-                            return fieldsToExcludeByName.contains(f.getName());
-                        }
-                        @Override
-                        public boolean shouldSkipClass(Class<?> clazz) {
-                            return false;
-                        }
-                    })
-                    .create();
-
-            String plantsJsonData = gson.toJson(plants);
-
-            // 3. Xử lý ảnh và làm sạch userMessage
+            // --- 2. Xử lý URL ảnh ---
             String imageUrl = null;
-            Matcher matcher = IMAGE_URL_PATTERN.matcher(userMessage);
-            if (matcher.find()) {
-                imageUrl = matcher.group(1);
-                // Loại bỏ tag URL khỏi tin nhắn gốc để có câu hỏi sạch
-                userMessage = userMessage.split("Ảnh kèm theo:")[0].trim();
-            }
-            // Nếu userMessage rỗng sau khi loại bỏ URL, đặt lại câu hỏi mặc định
-            if (userMessage.isEmpty() && imageUrl != null) {
-                userMessage = "Hãy xác định và phân tích điện thoại trong ảnh";
+            String cleanMsg = userMessage;
+            Matcher m = IMAGE_URL_PATTERN.matcher(userMessage);
+            if (m.find()) {
+                imageUrl = m.group(1);
+                cleanMsg = userMessage.replaceAll("\\[URL_IMAGE:\\s*https?://\\S+\\]", "").trim();
+                if (cleanMsg.isEmpty())
+                    cleanMsg = "Mô tả điện thoại trong ảnh này cho tôi";
             }
 
-            // 4. Ghép prompt
-            String prompt = """
-                Bạn là trợ lý AI của website bán hàng điện thoại di động, trả lời bằng tiếng Việt, ngắn gọn, thân thiện, 
-                trả lời dạng HTML nhé, nếu có link ảnh hãy trả lời dạng thẻ img, set độ rộng 150px cho tôi nhé, nếu là link điện thoại thì là dạng http://localhost:8080/detail?id=[id sản phẩm]
-                Các khả năng chính:
-                - Tìm kiếm thông tin điện thoại phù hợp
-                - Xác định tên điện thoại dựa vào link hình ảnh được cung cấp (nếu hình ảnh được gửi dạng link cloudinary)
-                - Xác định tính năng, điểm vượt trội của điện thoại
-                - Các câu hỏi khác thì tìm câu trả lời từ các nguồn khác database như google hay bing
-                Đây là lịch sử câu hỏi trước đó của người dùng:
-                %s
-                
-                Dưới đây là **dữ liệu điện thoại** từ database dạng json. Hãy sử dụng thông tin này để trả lời các câu hỏi liên quan đến sản phẩm một cách chính xác nhất có thể:
-
-                %s
-
-                Câu hỏi của người dùng: %s
-                """.formatted(his,plantsJsonData, userMessage);
-
-            // Thêm URL ảnh (nếu có) vào cuối prompt để AI xử lý
+            // --- 3. Xây dựng nội dung tin nhắn user (kèm ảnh nếu có) ---
+            String userContent = cleanMsg;
             if (imageUrl != null) {
-                prompt += "\n\n*** LƯU Ý: Hãy phân tích hình ảnh tại link sau để trả lời: " + imageUrl + " ***";
+                userContent += "\n[Ảnh đính kèm: " + imageUrl + "]";
             }
 
+            // --- 4. Tạo system prompt ---
+            String systemPrompt = "Bạn là trợ lý AI tư vấn bán điện thoại di động. Hãy trả lời bằng tiếng Việt, ngắn gọn và thân thiện.\n\n"
+                    +
+                    "QUY TẮC:\n" +
+                    "- Dùng **text** để in đậm từ quan trọng\n" +
+                    "- Dùng danh sách với dấu - cho nhiều mục\n" +
+                    "- Link sản phẩm dùng định dạng: http://localhost:8080/detail?id=[ID]\n" +
+                    "- Nếu câu hỏi không liên quan điện thoại, vẫn trả lời lịch sự\n" +
+                    "- Trả lời tối đa 300 từ\n\n" +
+                    "DANH SÁCH SẢN PHẨM HIỆN CÓ:\n" +
+                    (productData.isEmpty() ? "(Chưa có sản phẩm)" : productData);
 
-            // 5. Gửi request Gemini
-            JsonObject root = new JsonObject();
-            JsonArray contents = new JsonArray();
-            JsonObject userMsg = new JsonObject();
-            userMsg.addProperty("role", "user");
+            // --- 5. Xây dựng messages array (OpenAI format) ---
+            JsonArray messages = new JsonArray();
 
-            JsonArray parts = new JsonArray();
-            JsonObject partText = new JsonObject();
-            partText.addProperty("text", prompt);
-            parts.add(partText);
+            // System message
+            JsonObject sysMsg = new JsonObject();
+            sysMsg.addProperty("role", "system");
+            sysMsg.addProperty("content", systemPrompt);
+            messages.add(sysMsg);
 
-            userMsg.add("parts", parts);
-            contents.add(userMsg);
+            // Lịch sử hội thoại (giới hạn MAX_HISTORY lượt gần nhất)
+            int start = Math.max(0, history.size() - MAX_HISTORY);
+            for (int i = start; i < history.size(); i++) {
+                JsonObject msg = new JsonObject();
+                msg.addProperty("role", history.get(i)[0]);
+                msg.addProperty("content", history.get(i)[1]);
+                messages.add(msg);
+            }
 
-            // Thêm các cấu hình khác (ĐÃ SỬA LỖI TÊN TRƯỜNG config -> generationConfig)
-            JsonObject generationConfig = new JsonObject();
-            generationConfig.addProperty("temperature", 1); // Điều chỉnh tính sáng tạo
-            root.add("generationConfig", generationConfig);
-            root.add("contents", contents);
-            // Xây dựng request
+            // Tin nhắn hiện tại của user
+            JsonObject curMsg = new JsonObject();
+            curMsg.addProperty("role", "user");
+            curMsg.addProperty("content", userContent);
+            messages.add(curMsg);
+
+            // --- 6. Tạo request body ---
+            JsonObject body = new JsonObject();
+            body.addProperty("model", GROQ_MODEL);
+            body.add("messages", messages);
+            body.addProperty("max_tokens", 600);
+            body.addProperty("temperature", 0.7);
+
+            // --- 7. Gửi request tới Groq ---
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(GEMINI_URL + "?key=" + geminiApiKey))
+                    .uri(URI.create(GROQ_URL))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(root.toString()))
+                    .header("Authorization", "Bearer " + groqApiKey)
+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                     .build();
 
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // 6. Xử lý phản hồi
+            // --- 8. Xử lý phản hồi ---
             JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
 
-            if (json.has("candidates")) {
-                return json.getAsJsonArray("candidates")
+            if (json.has("choices")) {
+                String reply = json.getAsJsonArray("choices")
                         .get(0).getAsJsonObject()
-                        .getAsJsonObject("content")
-                        .getAsJsonArray("parts")
-                        .get(0).getAsJsonObject()
-                        .get("text").getAsString();
+                        .getAsJsonObject("message")
+                        .get("content").getAsString();
+
+                // Lưu lịch sử: user + assistant
+                history.add(new String[] { "user", userContent });
+                history.add(new String[] { "assistant", reply });
+                // Giới hạn lịch sử tổng
+                while (history.size() > MAX_HISTORY * 2)
+                    history.remove(0);
+                session.setAttribute("groq-history", history);
+
+                return reply;
+
             } else if (json.has("error")) {
-                return "❌ Lỗi từ Gemini: " + json.getAsJsonObject("error").get("message").getAsString();
+                JsonObject err = json.getAsJsonObject("error");
+                String errMsg = err.has("message") ? err.get("message").getAsString() : "Lỗi không xác định";
+                return "❌ Lỗi Groq: " + errMsg;
             } else {
-                return "⚠️ Không nhận được phản hồi từ AI. Phản hồi đầy đủ: " + response.body();
+                return "⚠️ Không nhận được phản hồi hợp lệ.";
             }
 
         } catch (Exception e) {
@@ -172,7 +167,7 @@ public class ChatService {
         }
     }
 
-    // Các hàm trợ giúp (extractDateFromText, generateTableStatusSummary) không cần thiết
-    // trong ngữ cảnh này nên đã được loại bỏ.
-
+    private String nvl(String s) {
+        return s != null ? s : "";
+    }
 }

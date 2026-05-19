@@ -186,10 +186,7 @@ function loadMenu() {
 `
     document.getElementById("headerweb").innerHTML = menu;
     checkSellerStatus();
-    // loadThuongHieuAndPhuKien();
     countCart();
-    // loadCou2();
-    // loadCou3();
     loadFooter();
 }
 
@@ -208,36 +205,6 @@ function formatmoney(money) {
     });
     return VND.format(money);
 }
-
-async function loadThuongHieuAndPhuKien() {
-    var url = 'http://localhost:8080/api/trademark/public/findAll';
-    const response = await fetch(url, {});
-    var list = await response.json();
-    var main = '<div class="owl-carousel owl-2">'
-    for (i = 0; i < list.length; i++) {
-        main += `<div class="media-29101">
-                    <a href="product?thuonghieu=${list[i].name}">${list[i].name}</a>
-                </div>`
-    }
-    main += `</div>`
-    document.getElementById("listthuonghieuheader").innerHTML += main;
-    loadCou2();
-
-
-    // var url = 'http://localhost:8080/api/category/public/find-by-type?type=PHU_KIEN';
-    // const res = await fetch(url, {});
-    // var list = await res.json();
-    // var main = '<div class="owl-carousel owl-3">'
-    // for (i = 0; i < list.length; i++) {
-    //     main += `<div class="media-29101">
-    //                 <a href="product?danhmuc=${list[i].id}">${list[i].name}</a>
-    //             </div>`
-    // }
-    // main += `</div>`
-    // document.getElementById("listdanhmucphukien").innerHTML += main;
-    loadCou3();
-}
-
 
 function loadFooter() {
     var footer = `
